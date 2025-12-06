@@ -1,26 +1,49 @@
 {
   "name": "portfolio",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "next dev --turbopack",
+    "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "clean": "powershell -Command \"$folders = 'node_modules','.next','dist','build'; foreach ($f in $folders) { if (Test-Path $f) { Remove-Item $f -Recurse -Force; Write-Host \\\"Removed $f\\\" } else { Write-Host \\\"$f does not exist, skipping...\\\" } }; npm install; npm run lint:fix; npm run format:write\"",
+    "lint": "eslint . --ext .js,.ts,.jsx,.tsx",
+    "lint:fix": "eslint . --ext .js,.ts,.jsx,.tsx --fix",
+    "format:check": "prettier --check \"**/*.{ts,tsx,mdx}\" --cache",
+    "format:write": "prettier --write \"**/*.{ts,tsx,mdx}\" --cache"
+  },
+  "lint-staged": {
+    "*.{jsx,js,ts,tsx}": [
+      "eslint --cache --fix",
+      "prettier --write"
+    ]
   },
   "dependencies": {
+    "gsap": "^3.13.0",
+    "lucide-react": "^0.556.0",
     "next": "16.0.7",
     "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "react-dom": "19.2.0",
+    "react-hot-toast": "^2.4.1",
+    "sass": "^1.94.2",
+    "three": "^0.181.2"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^24.10.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/three": "^0.181.0",
     "eslint": "^9",
-    "eslint-config-next": "16.0.7",
+    "eslint-config-next": "15.5.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
+    "prettier": "^3.7.4",
+    "prettier-plugin-tailwindcss": "^0.7.1",
+    "rimraf": "^6.0.1",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5.9.3"
   }
 }
