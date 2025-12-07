@@ -111,7 +111,7 @@ export default function AboutModalContent() {
       </section>
 
       {/* Interests Section */}
-      <section className="mb-8">
+      <section className="mb-12">
         <h3 className="text-charcoal mb-4 text-xl font-medium">
           Beyond Coding
         </h3>

@@ -314,7 +314,7 @@ export default function ContactModalContent() {
       <div className="divider-full my-8"></div>
 
       {/* Footer Note */}
-      <div className="mb-5">
+      <div className="mb-12">
         <p className="text-slate text-center">
           I look forward to hearing from you!
         </p>
