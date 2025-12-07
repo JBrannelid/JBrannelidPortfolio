@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+![Portfolio Header](./public/images/Portfolio.png)
 
-## Getting Started
+# Interactive 3D Portfolio
 
-First, run the development server:
+## 📋 About the Project
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+An **immersive 3D portfolio experience** built with Next.js and Three.js. Visitors can explore the space, click on interactive objectsor get in touch. All within a rendered 3D environment.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The project emphasizes **Scandinavian design principles**: minimalist aesthetics, natural color palettes, and functional simplicity. Every interaction is crafted with smooth GSAP animations to create an engaging user experience.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Core Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **🎮 Interactive 3D Room** - Fully explorable isometric space with clickable objects
+- **📱 Responsive Design** - Seamless experience across desktop, tablet, and mobile
+- **🎨 Aesthetics** - Clean, minimalist design with natural color tones
+- **✉️ Integrated Contact Form** - Netlify Forms with client-side Zod validation
+- **🎬 Smooth Animations** - GSAP-powered transitions and hover effects
+- **⚡ Optimized Performance** - Compressed DRACO models and WebP textures
+- **♿ Accessibility First** - Semantic HTML structure
 
-## Learn More
+## Technologies Used
 
-To learn more about Next.js, take a look at the following resources:
+- **Next.js** - React framework with App Router
+- **Three.js** - 3D graphics and WebGL rendering
+- **TypeScript** - Type-safe development
+- **GSAP** - Animation library
+- **Tailwind CSS** - Utility-first styling
+- **Blender** - 3D modeling and scene creation
+- **Zod** - Schema validation
+- **Netlify Forms** - Form handling
+- **React Hot Toast** - Notification system
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Key Interactions
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. **Click & Drag** - Rotate the camera to explore different angles
+2. **Scroll/Pinch** - Zoom in and out of the scene
+3. **Click Objects** - Interact with buttons to open modals or navigate
+4. **Escape/Click Away** - Close modals and return to exploration
 
-## Deploy on Vercel
+## Developed By
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Johannes Brannelid**  
+Fullstack .NET Developer
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- 🌐 [Portfolio](https://jbrannelid.com/)
+- 💼 [LinkedIn](https://www.linkedin.com/in/johannes-brannelid/)
+- 🐙 [GitHub](https://github.com/JBrannelid)
+
+## Shout Outs & Credits
+
+### Inspiration
+
+- **[Sooah's Room-Folio](https://www.sooahs-room-folio.com/)** - Major inspiration for the 3D room portfolio concept
+
+### Icons & Graphics
+
+- **[Lucide React](https://lucide.dev/guide/packages/lucide-react)** - Icon library used throughout the UI
+- **[SVG Repo](https://www.svgrepo.com/)** - High-quality SVG resources
+
+## License
+
+This project is personal portfolio work. Feel free to get inspired, but please create your own unique version! 🎨
