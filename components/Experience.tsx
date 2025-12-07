@@ -1,37 +1,32 @@
-/* Main Three.js Scene
- * Manages the 3D interactive portfolio experience with:
- * - Three.js scene setup and rendering
- * - Interactive object detection and animations
- * - Modal state management
- * - Screen view mode with escape functionality
+/* Main component tying together the 3D experience
+ * Architecture:
+ * - Scene: Handles Three.js setup and rendering
+ * - InteractionManager: Manages raycasting and interactions
+ * - useCameraController: Controls camera animations
+ * - useModalManager: Manages modal state
+ * - useModelLoader: Loads 3D model
  */
 
 "use client";
 
-import { useEffect, useRef, useMemo, useCallback, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
-import { useInteractiveObjects } from "@/lib/hooks/useInteractiveObjects";
 import { useModelLoader } from "@/lib/hooks/useModelLoader";
-import { useGSAPAnimations } from "@/lib/hooks/useGSAPAnimations";
-import { SceneSetup } from "@/lib/three/setup/SceneSetup";
-import {
-  InteractiveObject,
-  InteractiveTarget,
-  ModalType,
-} from "@/lib/types/scene.types";
-
-import Modal from "@/components/Modal";
-import AboutModalContent from "@/components/AboutModalContent";
-import ContactModalContent from "@/components/ContactModalContent";
-import CVModalContent from "@/components/CVModalContent";
-import ExternalLinkModal from "@/components/ExternalLinkModal";
-import ExperienceLoader from "./ExperienceLoader";
-import Navigation from "@/components/Navigation";
 import { useModalManager } from "@/lib/hooks/useModalManager";
+import { useCameraController } from "@/lib/hooks/useCameraController";
+import { InteractiveTarget, ModalType } from "@/lib/types/scene.types";
 
-// TYPES AND CONSTANTS
+import Scene from "@/components/three/Scene";
+import InteractionManager from "@/components/three/InteractionManager";
+import ExperienceLoader from "@/components/three/ExperienceLoader";
+import Modal from "@/components/ui/Modal";
+import Navigation from "@/components/ui/Navigation";
+import ExternalLinkModal from "@/components/modals/ExternalLinkModal";
+import AboutModalContent from "@/components/modals/AboutModalContent";
+import ContactModalContent from "@/components/modals/ContactModalContent";
+import CVModalContent from "@/components/modals/CVModalContent";
 
 /* Mapping from interactive targets to modal types
  * Used for routing click events to appropriate modal content */
@@ -41,27 +36,31 @@ const MODAL_MAP: Partial<Record<InteractiveTarget, ModalType>> = {
   [InteractiveTarget.CV]: ModalType.CV,
 };
 
-/* Strongly-typed reference container for Three.js instances
- * Prevents null checks throughout the component */
-interface ThreeRefs {
-  scene: THREE.Scene;
-  camera: THREE.PerspectiveCamera;
-  renderer: THREE.WebGLRenderer;
-  controls: OrbitControls;
-  sceneSetup: SceneSetup;
-  animationFrameId: number | null;
-}
+/* External links configuration */
+const EXTERNAL_LINKS = {
+  [InteractiveTarget.GitHub]: {
+    url: "https://github.com/JBrannelid",
+    siteName: "GitHub",
+  },
+  [InteractiveTarget.LinkedIn]: {
+    url: "https://www.linkedin.com/in/johannes-brannelid/",
+    siteName: "LinkedIn",
+  },
+};
 
-// MAIN COMPONENT
+// This is the main component. Ties all together, manage states and handlers
+// This component renders from layout level
 export default function Experience() {
-  // Three.js instance container - holds all core objects
-  const threeRefs = useRef<ThreeRefs | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const hasHadModalOpen = useRef(false);
-  const lastHoveredObject = useRef<InteractiveObject | null>(null);
-  const [isSceneReady, setIsSceneReady] = useState(false);
-  const [isViewingScreen, setIsViewingScreen] = useState(false);
-  const currentViewedTarget = useRef<InteractiveTarget | null>(null);
+
+  // Three.js references (set when scene is ready)
+  const [sceneRefs, setSceneRefs] = useState<{
+    scene: THREE.Scene;
+    camera: THREE.PerspectiveCamera;
+    renderer: THREE.WebGLRenderer;
+    controls: OrbitControls;
+  } | null>(null);
 
   // External link confirmation modal state
   const [externalLink, setExternalLink] = useState<{
@@ -73,124 +72,36 @@ export default function Experience() {
   const { openModal, closeModal, isModalOpen, currentModal } =
     useModalManager();
 
-  // DERIVED STATE (Performance optimized)
-  const sceneRef = isSceneReady ? threeRefs.current?.scene || null : null;
-  const cameraRef = isSceneReady ? threeRefs.current?.camera || null : null;
-  const rendererRef = isSceneReady ? threeRefs.current?.renderer || null : null;
-  const controlsRef = isSceneReady ? threeRefs.current?.controls || null : null;
+  // Load 3D model
+  const { model, isLoading, error, progress } = useModelLoader(
+    sceneRefs?.scene || null
+  );
 
-  // Load 3D model and extract interactive objects
-  const { model, isLoading, error, progress } = useModelLoader(sceneRef);
+  // Camera controller
+  const { zoomToObject, resetCamera, setControlsEnabled } = useCameraController(
+    {
+      model,
+      camera: sceneRefs?.camera || null,
+      scene: sceneRefs?.scene || null,
+      controls: sceneRefs?.controls || null,
+    }
+  );
 
-  // THREE.JS SETUP - Initialize scene, camera, renderer, controls
-  useEffect(() => {
-    if (!canvasRef.current) return;
+  // Handle scene ready callback
+  const handleSceneReady = useCallback(
+    (refs: {
+      scene: THREE.Scene;
+      camera: THREE.PerspectiveCamera;
+      renderer: THREE.WebGLRenderer;
+      controls: OrbitControls;
+    }) => {
+      setSceneRefs(refs);
+    },
+    []
+  );
 
-    // Create all Three.js instances
-    const sceneSetup = new SceneSetup();
-    const scene = sceneSetup.createScene();
-    const camera = sceneSetup.createCamera(
-      window.innerWidth / window.innerHeight
-    );
-    const renderer = sceneSetup.createRenderer(canvasRef.current);
-    const controls = sceneSetup.createControls(camera, renderer.domElement);
-
-    // Add lighting to scene
-    sceneSetup.setupLighting(scene);
-
-    // Store references for access throughout component lifecycle
-    threeRefs.current = {
-      scene,
-      camera,
-      renderer,
-      controls,
-      sceneSetup,
-      animationFrameId: null,
-    };
-
-    // Notify React that Three.js is ready for dependent hooks
-    setIsSceneReady(true);
-    const handleResize = () => {
-      const refs = threeRefs.current;
-      if (!refs) return;
-      refs.sceneSetup.onResize(refs.camera, refs.renderer);
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    // Cleanup on unmount
-    return () => {
-      window.removeEventListener("resize", handleResize);
-
-      const refs = threeRefs.current;
-      if (refs) {
-        if (refs.animationFrameId !== null) {
-          cancelAnimationFrame(refs.animationFrameId);
-        }
-        refs.controls.dispose();
-        refs.renderer.dispose();
-      }
-      threeRefs.current = null;
-      setIsSceneReady(false);
-    };
-  }, []);
-
-  //  GSAP ANIMATIONS - Setup hover, click, and modal animations
-  const {
-    createHoverAnimation,
-    createHoverOutAnimation,
-    createClickAnimation,
-    createModalCloseAnimation,
-    setControlsEnabled,
-  } = useGSAPAnimations({
-    interactiveObjects: model?.interactiveObjects || null,
-    scene: sceneRef,
-    camera: cameraRef,
-    controls: controlsRef,
-  });
-
-  // SCREEN VIEW ESCAPE FUNCTIONALITY
-  // Handle escape from screen zoom view
-  const handleEscapeScreenView = useCallback(async () => {
-    if (!isViewingScreen) return;
-
-    setIsViewingScreen(false);
-    currentViewedTarget.current = null;
-
-    // Smoothly return camera to original position
-    await createModalCloseAnimation();
-  }, [isViewingScreen, createModalCloseAnimation]);
-
-  useEffect(() => {
-    if (!isViewingScreen) return;
-
-    const handleKeyPress = () => {
-      // Accept ANY key press to exit screen view
-      handleEscapeScreenView();
-    };
-
-    const handleClickAnywhere = (e: MouseEvent) => {
-      // Exit on ANY click
-      e.preventDefault();
-      handleEscapeScreenView();
-    };
-
-    // Register event listeners with higher priority
-    window.addEventListener("keydown", handleKeyPress, { capture: true });
-    window.addEventListener("click", handleClickAnywhere, { capture: true });
-    document.body.style.cursor = "zoom-out";
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyPress, { capture: true });
-      window.removeEventListener("click", handleClickAnywhere, {
-        capture: true,
-      });
-      document.body.style.cursor = "default";
-    };
-  }, [isViewingScreen, handleEscapeScreenView]);
-
-  //  MODAL AND CONTROLS STATE MANAGEMENT
-  // Disable OrbitControls when modal or external link is open
+  // State management for tracking if any modal has been opened during session
+  // Disable controls when modal or link is open
   useEffect(() => {
     const isModalOrLinkOpen = currentModal !== null || externalLink !== null;
     setControlsEnabled(!isModalOrLinkOpen);
@@ -200,48 +111,22 @@ export default function Experience() {
       hasHadModalOpen.current = true;
     }
 
-    // Reset camera when closing modals/links
-    if (!isModalOrLinkOpen && hasHadModalOpen.current && isSceneReady) {
-      createModalCloseAnimation();
+    // Reset camera when closing modals/links (if something has been opened before)
+    if (!isModalOrLinkOpen && hasHadModalOpen.current) {
+      resetCamera();
     }
-  }, [
-    currentModal,
-    externalLink,
-    setControlsEnabled,
-    createModalCloseAnimation,
-    isSceneReady,
-  ]);
+  }, [currentModal, externalLink, setControlsEnabled, resetCamera]);
 
-  // INTERACTION HANDLERS
-  //  Handle click on interactive 3D object
+  // Interaction Handler - Handle click on interactive 3D object
   const handleObjectClick = useCallback(
     async (target: InteractiveTarget) => {
-      const refs = threeRefs.current;
-      if (!model?.interactiveObjects || !refs) return;
-
-      // Find the clicked object in the interactive objects map
-      const clickedObject = Array.from(model.interactiveObjects.values()).find(
-        (obj) => obj.type === target
-      );
-
-      if (!clickedObject) {
-        console.error("Interactive object not found:", target);
-        return;
-      }
-
       // Check if this is a screen object
       const isScreen =
         target === InteractiveTarget.TVScreen ||
         target === InteractiveTarget.ComputerScreen;
 
-      // Enable escape mode for screens
-      if (isScreen) {
-        setIsViewingScreen(true);
-        currentViewedTarget.current = target;
-      }
-
-      // Animate camera zoom to target
-      await createClickAnimation(clickedObject);
+      // Zoom to target
+      await zoomToObject(target);
 
       // Handle post-zoom actions (modals or external links)
       if (!isScreen) {
@@ -251,97 +136,19 @@ export default function Experience() {
           // Open corresponding modal
           openModal(modalType);
         } else {
-          // Handle external links with confirmation modal
-          switch (target) {
-            case InteractiveTarget.GitHub:
-              setExternalLink({
-                url: "https://github.com/JBrannelid",
-                siteName: "GitHub",
-              });
-              break;
-            case InteractiveTarget.LinkedIn:
-              setExternalLink({
-                url: "https://www.linkedin.com/in/johannes-brannelid/",
-                siteName: "LinkedIn",
-              });
-              break;
+          // Handle external links
+          const linkConfig =
+            EXTERNAL_LINKS[target as keyof typeof EXTERNAL_LINKS];
+          if (linkConfig) {
+            setExternalLink(linkConfig);
           }
         }
       }
     },
-    [model, createClickAnimation, openModal]
+    [zoomToObject, openModal]
   );
 
-  // Handle hover on interactive 3D object
-  const handleObjectHover = useCallback(
-    (target: InteractiveTarget | null) => {
-      if (!model?.interactiveObjects) return;
-
-      if (target) {
-        // Reset previous hovered object first
-        if (lastHoveredObject.current) {
-          createHoverOutAnimation(lastHoveredObject.current);
-        }
-
-        // Find and animate new hovered object
-        const hoveredObject = Array.from(
-          model.interactiveObjects.values()
-        ).find((obj) => obj.type === target);
-
-        if (hoveredObject) {
-          createHoverAnimation(hoveredObject);
-          lastHoveredObject.current = hoveredObject;
-        }
-      } else {
-        // Reset the last hovered object when hover ends
-        if (lastHoveredObject.current) {
-          createHoverOutAnimation(lastHoveredObject.current);
-          lastHoveredObject.current = null;
-        }
-      }
-    },
-    [model, createHoverAnimation, createHoverOutAnimation]
-  );
-
-  //  RAYCASTING SETUP - Detect mouse interaction with 3D objects
-  useInteractiveObjects({
-    camera: cameraRef,
-    renderer: rendererRef,
-    interactiveObjects: model?.interactiveObjects || null,
-    onObjectClick: handleObjectClick,
-    onObjectHover: handleObjectHover,
-  });
-
-  // RENDER LOOP - Only runs when scene is ready
-  useEffect(() => {
-    if (!isSceneReady) return;
-
-    const { controls, renderer, scene, camera } = threeRefs.current!;
-    const animate = () => {
-      if (threeRefs.current) {
-        threeRefs.current.animationFrameId = requestAnimationFrame(animate);
-      }
-
-      // Update controls for damping effect
-      controls.update();
-
-      // Render frame
-      renderer.render(scene, camera);
-    };
-
-    // Start animation loop
-    animate();
-
-    // Cleanup: Cancel animation frame on unmount
-    return () => {
-      if (threeRefs.current && threeRefs.current.animationFrameId !== null) {
-        cancelAnimationFrame(threeRefs.current.animationFrameId);
-      }
-    };
-  }, [isSceneReady]);
-
-  // MODAL CONTENT COMPONENT SELECTOR
-  // Memoized modal content select and return child component
+  // Modal content component, memoized and selected based on current modal type
   const ModalContentComponent = useMemo(() => {
     if (!currentModal) return null;
 
@@ -357,94 +164,60 @@ export default function Experience() {
     }
   }, [currentModal]);
 
-  // EXTERNAL LINK HANDLERS
+  // External link modal handlers
   const handleExternalLinkCancel = useCallback(() => {
     setExternalLink(null);
+    // Camera reset is handled by useEffect
   }, []);
 
-  // Handle external link confirmation
   const handleExternalLinkConfirm = useCallback(() => {
     if (!externalLink) return;
-
     window.open(externalLink.url, "_blank");
     setExternalLink(null);
+    // Camera reset is handled by useEffect
   }, [externalLink]);
 
-  // NAVIGATION HANDLERS - Called from Navigation component buttons
-  const handleNavAboutClick = useCallback(async () => {
-    if (!model?.interactiveObjects) return;
+  // Generic handler for navigation clicks
+  const handleNavClick = useCallback(
+    async (target: InteractiveTarget, modalType?: ModalType) => {
+      await zoomToObject(target);
+      if (modalType) {
+        openModal(modalType);
+      }
+    },
+    [zoomToObject, openModal]
+  );
 
-    // Find the About 3D object
-    const aboutObject = model.interactiveObjects.get(InteractiveTarget.About);
-    if (aboutObject) {
-      // Animate camera to object first
-      await createClickAnimation(aboutObject);
-    }
-    // Then open modal
-    openModal(ModalType.About);
-  }, [model, createClickAnimation, openModal]);
+  const handleNavAboutClick = useCallback(
+    () => handleNavClick(InteractiveTarget.About, ModalType.About),
+    [handleNavClick]
+  );
 
-  const handleNavCVClick = useCallback(async () => {
-    if (!model?.interactiveObjects) return;
+  const handleNavCVClick = useCallback(
+    () => handleNavClick(InteractiveTarget.CV, ModalType.CV),
+    [handleNavClick]
+  );
 
-    // Find the CV 3D object
-    const cvObject = model.interactiveObjects.get(InteractiveTarget.CV);
-    if (cvObject) {
-      // Animate camera to object first
-      await createClickAnimation(cvObject);
-    }
-    // Then open modal
-    openModal(ModalType.CV);
-  }, [model, createClickAnimation, openModal]);
-
-  const handleNavContactClick = useCallback(async () => {
-    if (!model?.interactiveObjects) return;
-
-    // Find the Contact 3D object
-    const contactObject = model.interactiveObjects.get(
-      InteractiveTarget.Contact
-    );
-    if (contactObject) {
-      // Animate camera to object first
-      await createClickAnimation(contactObject);
-    }
-    // Then open modal
-    openModal(ModalType.Contact);
-  }, [model, createClickAnimation, openModal]);
+  const handleNavContactClick = useCallback(
+    () => handleNavClick(InteractiveTarget.Contact, ModalType.Contact),
+    [handleNavClick]
+  );
 
   const handleNavGitHubClick = useCallback(async () => {
-    if (!model?.interactiveObjects) return;
-
-    // Find the GitHub 3D object
-    const githubObject = model.interactiveObjects.get(InteractiveTarget.GitHub);
-    if (githubObject) {
-      // Animate camera to object first
-      await createClickAnimation(githubObject);
-    }
-    // Then show external link confirmation
-    setExternalLink({
-      url: "https://github.com/JBrannelid",
-      siteName: "GitHub",
-    });
-  }, [model, createClickAnimation]);
+    await zoomToObject(InteractiveTarget.GitHub);
+    setExternalLink(EXTERNAL_LINKS[InteractiveTarget.GitHub]);
+  }, [zoomToObject]);
 
   const handleNavLinkedInClick = useCallback(async () => {
-    if (!model?.interactiveObjects) return;
+    await zoomToObject(InteractiveTarget.LinkedIn);
+    setExternalLink(EXTERNAL_LINKS[InteractiveTarget.LinkedIn]);
+  }, [zoomToObject]);
 
-    // Find the LinkedIn 3D object
-    const linkedinObject = model.interactiveObjects.get(
-      InteractiveTarget.LinkedIn
-    );
-    if (linkedinObject) {
-      // Animate camera to object first
-      await createClickAnimation(linkedinObject);
-    }
-    // Then show external link confirmation
-    setExternalLink({
-      url: "https://www.linkedin.com/in/johannes-brannelid/",
-      siteName: "LinkedIn",
-    });
-  }, [model, createClickAnimation]);
+  // Handle modal/link close - reset camera
+  const handleModalClose = useCallback(() => {
+    closeModal();
+    // Camera reset is handled by useEffect
+  }, [closeModal]);
 
   return (
     <>
@@ -455,6 +228,21 @@ export default function Experience() {
         className="fixed inset-0 z-0 h-full w-full"
       />
 
+      {/* Scene Setup - Three.js initialization */}
+      <Scene canvasRef={canvasRef} onSceneReady={handleSceneReady} />
+
+      {/* Interaction Manager - Raycasting and interactions */}
+      {sceneRefs && (
+        <InteractionManager
+          model={model}
+          camera={sceneRefs.camera}
+          renderer={sceneRefs.renderer}
+          scene={sceneRefs.scene}
+          controls={sceneRefs.controls}
+          onObjectClick={handleObjectClick}
+        />
+      )}
+
       {/* Loading Screen - Shows progress during model load */}
       <ExperienceLoader
         isLoading={isLoading}
@@ -462,14 +250,14 @@ export default function Experience() {
         progress={progress}
       />
 
-      {/* Modal System - About, Contact, CV */}
+      {/* Modal Component (About, Contact, CV) */}
       {currentModal && ModalContentComponent && (
-        <Modal isOpen={isModalOpen(currentModal)} onClose={closeModal}>
+        <Modal isOpen={isModalOpen(currentModal)} onClose={handleModalClose}>
           <ModalContentComponent />
         </Modal>
       )}
 
-      {/* External Link Confirmation Modal - GitHub, LinkedIn */}
+      {/* External Link Confirmation Modal (GitHub, LinkedIn) */}
       {externalLink && (
         <ExternalLinkModal
           isOpen={Boolean(externalLink)}

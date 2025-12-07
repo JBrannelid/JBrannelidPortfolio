@@ -8,7 +8,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { InteractiveTarget } from "@/lib/types/scene.types";
 import type { InteractiveObject } from "@/lib/types/scene.types";
 
-// TYPES
+// Types
 interface UseGSAPAnimationsProps {
   interactiveObjects: Map<string, InteractiveObject> | null;
   scene: THREE.Scene | null;
@@ -34,7 +34,6 @@ const EXCLUDED_TARGETS: InteractiveTarget[] = [
 
 const CAMERA_ZOOM_DISTANCE = 3.5;
 
-// MAIN HOOK
 export function useGSAPAnimations({
   interactiveObjects,
   scene,

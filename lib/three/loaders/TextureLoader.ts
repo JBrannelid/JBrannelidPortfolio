@@ -13,7 +13,7 @@ export class TextureLoaderUtility {
     this.cache = new Map();
   }
 
-  // Load textures - returns IMMEDIATELY with loaded textures
+  // Load textures - returns with loaded textures
   async loadTextures(
     configs: Record<TextureType, TextureConfig>
   ): Promise<Map<TextureType, THREE.Texture>> {
@@ -45,7 +45,7 @@ export class TextureLoaderUtility {
         (texture) => {
           // Configure texture
           texture.colorSpace = THREE.SRGBColorSpace;
-          texture.flipY = false; // Important for GLB models!
+          texture.flipY = false;
           texture.minFilter = THREE.LinearFilter;
           texture.magFilter = THREE.LinearFilter;
           texture.wrapS = THREE.RepeatWrapping;

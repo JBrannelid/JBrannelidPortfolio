@@ -1,4 +1,3 @@
-// SceneSetup
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { SceneConfig } from "../../types/scene.types";
@@ -22,7 +21,7 @@ export const DEFAULT_SCENE_CONFIG: SceneConfig = {
   },
 
   cameraPositions: {
-    // MOBILE: Far back and centered to see entire room
+    // On mobile - Far back and centered to see entire room
     mobile: {
       position: new THREE.Vector3(
         20.0, // Centered X (middle between corners)
@@ -107,17 +106,17 @@ export class SceneSetup {
       controls.maxDistance = 18;
     }
 
-    // Apply rotation constraints (SAME for mobile and desktop)
+    // Apply rotation constraints
     controls.minPolarAngle = this.config.orbitControls.minPolarAngle;
     controls.maxPolarAngle = this.config.orbitControls.maxPolarAngle;
     controls.minAzimuthAngle = this.config.orbitControls.minAzimuthAngle;
     controls.maxAzimuthAngle = this.config.orbitControls.maxAzimuthAngle;
 
-    // Smooth controls
+    // Smooth controls with damping
     controls.enableDamping = true;
     controls.dampingFactor = this.config.orbitControls.dampingFactor;
 
-    // Disable panning (no Shift+drag)
+    // Disable Shift+ drag actions
     controls.enablePan = this.config.orbitControls.enablePan ?? true;
 
     // Set initial target based on screen size
@@ -137,42 +136,29 @@ export class SceneSetup {
       canvas,
       antialias: true,
       alpha: false,
+      powerPreference: "high-performance",
     });
 
+    // Initial size and pixel ratio
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // Enable shadows if needed
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-    // Tone mapping for better colors
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1;
+    // For texture color accuracy, set output color space to sRGB
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
 
     return renderer;
   }
 
   // Setup basic lighting for the scene
+  // Shadows are imported from textures, so only need ambient and directional light
   setupLighting(scene: THREE.Scene): void {
     // Ambient light for overall illumination
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
     scene.add(ambientLight);
 
-    // Directional light for shadows and definition
+    // Directional light for definition
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
     directionalLight.position.set(5, 10, 7.5);
-    directionalLight.castShadow = true;
-
-    // Configure shadow properties
-    directionalLight.shadow.mapSize.width = 2048;
-    directionalLight.shadow.mapSize.height = 2048;
-    directionalLight.shadow.camera.near = 0.1;
-    directionalLight.shadow.camera.far = 50;
-    directionalLight.shadow.camera.left = -10;
-    directionalLight.shadow.camera.right = 10;
-    directionalLight.shadow.camera.top = 10;
-    directionalLight.shadow.camera.bottom = -10;
 
     scene.add(directionalLight);
   }

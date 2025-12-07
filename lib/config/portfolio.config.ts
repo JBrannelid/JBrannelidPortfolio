@@ -1,14 +1,8 @@
-/**
- * Portfolio Configuration
- * Centralized configuration for easy customization
- */
-
+/* Centralized configuration for easy customization */
 import { TextureType } from "@/lib/types/scene.types";
 import * as THREE from "three";
 
-/**
- * Model and Texture Paths
- */
+// Model and Texture Paths
 export const ASSET_PATHS = {
   model: "/models/Room_Portfolio_compressed.glb",
   textures: {
@@ -18,9 +12,7 @@ export const ASSET_PATHS = {
   },
 } as const;
 
-/**
- * Scene Configuration
- */
+// Scene Configuration
 export const SCENE_CONFIG = {
   backgroundColor: "#D9CAD1",
   enableShadows: true,
@@ -29,9 +21,7 @@ export const SCENE_CONFIG = {
   toneMappingExposure: 1,
 } as const;
 
-/**
- * Camera Configuration
- */
+// Camera Configuration
 export const CAMERA_CONFIG = {
   fov: 35,
   near: 0.1,
@@ -64,9 +54,7 @@ export const CAMERA_CONFIG = {
   },
 } as const;
 
-/**
- * OrbitControls Configuration
- */
+// OrbitControls Configuration
 export const CONTROLS_CONFIG = {
   enableDamping: true,
   dampingFactor: 0.05,
@@ -80,9 +68,7 @@ export const CONTROLS_CONFIG = {
   enableZoom: true,
 } as const;
 
-/**
- * Lighting Configuration
- */
+// Lighting Configuration
 export const LIGHTING_CONFIG = {
   ambient: {
     color: 0xffffff,
@@ -107,9 +93,7 @@ export const LIGHTING_CONFIG = {
   },
 } as const;
 
-/**
- * Animation Configuration
- */
+// Animation Configuration
 export const ANIMATION_CONFIG = {
   hover: {
     duration: 0.3,
@@ -132,27 +116,21 @@ export const ANIMATION_CONFIG = {
   },
 } as const;
 
-/**
- * Performance Configuration
- */
+// Performance Configuration
 export const PERFORMANCE_CONFIG = {
   maxPixelRatio: 2,
   antialias: true,
   powerPreference: "high-performance" as WebGLPowerPreference,
 } as const;
 
-/**
- * Responsive Breakpoints
- */
+// Responsive Breakpoints
 export const BREAKPOINTS = {
   mobile: 768,
   tablet: 1024,
   desktop: 1440,
 } as const;
 
-/**
- * External Links Configuration
- */
+// External Links Configuration
 export const EXTERNAL_LINKS = {
   github: "https://github.com/yourusername",
   linkedin: "https://linkedin.com/in/yourusername",
@@ -160,10 +138,8 @@ export const EXTERNAL_LINKS = {
   email: "your.email@example.com",
 } as const;
 
-/**
- * Interactive Object Actions
- * Map interactive targets to their actions
- */
+/* Interactive Object Actions
+ * Map interactive targets to their actions */
 export const OBJECT_ACTIONS = {
   "About-btn": "openAboutModal",
   "Contact-btn": "openContactModal",
@@ -174,21 +150,17 @@ export const OBJECT_ACTIONS = {
   "TVScreen-btn": "showTVContent",
 } as const;
 
-/**
- * Texture Loading Configuration
- */
+// Texture Loading Configuration
 export const TEXTURE_CONFIG = {
   colorSpace: THREE.SRGBColorSpace,
-  flipY: false, // Important for Blender baked textures
+  flipY: false,
   minFilter: THREE.LinearMipmapLinearFilter,
   magFilter: THREE.LinearFilter,
   generateMipmaps: true,
-  anisotropy: 16, // Max anisotropic filtering
+  anisotropy: 16,
 } as const;
 
-/**
- * Loading Screen Configuration
- */
+// Loading Screen Configuration
 export const LOADING_CONFIG = {
   backgroundColor: "#ead7ef",
   textColor: "#401d49",
@@ -204,9 +176,7 @@ export const LOADING_CONFIG = {
   },
 } as const;
 
-/**
- * Development/Debug Configuration
- */
+// Development/Debug Configuration
 export const DEBUG_CONFIG = {
   showStats: process.env.NODE_ENV === "development",
   logInteractions: process.env.NODE_ENV === "development",
@@ -214,16 +184,12 @@ export const DEBUG_CONFIG = {
   enableOrbitControls: true,
 } as const;
 
-/**
- * Utility function to check if device is mobile
- */
+// Utility function to check if device is mobile
 export function isMobileDevice(): boolean {
   return window.innerWidth < BREAKPOINTS.mobile;
 }
 
-/**
- * Utility function to get camera position based on device
- */
+// Utility function to get camera position based on device type
 export function getCameraPosition() {
   return isMobileDevice()
     ? CAMERA_CONFIG.positions.mobile

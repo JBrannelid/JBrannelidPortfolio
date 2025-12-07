@@ -11,10 +11,7 @@ import {
 } from "../../types/scene.types";
 import { TextureLoaderUtility } from "./TextureLoader";
 
-/**
- * ModelLoader Class
- * Handles loading of GLB models with DRACO compression and texture application
- */
+// Handles loading of GLB models with DRACO compression and texture application
 export class ModelLoader {
   private gltfLoader: GLTFLoader;
   private dracoLoader: DRACOLoader;
@@ -37,11 +34,7 @@ export class ModelLoader {
     this.textureLoader = new TextureLoaderUtility(loadingManager);
   }
 
-  /**
-   * Load model with textures and return scene with interactive objects
-   * @param config - Model configuration including path and textures
-   * @returns Promise resolving to loaded model with interactive objects
-   */
+  // Load model with textures and return scene with interactive objects
   async loadModel(config: ModelConfig): Promise<LoadedModel> {
     try {
       // Load textures first then GLTF room model
@@ -78,11 +71,7 @@ export class ModelLoader {
     }
   }
 
-  /**
-   * Load GLTF/GLB file
-   * @param path - Path to the model file
-   * @returns Promise resolving to GLTF object
-   */
+  //  Load GLTF/GLB file
   private async loadGLTF(path: string): Promise<GLTF> {
     return new Promise((resolve, reject) => {
       this.gltfLoader.load(
@@ -94,12 +83,7 @@ export class ModelLoader {
     });
   }
 
-  /**
-   * Apply materials to all meshes in the scene
-   * @param scene - The loaded scene
-   * @param textureMap - Map of textures to apply
-   * @returns Statistics about applied materials
-   */
+  //  Apply materials to all meshes in the scene
   private applyMaterialsToScene(
     scene: THREE.Group,
     textureMap: Map<TextureType, THREE.Texture>
@@ -135,12 +119,7 @@ export class ModelLoader {
     };
   }
 
-  /**
-   * Apply material to a single mesh based on its name
-   * @param child - Mesh to apply material to
-   * @param textureMap - Map of available textures
-   * @returns Material type applied
-   */
+  //  Apply material to a single mesh based on its name
   private applyMaterial(
     child: THREE.Mesh,
     textureMap: Map<TextureType, THREE.Texture>
@@ -238,25 +217,18 @@ export class ModelLoader {
       }
     }
 
-    // 7. All other meshes (fallback)
+    // Fallback: Default material
     this.enableShadows(child);
     return "other";
   }
 
-  /**
-   * Enable shadow casting and receiving for a mesh
-   * @param mesh - Mesh to enable shadows for
-   */
+  //  Enable shadow casting and receiving for a mesh
   private enableShadows(mesh: THREE.Mesh): void {
     mesh.castShadow = true;
     mesh.receiveShadow = true;
   }
 
-  /**
-   * Find interactive objects by matching mesh names to InteractiveTarget enum
-   * @param scene - Scene to search for interactive objects
-   * @returns Map of interactive objects indexed by name
-   */
+  // Find interactive objects by matching mesh names to InteractiveTarget enum
   private findInteractiveObjects(
     scene: THREE.Group
   ): Map<string, InteractiveObject> {
@@ -297,10 +269,7 @@ export class ModelLoader {
     return interactiveObjects;
   }
 
-  /**
-   * Clean up resources
-   * Disposes of loaders and clears caches
-   */
+  // Clean up resources
   dispose(): void {
     this.textureLoader.dispose();
     if (this.dracoLoader) {

@@ -1,5 +1,4 @@
-/* useInteractiveObjects Hook
- * Manages raycasting, hover effects, and click handlers for interactive meshes */
+/* Manages raycasting, hover effects, and click handlers for interactive meshes */
 import { useEffect, useRef, useCallback } from "react";
 import * as THREE from "three";
 import { InteractiveObject, InteractiveTarget } from "../types/scene.types";
@@ -108,7 +107,6 @@ export function useInteractiveObjects({
   const handleClick = useCallback(
     (event: MouseEvent | TouchEvent) => {
       // Skip raycaster interaction if in screen view mode
-      // (Let Experience.tsx handle the escape)
       const body = document.body;
       if (body.style.cursor === "zoom-out") {
         return; // Don't process clicks when in screen zoom mode

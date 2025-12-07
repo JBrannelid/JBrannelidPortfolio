@@ -19,20 +19,11 @@ interface ToastOptions {
   duration?: number;
 }
 
-/**
- * useToasts Hook
+/** useToasts Hook
  *
  * Handles toast notifications for form states, showing:
  * - Error messages that persist until dismissed
  * - Success messages that auto-dismiss
- *
- * @example
- * ```tsx
- * useToasts(state, {
- *   successMessage: "Login successful",
- *   duration: 5000
- * });
- * ```
  */
 export const useToasts = (
   state: GenericState | undefined,
@@ -53,7 +44,7 @@ export const useToasts = (
                 <span className="text-error">{errorMessage}</span>
               </div>
               <div
-                className="border-error text-error flex-shrink-0 transform cursor-pointer rounded-full border bg-red-50 p-1 transition hover:scale-105 hover:bg-red-100"
+                className="border-error text-error shrink-0 transform cursor-pointer rounded-full border bg-red-50 p-1 transition hover:scale-105 hover:bg-red-100"
                 onClick={() => toast.dismiss(id)}
               >
                 <X size={13} />
