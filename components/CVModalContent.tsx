@@ -183,7 +183,7 @@ export default function CVModalContent() {
 
       {/* Footer */}
       <div className="divider-full"></div>
-      <section className="pt-6">
+      <section className="mb-5 pt-6">
         <p className="text-slate mb-4 text-center">
           Interested in seeing more projects or contacting me?
         </p>

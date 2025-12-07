@@ -271,9 +271,11 @@ export default function ContactModalContent() {
       <div className="divider-full my-8"></div>
 
       {/* Footer Note */}
-      <p className="text-slate text-center">
-        I look forward to hearing from you!
-      </p>
+      <div className="mb-5">
+        <p className="text-slate text-center">
+          I look forward to hearing from you!
+        </p>
+      </div>
     </div>
   );
 }
