@@ -83,7 +83,7 @@ export function useGSAPAnimations({
       }
     });
 
-    // Create GSAP context
+    // Create GSAP context (no scope needed for Three.js objects)
     scope.current = gsap.context(() => {
       // Contact bounce animation (constant)
       const contactObj = interactiveObjects.get(InteractiveTarget.Contact);
@@ -99,7 +99,7 @@ export function useGSAPAnimations({
           repeat: -1,
         });
       }
-    }, scene);
+    });
 
     return () => {
       scope.current?.revert();
