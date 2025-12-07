@@ -89,14 +89,6 @@ export function useModelLoader(
       }
     };
 
-    loadingManager.onLoad = () => {
-      console.log("✅ All assets loaded successfully");
-    };
-
-    loadingManager.onError = (url) => {
-      console.error(`❌ Error loading asset: ${url}`);
-    };
-
     // Load the model
     async function loadModel() {
       try {
