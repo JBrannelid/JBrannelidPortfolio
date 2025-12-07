@@ -3,25 +3,29 @@
 import { useEffect, useRef, useCallback } from "react";
 import gsap from "gsap";
 import { X } from "lucide-react";
-import { ModalType } from "@/lib/types/scene.types";
 
-/* Reusable Modal Component
+/**
+ * Reusable Modal Component
+ * Generic modal with GSAP animations for smooth open/close transitions
+ *
  * Child components: AboutModalContent, ContactModalContent, CVModalContent
  */
 
 interface ModalProps {
-  type: ModalType;
   isOpen: boolean;
   onClose: () => void;
   children?: React.ReactNode;
 }
 
-export default function Modal({ type, isOpen, onClose, children }: ModalProps) {
+export default function Modal({ isOpen, onClose, children }: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  /* Animate modal open/close with GSAP */
+  /**
+   * Animate modal open/close with GSAP
+   * Handles smooth transitions and body scroll management
+   */
   useEffect(() => {
     if (!modalRef.current || !overlayRef.current || !contentRef.current) return;
 
@@ -83,7 +87,10 @@ export default function Modal({ type, isOpen, onClose, children }: ModalProps) {
     }
   }, [isOpen]);
 
-  /* Handle escape key press - close modal */
+  /**
+   * Handle escape key press - close modal
+   * Memoized to prevent unnecessary re-creation
+   */
   const handleEscape = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === "Escape" && isOpen) {
@@ -98,7 +105,9 @@ export default function Modal({ type, isOpen, onClose, children }: ModalProps) {
     return () => window.removeEventListener("keydown", handleEscape);
   }, [handleEscape]);
 
-  /* Handle overlay click (close modal when clicking outside) */
+  /**
+   * Handle overlay click (close modal when clicking outside)
+   */
   const handleOverlayClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       onClose();
@@ -126,7 +135,7 @@ export default function Modal({ type, isOpen, onClose, children }: ModalProps) {
           {/* Modal Content */}
           <div
             ref={contentRef}
-            className={`bg-warm-white border-sage relative overflow-hidden rounded-lg border-2 shadow-2xl`}
+            className="bg-warm-white border-sage relative overflow-hidden rounded-lg border-2 shadow-2xl"
           >
             {/* Close Button */}
             <button

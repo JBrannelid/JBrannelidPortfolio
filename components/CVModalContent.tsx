@@ -176,7 +176,7 @@ export default function CVModalContent() {
           </div>
           <div className="flex items-center gap-2">
             <div className="bg-moss size-2 rounded-full"></div>
-            <span className="text-slate">Driver's License Type B</span>
+            <span className="text-slate">Driver&apos;s License Type B</span>
           </div>
         </div>
       </section>

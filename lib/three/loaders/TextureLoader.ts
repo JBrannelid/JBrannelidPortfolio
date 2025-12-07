@@ -21,7 +21,7 @@ export class TextureLoaderUtility {
 
     // Load all textures
     const loadPromises = Object.entries(configs).map(([type, config]) => {
-      return this.loadTexture(config.path, config.name).then((texture) => {
+      return this.loadTexture(config.path).then((texture) => {
         textureMap.set(type as TextureType, texture);
         return { type, success: true };
       });
@@ -33,7 +33,7 @@ export class TextureLoaderUtility {
   }
 
   //  Load single texture with Three.js configuration
-  private loadTexture(path: string, name: string): Promise<THREE.Texture> {
+  private loadTexture(path: string): Promise<THREE.Texture> {
     // Check cache
     if (this.cache.has(path)) {
       return Promise.resolve(this.cache.get(path)!);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import gsap from "gsap";
 import { User, FileText, Mail, Github, Linkedin } from "lucide-react";
 
@@ -21,7 +21,7 @@ interface NavButton {
   icon: React.ComponentType<{ className?: string }>;
   onClick: () => void;
   type: "internal" | "external";
-  color: string; // Accent color for hover effects
+  color: string; // Accent color for hover effects (boxShadow)
 }
 
 export default function Navigation({
@@ -97,22 +97,22 @@ export default function Navigation({
     return () => ctx.revert();
   }, []);
 
-  // Button hover animation
-  const handleMouseEnter = (index: number, color: string) => {
+  // Button hover animation - memoized to prevent re-creation
+  const handleMouseEnter = useCallback((index: number) => {
     const button = buttonsRef.current[index];
     if (!button) return;
 
-    // Only animate scale and position on hover
+    // Animate scale and position on hover
     gsap.to(button, {
       scale: 1.1,
       x: -8,
       duration: 0.3,
       ease: "back.out(2)",
     });
-  };
+  }, []);
 
-  // Button mouse leave animation
-  const handleMouseLeave = (index: number) => {
+  // Button mouse leave animation - memoized
+  const handleMouseLeave = useCallback((index: number) => {
     const button = buttonsRef.current[index];
     if (!button) return;
 
@@ -122,10 +122,10 @@ export default function Navigation({
       duration: 0.3,
       ease: "power2.out",
     });
-  };
+  }, []);
 
-  // Click animation
-  const handleClick = (index: number, onClick: () => void) => {
+  // Click animation - memoized
+  const handleClick = useCallback((index: number, onClick: () => void) => {
     const button = buttonsRef.current[index];
     if (!button) return;
 
@@ -137,11 +137,11 @@ export default function Navigation({
       ease: "power2.inOut",
       onComplete: onClick,
     });
-  };
+  }, []);
 
   return (
     <>
-      {/* Desktop */}
+      {/* Desktop Navigation */}
       <nav
         ref={sidebarRef}
         className="pointer-events-none fixed top-0 right-0 z-40 hidden h-screen flex-col items-end justify-center gap-4 md:flex"
@@ -156,7 +156,7 @@ export default function Navigation({
                 buttonsRef.current[index] = el;
               }}
               onClick={() => handleClick(index, button.onClick)}
-              onMouseEnter={() => handleMouseEnter(index, button.color)}
+              onMouseEnter={() => handleMouseEnter(index)}
               onMouseLeave={() => handleMouseLeave(index)}
               className="group bg-warm-white border-stone pointer-events-auto relative flex items-center gap-3 rounded-l-full border-2 border-r-0 px-5 py-3 transition-colors duration-200"
               style={{
@@ -179,7 +179,7 @@ export default function Navigation({
         })}
       </nav>
 
-      {/* Mobile */}
+      {/* Mobile Navigation */}
       <header className="pointer-events-auto fixed top-0 right-0 left-0 z-40 md:hidden">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-end">
@@ -188,7 +188,7 @@ export default function Navigation({
               className="flex items-center gap-4"
               aria-label="Main navigation"
             >
-              {navButtons.map((button, index) => {
+              {navButtons.map((button) => {
                 const Icon = button.icon;
                 return (
                   <button

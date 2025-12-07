@@ -11,6 +11,10 @@ import {
 } from "../../types/scene.types";
 import { TextureLoaderUtility } from "./TextureLoader";
 
+/**
+ * ModelLoader Class
+ * Handles loading of GLB models with DRACO compression and texture application
+ */
 export class ModelLoader {
   private gltfLoader: GLTFLoader;
   private dracoLoader: DRACOLoader;
@@ -33,29 +37,33 @@ export class ModelLoader {
     this.textureLoader = new TextureLoaderUtility(loadingManager);
   }
 
+  /**
+   * Load model with textures and return scene with interactive objects
+   * @param config - Model configuration including path and textures
+   * @returns Promise resolving to loaded model with interactive objects
+   */
   async loadModel(config: ModelConfig): Promise<LoadedModel> {
     try {
       // Load textures first then GLTF room model
       const textureMap = await this.textureLoader.loadTextures(config.textures);
       const gltf = await this.loadGLTF(config.path);
 
-      // Apply materials
-      let texturedCount = 0;
-      let targetCount = 0;
-      let screenCount = 0;
-      let otherCount = 0;
+      // Apply materials and track statistics
+      const stats = this.applyMaterialsToScene(gltf.scene, textureMap);
 
-      gltf.scene.traverse((child) => {
-        if (child instanceof THREE.Mesh) {
-          const applied = this.applyMaterial(child, textureMap);
+      // Log material application statistics (development mode)
+      if (process.env.NODE_ENV === "development") {
+        console.log("📦 Model loaded:", config.path);
+        console.log("🎨 Materials applied:", {
+          textured: stats.texturedCount,
+          targets: stats.targetCount,
+          screens: stats.screenCount,
+          other: stats.otherCount,
+          total: stats.totalMeshes,
+        });
+      }
 
-          if (applied === "textured") texturedCount++;
-          else if (applied === "target") targetCount++;
-          else if (applied === "screen") screenCount++;
-          else otherCount++;
-        }
-      });
-
+      // Find and map interactive objects
       const interactiveObjects = this.findInteractiveObjects(gltf.scene);
 
       return {
@@ -63,10 +71,18 @@ export class ModelLoader {
         interactiveObjects,
       };
     } catch (error) {
-      throw error;
+      console.error("❌ Failed to load model:", error);
+      throw error instanceof Error
+        ? error
+        : new Error("Unknown error loading model");
     }
   }
 
+  /**
+   * Load GLTF/GLB file
+   * @param path - Path to the model file
+   * @returns Promise resolving to GLTF object
+   */
   private async loadGLTF(path: string): Promise<GLTF> {
     return new Promise((resolve, reject) => {
       this.gltfLoader.load(
@@ -78,6 +94,53 @@ export class ModelLoader {
     });
   }
 
+  /**
+   * Apply materials to all meshes in the scene
+   * @param scene - The loaded scene
+   * @param textureMap - Map of textures to apply
+   * @returns Statistics about applied materials
+   */
+  private applyMaterialsToScene(
+    scene: THREE.Group,
+    textureMap: Map<TextureType, THREE.Texture>
+  ): {
+    texturedCount: number;
+    targetCount: number;
+    screenCount: number;
+    otherCount: number;
+    totalMeshes: number;
+  } {
+    let texturedCount = 0;
+    let targetCount = 0;
+    let screenCount = 0;
+    let otherCount = 0;
+
+    scene.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        const applied = this.applyMaterial(child, textureMap);
+
+        if (applied === "textured") texturedCount++;
+        else if (applied === "target") targetCount++;
+        else if (applied === "screen") screenCount++;
+        else otherCount++;
+      }
+    });
+
+    return {
+      texturedCount,
+      targetCount,
+      screenCount,
+      otherCount,
+      totalMeshes: texturedCount + targetCount + screenCount + otherCount,
+    };
+  }
+
+  /**
+   * Apply material to a single mesh based on its name
+   * @param child - Mesh to apply material to
+   * @param textureMap - Map of available textures
+   * @returns Material type applied
+   */
   private applyMaterial(
     child: THREE.Mesh,
     textureMap: Map<TextureType, THREE.Texture>
@@ -175,17 +238,25 @@ export class ModelLoader {
       }
     }
 
-    // 7. All other meshes
+    // 7. All other meshes (fallback)
     this.enableShadows(child);
     return "other";
   }
 
+  /**
+   * Enable shadow casting and receiving for a mesh
+   * @param mesh - Mesh to enable shadows for
+   */
   private enableShadows(mesh: THREE.Mesh): void {
     mesh.castShadow = true;
     mesh.receiveShadow = true;
   }
 
-  // Find interactive objects by matching mesh names to InteractiveTarget enum
+  /**
+   * Find interactive objects by matching mesh names to InteractiveTarget enum
+   * @param scene - Scene to search for interactive objects
+   * @returns Map of interactive objects indexed by name
+   */
   private findInteractiveObjects(
     scene: THREE.Group
   ): Map<string, InteractiveObject> {
@@ -210,17 +281,26 @@ export class ModelLoader {
       }
     });
 
-    if (interactiveObjects.size > 0) {
-      Array.from(interactiveObjects.keys()).forEach((key) => {
-        console.log(`     - "${key}"`);
-      });
-    } else {
-      targetNames.forEach((name) => console.warn(`     - "${name}"`));
+    // Log interactive objects found (development mode)
+    if (process.env.NODE_ENV === "development") {
+      if (interactiveObjects.size > 0) {
+        console.log(`🎯 Found ${interactiveObjects.size} interactive objects:`);
+        Array.from(interactiveObjects.keys()).forEach((key) => {
+          console.log(`     - "${key}"`);
+        });
+      } else {
+        console.warn("⚠️ No interactive objects found. Expected:");
+        targetNames.forEach((name) => console.warn(`     - "${name}"`));
+      }
     }
 
     return interactiveObjects;
   }
 
+  /**
+   * Clean up resources
+   * Disposes of loaders and clears caches
+   */
   dispose(): void {
     this.textureLoader.dispose();
     if (this.dracoLoader) {

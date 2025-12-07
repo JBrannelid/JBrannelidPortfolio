@@ -1,6 +1,7 @@
 "use client";
 
 import { Lightbulb } from "lucide-react";
+import Image from "next/image";
 
 export default function AboutModalContent() {
   return (
@@ -17,11 +18,13 @@ export default function AboutModalContent() {
       <section className="mb-8 flex flex-col items-start gap-6 md:flex-row">
         {/* Profile Picture */}
         <div className="shrink-0">
-          <div className="from-sage to-moss flex h-32 w-32 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br shadow-lg">
-            <img
+          <div className="from-sage to-moss flex h-32 w-32 items-center justify-center overflow-hidden rounded-full bg-linear-to-br shadow-lg">
+            <Image
               src="/images/Profilbild1-removebg-preview.png"
               alt="Profile picture of Johannes Brannelid"
-              className="h-full w-full rounded-full object-cover"
+              width={128}
+              height={128}
+              className="rounded-full object-cover"
             />
           </div>
         </div>
@@ -50,9 +53,9 @@ export default function AboutModalContent() {
           My Design Philosophy
         </h3>
         <p className="text-slate leading-relaxed italic">
-          "Guided by a Scandinavian design philosophy, my work is minimalist,
-          scalable and functional. Designed to deliver elegant solutions
-          regardless of project size"
+          &quot;Guided by a Scandinavian design philosophy, my work is
+          minimalist, scalable and functional. Designed to deliver elegant
+          solutions regardless of project size&quot;
         </p>
       </section>
 

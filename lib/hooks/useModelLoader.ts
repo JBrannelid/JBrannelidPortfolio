@@ -1,5 +1,5 @@
 // React hook for loading and managing the 3D model lifecycle
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import * as THREE from "three";
 import { ModelLoader } from "../three/loaders/ModelLoader";
 import { ModelConfig, LoadedModel, TextureType } from "../types/scene.types";
@@ -55,31 +55,46 @@ const MODEL_CONFIG: ModelConfig = {
   },
 };
 
+/**
+ * Custom hook for loading and managing 3D model lifecycle
+ * Handles model loading, progress tracking, and proper cleanup
+ *
+ * @param scene - Three.js scene to add the model to
+ * @returns Object containing model, loading state, error, and progress
+ */
 export function useModelLoader(
-  scene: THREE.Scene | null,
-  modelPath: string
+  scene: THREE.Scene | null
 ): UseModelLoaderResult {
   const [model, setModel] = useState<LoadedModel | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [progress, setProgress] = useState(0);
 
+  // Use ref to store current model for cleanup without dependency issues
+  const modelRef = useRef<LoadedModel | null>(null);
+
   useEffect(() => {
     if (!scene) return;
+
     let isMounted = true;
     let modelLoader: ModelLoader | null = null;
 
     // Create loading manager to track progress
     const loadingManager = new THREE.LoadingManager();
-    loadingManager.onProgress = (url, itemsLoaded, itemsTotal) => {
+
+    loadingManager.onProgress = (_url, itemsLoaded, itemsTotal) => {
       const progressPercent = (itemsLoaded / itemsTotal) * 100;
-      setProgress(progressPercent);
+      if (isMounted) {
+        setProgress(progressPercent);
+      }
     };
+
     loadingManager.onLoad = () => {
-      console.log("All assets loaded successfully");
+      console.log("✅ All assets loaded successfully");
     };
+
     loadingManager.onError = (url) => {
-      console.error(`Error loading: ${url}`);
+      console.error(`❌ Error loading asset: ${url}`);
     };
 
     // Load the model
@@ -95,15 +110,18 @@ export function useModelLoader(
           // Add the model to the scene
           scene.add(loadedModel.scene);
 
+          // Update both state and ref
           setModel(loadedModel);
+          modelRef.current = loadedModel;
           setIsLoading(false);
           setProgress(100);
         }
       } catch (err) {
         if (isMounted) {
-          const error =
+          const modelError =
             err instanceof Error ? err : new Error("Failed to load model");
-          setError(error);
+          console.error("Model loading error:", modelError);
+          setError(modelError);
           setIsLoading(false);
         }
       }
@@ -111,33 +129,42 @@ export function useModelLoader(
 
     loadModel();
 
-    // Cleanup
+    // Cleanup function
     return () => {
       isMounted = false;
 
+      // Use ref to access current model (avoids stale closure)
+      const currentModel = modelRef.current;
+
       // Remove model from scene
-      if (model?.scene && scene) {
-        scene.remove(model.scene);
+      if (currentModel?.scene && scene) {
+        scene.remove(currentModel.scene);
       }
 
-      // Dispose of model resources
+      // Dispose of model loader resources
       if (modelLoader) {
         modelLoader.dispose();
       }
 
-      // Dispose of model meshes and materials
-      if (model?.scene) {
-        model.scene.traverse((child) => {
+      // Dispose of model meshes and materials to prevent memory leaks
+      if (currentModel?.scene) {
+        currentModel.scene.traverse((child) => {
           if (child instanceof THREE.Mesh) {
-            child.geometry.dispose();
+            // Dispose geometry
+            child.geometry?.dispose();
+
+            // Dispose materials
             if (Array.isArray(child.material)) {
               child.material.forEach((material) => material.dispose());
-            } else {
+            } else if (child.material) {
               child.material.dispose();
             }
           }
         });
       }
+
+      // Clear ref
+      modelRef.current = null;
     };
   }, [scene]); // Only re-run if scene changes
 

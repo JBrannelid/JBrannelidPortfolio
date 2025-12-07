@@ -1,13 +1,8 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import { Mail } from "lucide-react";
-import { LoaderCircle } from "lucide-react";
-import { MapPin } from "lucide-react";
-import { Linkedin } from "lucide-react";
-import { Github } from "lucide-react";
-import { CircleCheckBig } from "lucide-react";
-import { CircleAlert } from "lucide-react";
+import { Mail, LoaderCircle, MapPin, Linkedin, Github } from "lucide-react";
+import { useToasts } from "@/lib/hooks/useToasts";
 
 export default function ContactModalContent() {
   const [formData, setFormData] = useState({
@@ -18,9 +13,16 @@ export default function ContactModalContent() {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<
-    "idle" | "success" | "error"
-  >("idle");
+  const [submitState, setSubmitState] = useState<{
+    errors?: { form?: string[] };
+    success?: boolean;
+  }>();
+
+  /* Use existing toast hook for notifications */
+  useToasts(submitState, {
+    successMessage: "Thank you for your message! I'll get back to you soon.",
+    duration: 5000,
+  });
 
   /* Handle form input changes */
   const handleChange = (
@@ -33,31 +35,39 @@ export default function ContactModalContent() {
     }));
   };
 
-  /* Handle form submission */
+  /* Handle Netlify form submission */
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setSubmitState(undefined);
 
     try {
-      // TODO: Replace with API endpoint
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const formBody = new URLSearchParams({
+        "form-name": "contact",
+        ...formData,
+      }).toString();
 
-      setSubmitStatus("success");
+      const response = await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formBody,
+      });
+
+      if (!response.ok) {
+        throw new Error("Form submission failed");
+      }
+
+      setSubmitState({ success: true });
       setFormData({ name: "", email: "", subject: "", message: "" });
-
-      // Reset success message after 5 seconds
-      setTimeout(() => {
-        setSubmitStatus("idle");
-      }, 5000);
     } catch (error) {
       console.error("Form submission error:", error);
-      setSubmitStatus("error");
-
-      // Reset error message after 5 seconds
-      setTimeout(() => {
-        setSubmitStatus("idle");
-      }, 5000);
+      setSubmitState({
+        errors: {
+          form: [
+            "Something went wrong. Please try again or contact me directly via email.",
+          ],
+        },
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -65,6 +75,14 @@ export default function ContactModalContent() {
 
   return (
     <div className="p-8 md:p-12">
+      {/* Hidden form for Netlify detection (SSR/build-time) */}
+      <form name="contact" data-netlify="true" hidden>
+        <input type="text" name="name" />
+        <input type="email" name="email" />
+        <input type="text" name="subject" />
+        <textarea name="message"></textarea>
+      </form>
+
       {/* Header */}
       <div className="mb-8">
         <h2 id="modal-title" className="text-soft-black mb-2 font-light">
@@ -76,8 +94,11 @@ export default function ContactModalContent() {
         </p>
       </div>
 
-      {/* Contact Form */}
+      {/* Contact Form - Netlify enabled */}
       <form onSubmit={handleSubmit} className="mb-8 space-y-6">
+        {/* Hidden input to identify form for Netlify */}
+        <input type="hidden" name="form-name" value="contact" />
+
         {/* Name Input */}
         <div>
           <label
@@ -178,29 +199,6 @@ export default function ContactModalContent() {
             )}
           </button>
         </div>
-
-        {/* Success Message */}
-        {submitStatus === "success" && (
-          <div className="bg-sage/20 animate-fade-in rounded-lg p-4">
-            <div className="flex items-center gap-3">
-              <CircleCheckBig className="text-moss size-6 shrink-0" />
-              <p className="text-charcoal">Thank you kindly for your message</p>
-            </div>
-          </div>
-        )}
-
-        {/* Error Message */}
-        {submitStatus === "success" && (
-          <div className="bg-error/13 animate-fade-in rounded-lg p-4">
-            <div className="flex items-center gap-3">
-              <CircleAlert className="text-error size-6 shrink-0" />
-              <p className="text-charcoal">
-                Oops something went wrong. Please try again or contact me
-                directly
-              </p>
-            </div>
-          </div>
-        )}
       </form>
 
       {/* Divider */}

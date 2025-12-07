@@ -32,9 +32,6 @@ import Navigation from "@/components/Navigation";
 import { useModalManager } from "@/lib/hooks/useModalManager";
 
 // TYPES AND CONSTANTS
-interface ExperienceProps {
-  modelPath?: string;
-}
 
 /* Mapping from interactive targets to modal types
  * Used for routing click events to appropriate modal content */
@@ -56,9 +53,7 @@ interface ThreeRefs {
 }
 
 // MAIN COMPONENT
-export default function Experience({
-  modelPath = "/models/scene.glb",
-}: ExperienceProps) {
+export default function Experience() {
   // Three.js instance container - holds all core objects
   const threeRefs = useRef<ThreeRefs | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -85,10 +80,7 @@ export default function Experience({
   const controlsRef = isSceneReady ? threeRefs.current?.controls || null : null;
 
   // Load 3D model and extract interactive objects
-  const { model, isLoading, error, progress } = useModelLoader(
-    sceneRef,
-    modelPath
-  );
+  const { model, isLoading, error, progress } = useModelLoader(sceneRef);
 
   // THREE.JS SETUP - Initialize scene, camera, renderer, controls
   useEffect(() => {
@@ -172,7 +164,7 @@ export default function Experience({
   useEffect(() => {
     if (!isViewingScreen) return;
 
-    const handleKeyPress = (e: KeyboardEvent) => {
+    const handleKeyPress = () => {
       // Accept ANY key press to exit screen view
       handleEscapeScreenView();
     };
@@ -472,11 +464,7 @@ export default function Experience({
 
       {/* Modal System - About, Contact, CV */}
       {currentModal && ModalContentComponent && (
-        <Modal
-          type={currentModal}
-          isOpen={isModalOpen(currentModal)}
-          onClose={closeModal}
-        >
+        <Modal isOpen={isModalOpen(currentModal)} onClose={closeModal}>
           <ModalContentComponent />
         </Modal>
       )}

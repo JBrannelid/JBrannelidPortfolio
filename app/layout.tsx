@@ -126,7 +126,7 @@ export default function RootLayout({
           }}
         />
 
-        <Experience modelPath="/Room_Portfolio.glb" />
+        <Experience />
         {children}
       </body>
     </html>
