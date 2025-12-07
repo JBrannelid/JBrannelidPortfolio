@@ -1,6 +1,7 @@
 "use client";
 
 import { Github, Linkedin } from "lucide-react";
+import { SOCIAL_LINKS } from "@/lib/constants";
 
 export default function CVModalContent() {
   return (
@@ -190,7 +191,7 @@ export default function CVModalContent() {
         <div className="flex justify-center gap-3">
           {/* LinkedIn */}
           <a
-            href="https://www.linkedin.com/in/johannes-brannelid/"
+            href={SOCIAL_LINKS.linkedin}
             target="_blank"
             rel="noopener noreferrer"
             className="bg-charcoal text-warm-white! ease flex transform items-center gap-2 rounded-lg px-4 py-2 transition duration-600 hover:scale-105 hover:opacity-90"
@@ -201,7 +202,7 @@ export default function CVModalContent() {
 
           {/* GitHub */}
           <a
-            href="https://github.com/JBrannelid"
+            href={SOCIAL_LINKS.github}
             target="_blank"
             rel="noopener noreferrer"
             className="bg-charcoal text-warm-white! ease flex transform items-center gap-2 rounded-lg px-4 py-2 transition duration-600 hover:scale-105 hover:opacity-90"

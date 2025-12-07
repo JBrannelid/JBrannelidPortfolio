@@ -25,8 +25,8 @@ export const DEFAULT_SCENE_CONFIG: SceneConfig = {
     mobile: {
       position: new THREE.Vector3(
         20.0, // Centered X (middle between corners)
-        16.0, // High up to see from above
-        35.0 // FAR BACK to see entire room width
+        15.0, // High up to see from above
+        30.0 // FAR BACK to see entire room width
       ),
       target: new THREE.Vector3(
         0.0, // Look at center of room
@@ -97,12 +97,12 @@ export class SceneSetup {
     // Different zoom settings for mobile vs desktop
     if (isMobile) {
       // MOBILE: Can zoom IN, but NOT OUT from start position
-      controls.minDistance = 10; // Can zoom IN to 20 units
-      controls.maxDistance = 35; // LOCKED at 35 (start position) - can't zoom OUT
+      controls.minDistance = 5; // Can zoom IN to 20 units
+      controls.maxDistance = 25; // LOCKED at 35 (start position) - can't zoom OUT
       controls.enabled = true;
     } else {
       // DESKTOP: Can zoom IN, but NOT OUT from start position
-      controls.minDistance = 5;
+      controls.minDistance = 2;
       controls.maxDistance = 18;
     }
 

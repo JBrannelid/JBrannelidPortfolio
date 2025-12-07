@@ -3,29 +3,17 @@
 import { useEffect, useRef, useCallback } from "react";
 import gsap from "gsap";
 import { X } from "lucide-react";
+import { ModalProps } from "@/lib/types";
+import { MODAL_ANIMATION_CONFIG } from "@/lib/constants";
 
-/**
- * Reusable Modal Component
- * Generic modal with GSAP animations for smooth open/close transitions
- *
- * Child components: AboutModalContent, ContactModalContent, CVModalContent
- */
-
-interface ModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  children?: React.ReactNode;
-}
-
+/* Reusable Modal Component
+ * Child components: AboutModalContent, ContactModalContent, CVModalContent */
 export default function Modal({ isOpen, onClose, children }: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  /**
-   * Animate modal open/close with GSAP
-   * Handles smooth transitions and body scroll management
-   */
+  /* Animate modal open/close with GSAP */
   useEffect(() => {
     if (!modalRef.current || !overlayRef.current || !contentRef.current) return;
 
@@ -41,21 +29,25 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
         .fromTo(
           overlayRef.current,
           { opacity: 0 },
-          { opacity: 1, duration: 0.3, ease: "power2.out" }
+          {
+            opacity: 1,
+            duration: MODAL_ANIMATION_CONFIG.overlay.duration,
+            ease: MODAL_ANIMATION_CONFIG.overlay.ease,
+          }
         )
         .fromTo(
           contentRef.current,
           {
             opacity: 0,
-            scale: 0.8,
-            y: 30,
+            scale: MODAL_ANIMATION_CONFIG.content.scale.from,
+            y: MODAL_ANIMATION_CONFIG.content.y.from,
           },
           {
             opacity: 1,
-            scale: 1,
-            y: 0,
-            duration: 0.5,
-            ease: "back.out(1.7)",
+            scale: MODAL_ANIMATION_CONFIG.content.scale.to,
+            y: MODAL_ANIMATION_CONFIG.content.y.to,
+            duration: MODAL_ANIMATION_CONFIG.content.duration,
+            ease: MODAL_ANIMATION_CONFIG.content.ease,
           },
           "-=0.2"
         );
@@ -69,17 +61,17 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
       timeline
         .to(contentRef.current, {
           opacity: 0,
-          scale: 0.8,
+          scale: MODAL_ANIMATION_CONFIG.content.scale.from,
           y: 20,
-          duration: 0.3,
-          ease: "power2.in",
+          duration: MODAL_ANIMATION_CONFIG.close.duration,
+          ease: MODAL_ANIMATION_CONFIG.close.ease,
         })
         .to(
           overlayRef.current,
           {
             opacity: 0,
             duration: 0.2,
-            ease: "power2.in",
+            ease: MODAL_ANIMATION_CONFIG.close.ease,
           },
           "-=0.1"
         )
@@ -87,10 +79,7 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
     }
   }, [isOpen]);
 
-  /**
-   * Handle escape key press - close modal
-   * Memoized to prevent unnecessary re-creation
-   */
+  /* Handle escape key press - close modal */
   const handleEscape = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === "Escape" && isOpen) {
@@ -105,9 +94,7 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
     return () => window.removeEventListener("keydown", handleEscape);
   }, [handleEscape]);
 
-  /**
-   * Handle overlay click (close modal when clicking outside)
-   */
+  /* Handle overlay click (close modal when clicking outside) */
   const handleOverlayClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       onClose();

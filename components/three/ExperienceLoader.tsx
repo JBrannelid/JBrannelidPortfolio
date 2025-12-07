@@ -3,14 +3,14 @@
 import { useState, useEffect, useRef } from "react";
 import gsap from "gsap";
 import { useToasts } from "@/lib/hooks/useToasts";
-import { FingerprintPattern, Mouse, MousePointer2 } from "lucide-react";
-import { ArrowBigRight } from "lucide-react";
-
-interface ExperienceLoaderProps {
-  isLoading: boolean;
-  error: Error | null;
-  progress: number;
-}
+import {
+  FingerprintPattern,
+  Mouse,
+  MousePointer2,
+  ArrowBigRight,
+} from "lucide-react";
+import { ExperienceLoaderProps } from "@/lib/types";
+import { LOADER_MESSAGES, LOADER_ANIMATION_CONFIG } from "@/lib/constants";
 
 /* ExperienceLoader Component
  * A loading overlay for the 3D experience with progress bar and enter button */
@@ -60,9 +60,9 @@ export default function ExperienceLoader({
   useEffect(() => {
     if (progressBarRef.current && progress > 0 && progress < 100) {
       gsap.to(progressBarRef.current, {
-        scale: 1.02,
-        duration: 0.8,
-        ease: "sine.inOut",
+        scale: LOADER_ANIMATION_CONFIG.progressBar.scale,
+        duration: LOADER_ANIMATION_CONFIG.progressBar.duration,
+        ease: LOADER_ANIMATION_CONFIG.progressBar.ease,
         yoyo: true,
         repeat: -1,
       });
@@ -75,10 +75,10 @@ export default function ExperienceLoader({
       // Fade out loading text first
       if (loadingTextRef.current) {
         gsap.to(loadingTextRef.current, {
-          opacity: 0,
-          y: -10,
-          duration: 0.3,
-          ease: "power2.in",
+          opacity: LOADER_ANIMATION_CONFIG.loadingText.fadeOut.opacity,
+          y: LOADER_ANIMATION_CONFIG.loadingText.fadeOut.y,
+          duration: LOADER_ANIMATION_CONFIG.loadingText.fadeOut.duration,
+          ease: LOADER_ANIMATION_CONFIG.loadingText.fadeOut.ease,
           onComplete: () => {
             setShowEnterButton(true);
           },
@@ -93,16 +93,16 @@ export default function ExperienceLoader({
       gsap.fromTo(
         enterSectionRef.current,
         {
-          opacity: 0,
-          y: 30,
-          scale: 0.95,
+          opacity: LOADER_ANIMATION_CONFIG.enterSection.fadeIn.from.opacity,
+          y: LOADER_ANIMATION_CONFIG.enterSection.fadeIn.from.y,
+          scale: LOADER_ANIMATION_CONFIG.enterSection.fadeIn.from.scale,
         },
         {
-          opacity: 1,
-          y: 0,
-          scale: 1,
-          duration: 0.8,
-          ease: "back.out(1.4)",
+          opacity: LOADER_ANIMATION_CONFIG.enterSection.fadeIn.to.opacity,
+          y: LOADER_ANIMATION_CONFIG.enterSection.fadeIn.to.y,
+          scale: LOADER_ANIMATION_CONFIG.enterSection.fadeIn.to.scale,
+          duration: LOADER_ANIMATION_CONFIG.enterSection.fadeIn.to.duration,
+          ease: LOADER_ANIMATION_CONFIG.enterSection.fadeIn.to.ease,
         }
       );
     }
@@ -116,18 +116,18 @@ export default function ExperienceLoader({
 
     timeline
       .to(contentRef.current, {
-        opacity: 0,
-        scale: 0.95,
-        y: -30,
-        duration: 0.5,
-        ease: "power2.in",
+        opacity: LOADER_ANIMATION_CONFIG.overlayExit.content.opacity,
+        scale: LOADER_ANIMATION_CONFIG.overlayExit.content.scale,
+        y: LOADER_ANIMATION_CONFIG.overlayExit.content.y,
+        duration: LOADER_ANIMATION_CONFIG.overlayExit.content.duration,
+        ease: LOADER_ANIMATION_CONFIG.overlayExit.content.ease,
       })
       .to(
         overlayRef.current,
         {
-          opacity: 0,
-          duration: 0.6,
-          ease: "power2.inOut",
+          opacity: LOADER_ANIMATION_CONFIG.overlayExit.overlay.opacity,
+          duration: LOADER_ANIMATION_CONFIG.overlayExit.overlay.duration,
+          ease: LOADER_ANIMATION_CONFIG.overlayExit.overlay.ease,
         },
         "-=0.3"
       )
@@ -181,7 +181,7 @@ export default function ExperienceLoader({
                   style={{ width: `${progress}%` }}
                 >
                   {/* Shimmer effect on progress bar */}
-                  <div className="animate-shimmer absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+                  <div className="animate-shimmer absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent"></div>
                 </div>
               </div>
 
@@ -200,7 +200,7 @@ export default function ExperienceLoader({
                 ref={loadingTextRef}
                 className="text-moss-dark! text-center tracking-wide"
               >
-                Preparing your experience
+                {LOADER_MESSAGES.loading}
                 <span className="text-moss-dark! animate-pulse!">...</span>
               </p>
             )}
@@ -213,7 +213,7 @@ export default function ExperienceLoader({
               <div className="space-y-6 text-center">
                 <div className="space-y-2">
                   <h2 className="text-warm-white flex flex-col font-light">
-                    Ready to Explore
+                    {LOADER_MESSAGES.ready}
                   </h2>
                 </div>
 
@@ -235,7 +235,7 @@ export default function ExperienceLoader({
                   <div className="bg-soft-black/30 flex size-10 items-center justify-center rounded-full">
                     <MousePointer2 className="text-moss size-5" />
                   </div>
-                  <p className="text-slate font-light">Click & Drag</p>
+                  <p className="text-warm-white font-light">Click & Drag</p>
                 </div>
 
                 {/* Mouse Wheel */}
@@ -243,7 +243,7 @@ export default function ExperienceLoader({
                   <div className="bg-soft-black/30 flex size-10 items-center justify-center rounded-full">
                     <Mouse className="text-moss size-5" />
                   </div>
-                  <p className="text-slate font-light">Scroll to Zoom</p>
+                  <p className="text-warm-white font-light">Scroll to Zoom</p>
                 </div>
 
                 {/* Touch */}
@@ -251,7 +251,9 @@ export default function ExperienceLoader({
                   <div className="bg-soft-black/30 flex size-10 items-center justify-center rounded-full">
                     <FingerprintPattern className="text-moss size-5" />
                   </div>
-                  <p className="text-slate font-light">Touch to navigate</p>
+                  <p className="text-warm-white font-light">
+                    Touch to navigate
+                  </p>
                 </div>
               </div>
             </div>

@@ -6,6 +6,7 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { SceneSetup } from "@/lib/three/setup/SceneSetup";
+import { SceneProps } from "@/lib/types";
 
 interface ThreeRefs {
   scene: THREE.Scene;
@@ -14,16 +15,6 @@ interface ThreeRefs {
   controls: OrbitControls;
   sceneSetup: SceneSetup;
   animationFrameId: number | null;
-}
-
-interface SceneProps {
-  canvasRef: React.RefObject<HTMLCanvasElement | null>;
-  onSceneReady: (refs: {
-    scene: THREE.Scene;
-    camera: THREE.PerspectiveCamera;
-    renderer: THREE.WebGLRenderer;
-    controls: OrbitControls;
-  }) => void;
 }
 
 export default function Scene({ canvasRef, onSceneReady }: SceneProps) {

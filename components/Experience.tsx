@@ -10,13 +10,12 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 import { useModelLoader } from "@/lib/hooks/useModelLoader";
 import { useModalManager } from "@/lib/hooks/useModalManager";
 import { useCameraController } from "@/lib/hooks/useCameraController";
-import { InteractiveTarget, ModalType } from "@/lib/types/scene.types";
+import { InteractiveTarget, ModalType, ThreeSceneRefs } from "@/lib/types";
+import { MODAL_MAP, EXTERNAL_LINKS } from "@/lib/constants";
 
 import Scene from "@/components/three/Scene";
 import InteractionManager from "@/components/three/InteractionManager";
@@ -28,41 +27,14 @@ import AboutModalContent from "@/components/modals/AboutModalContent";
 import ContactModalContent from "@/components/modals/ContactModalContent";
 import CVModalContent from "@/components/modals/CVModalContent";
 
-/* Mapping from interactive targets to modal types
- * Used for routing click events to appropriate modal content */
-const MODAL_MAP: Partial<Record<InteractiveTarget, ModalType>> = {
-  [InteractiveTarget.About]: ModalType.About,
-  [InteractiveTarget.Contact]: ModalType.Contact,
-  [InteractiveTarget.CV]: ModalType.CV,
-};
-
-/* External links configuration */
-const EXTERNAL_LINKS = {
-  [InteractiveTarget.GitHub]: {
-    url: "https://github.com/JBrannelid",
-    siteName: "GitHub",
-  },
-  [InteractiveTarget.LinkedIn]: {
-    url: "https://www.linkedin.com/in/johannes-brannelid/",
-    siteName: "LinkedIn",
-  },
-};
-
 // This is the main component. Ties all together, manage states and handlers
 // This component renders from layout level
 export default function Experience() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const hasHadModalOpen = useRef(false);
 
-  // Three.js references (set when scene is ready)
-  const [sceneRefs, setSceneRefs] = useState<{
-    scene: THREE.Scene;
-    camera: THREE.PerspectiveCamera;
-    renderer: THREE.WebGLRenderer;
-    controls: OrbitControls;
-  } | null>(null);
+  const [sceneRefs, setSceneRefs] = useState<ThreeSceneRefs | null>(null);
 
-  // External link confirmation modal state
   const [externalLink, setExternalLink] = useState<{
     url: string;
     siteName: string;
@@ -88,17 +60,9 @@ export default function Experience() {
   );
 
   // Handle scene ready callback
-  const handleSceneReady = useCallback(
-    (refs: {
-      scene: THREE.Scene;
-      camera: THREE.PerspectiveCamera;
-      renderer: THREE.WebGLRenderer;
-      controls: OrbitControls;
-    }) => {
-      setSceneRefs(refs);
-    },
-    []
-  );
+  const handleSceneReady = useCallback((refs: ThreeSceneRefs) => {
+    setSceneRefs(refs);
+  }, []);
 
   // State management for tracking if any modal has been opened during session
   // Disable controls when modal or link is open

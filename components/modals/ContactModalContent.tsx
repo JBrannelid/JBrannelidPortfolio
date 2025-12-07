@@ -1,21 +1,14 @@
-/**
- * - Zod schema validation (client-side)
- * - Netlify Forms integration (SSR-compatible)
- */
+/* Zod schema validation (client-side)
+ * Netlify Forms integration (SSR-compatible) */
 
 "use client";
 
 import { useState, FormEvent } from "react";
 import { Mail, LoaderCircle, MapPin, Linkedin, Github } from "lucide-react";
 import { useToasts } from "@/lib/hooks/useToasts";
-import { contactSchema, ContactFormValues } from "@/lib/schema/contactSchema";
-
-interface FormSubmissionState {
-  errors?: Partial<Record<keyof ContactFormValues, string[]>> & {
-    form?: string[];
-  };
-  success?: boolean;
-}
+import { contactSchema } from "@/lib/schema/contactSchema";
+import { ContactFormValues, FormSubmissionState } from "@/lib/types";
+import { CONTACT_INFO, SOCIAL_LINKS } from "@/lib/constants";
 
 export default function ContactModalContent() {
   /* Form data state with strict typing */
@@ -31,7 +24,7 @@ export default function ContactModalContent() {
 
   /* Toast notifications for success/general errors */
   useToasts(submitState, {
-    successMessage: "Thank you for your message! I'll get back to you soon.",
+    successMessage: "Thank you for your message!",
     duration: 5000,
   });
 
@@ -260,7 +253,7 @@ export default function ContactModalContent() {
         <div className="space-y-3">
           {/* Email */}
           <a
-            href="mailto:J.Brannelid@icloud.com"
+            href={`mailto:${CONTACT_INFO.email}`}
             className="bg-sand/50 hover:bg-sand transition-smooth group flex items-center gap-3 rounded-lg p-3"
           >
             <div className="bg-ice flex size-10 items-center justify-center rounded-full transition-transform group-hover:scale-105">
@@ -269,7 +262,7 @@ export default function ContactModalContent() {
             <div>
               <p className="text-slate">Email</p>
               <p className="text-charcoal font-semibold">
-                J.Brannelid@icloud.com
+                {CONTACT_INFO.email}
               </p>
             </div>
           </a>
@@ -281,7 +274,9 @@ export default function ContactModalContent() {
             </div>
             <div>
               <p className="text-slate">Location</p>
-              <p className="text-charcoal font-semibold">Stockholm, Sweden</p>
+              <p className="text-charcoal font-semibold">
+                {CONTACT_INFO.location.city}, {CONTACT_INFO.location.country}
+              </p>
             </div>
           </div>
         </div>
@@ -293,7 +288,7 @@ export default function ContactModalContent() {
         <div className="flex flex-wrap gap-3">
           {/* LinkedIn */}
           <a
-            href="https://www.linkedin.com/in/johannes-brannelid/"
+            href={SOCIAL_LINKS.linkedin}
             target="_blank"
             rel="noopener noreferrer"
             className="bg-charcoal text-warm-white! ease flex transform items-center gap-2 rounded-lg px-4 py-2 transition duration-600 hover:scale-105 hover:opacity-90"
@@ -304,7 +299,7 @@ export default function ContactModalContent() {
 
           {/* GitHub */}
           <a
-            href="https://github.com/JBrannelid"
+            href={SOCIAL_LINKS.github}
             target="_blank"
             rel="noopener noreferrer"
             className="bg-charcoal text-warm-white! ease flex transform items-center gap-2 rounded-lg px-4 py-2 transition duration-600 hover:scale-105 hover:opacity-90"

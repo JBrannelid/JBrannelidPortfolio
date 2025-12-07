@@ -7,14 +7,8 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { LogOut } from "lucide-react";
-
-interface ExternalLinkModalProps {
-  isOpen: boolean;
-  url: string;
-  siteName: string;
-  onConfirm: () => void;
-  onCancel: () => void;
-}
+import { ExternalLinkModalProps } from "@/lib/types";
+import { EXTERNAL_LINK_MODAL_ANIMATION } from "@/lib/constants";
 
 export default function ExternalLinkModal({
   isOpen,
@@ -39,17 +33,25 @@ export default function ExternalLinkModal({
         .fromTo(
           overlayRef.current,
           { opacity: 0 },
-          { opacity: 1, duration: 0.2, ease: "power2.out" }
+          {
+            opacity: 1,
+            duration: EXTERNAL_LINK_MODAL_ANIMATION.overlay.duration,
+            ease: EXTERNAL_LINK_MODAL_ANIMATION.overlay.ease,
+          }
         )
         .fromTo(
           modalRef.current,
-          { opacity: 0, scale: 0.9, y: 20 },
+          {
+            opacity: 0,
+            scale: EXTERNAL_LINK_MODAL_ANIMATION.modal.scale.from,
+            y: EXTERNAL_LINK_MODAL_ANIMATION.modal.y.from,
+          },
           {
             opacity: 1,
-            scale: 1,
-            y: 0,
-            duration: 0.3,
-            ease: "back.out(1.4)",
+            scale: EXTERNAL_LINK_MODAL_ANIMATION.modal.scale.to,
+            y: EXTERNAL_LINK_MODAL_ANIMATION.modal.y.to,
+            duration: EXTERNAL_LINK_MODAL_ANIMATION.modal.duration,
+            ease: EXTERNAL_LINK_MODAL_ANIMATION.modal.ease,
           },
           "-=0.1"
         );
@@ -60,17 +62,17 @@ export default function ExternalLinkModal({
       timeline
         .to(modalRef.current, {
           opacity: 0,
-          scale: 0.9,
+          scale: EXTERNAL_LINK_MODAL_ANIMATION.modal.scale.from,
           y: 10,
-          duration: 0.2,
-          ease: "power2.in",
+          duration: EXTERNAL_LINK_MODAL_ANIMATION.close.duration,
+          ease: EXTERNAL_LINK_MODAL_ANIMATION.close.ease,
         })
         .to(
           overlayRef.current,
           {
             opacity: 0,
             duration: 0.15,
-            ease: "power2.in",
+            ease: EXTERNAL_LINK_MODAL_ANIMATION.close.ease,
           },
           "-=0.1"
         )

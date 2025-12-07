@@ -18,13 +18,13 @@ export default function AboutModalContent() {
       <section className="mb-8 flex flex-col items-start gap-6 md:flex-row">
         {/* Profile Picture */}
         <div className="shrink-0">
-          <div className="from-sage to-moss flex h-32 w-32 items-center justify-center overflow-hidden rounded-full bg-linear-to-br shadow-lg">
+          <div className="from-sage to-moss relative flex h-32 w-32 items-center justify-center overflow-hidden rounded-full bg-linear-to-br shadow-lg">
             <Image
               src="/images/Profilbild1-removebg-preview.png"
               alt="Profile picture of Johannes Brannelid"
-              width={128}
-              height={128}
+              fill
               className="rounded-full object-cover"
+              sizes="128px"
             />
           </div>
         </div>

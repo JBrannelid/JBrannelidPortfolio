@@ -3,21 +3,7 @@
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { X } from "lucide-react";
-
-/* Generic state interface for form validation results */
-interface GenericState {
-  errors?: {
-    [key: string]: string[] | undefined;
-    form?: string[];
-  };
-  success?: boolean;
-}
-
-/* Toast configuration options */
-interface ToastOptions {
-  successMessage?: string;
-  duration?: number;
-}
+import { GenericFormState, ToastOptions } from "@/lib/types";
 
 /** useToasts Hook
  *
@@ -26,7 +12,7 @@ interface ToastOptions {
  * - Success messages that auto-dismiss
  */
 export const useToasts = (
-  state: GenericState | undefined,
+  state: GenericFormState | undefined,
   options?: ToastOptions
 ) => {
   const { successMessage = "Success", duration = 5000 } = options || {};

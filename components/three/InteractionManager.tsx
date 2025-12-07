@@ -2,24 +2,13 @@
 "use client";
 
 import { useCallback, useRef } from "react";
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { useInteractiveObjects } from "@/lib/hooks/useInteractiveObjects";
 import { useGSAPAnimations } from "@/lib/hooks/useGSAPAnimations";
 import {
   InteractiveObject,
   InteractiveTarget,
-  LoadedModel,
-} from "@/lib/types/scene.types";
-
-interface InteractionManagerProps {
-  model: LoadedModel | null;
-  camera: THREE.PerspectiveCamera | null;
-  renderer: THREE.WebGLRenderer | null;
-  scene: THREE.Scene | null;
-  controls: OrbitControls | null;
-  onObjectClick: (target: InteractiveTarget) => void;
-}
+  InteractionManagerProps,
+} from "@/lib/types";
 
 export default function InteractionManager({
   model,

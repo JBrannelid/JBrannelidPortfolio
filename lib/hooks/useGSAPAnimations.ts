@@ -3,43 +3,27 @@
 import { useEffect, useRef, useCallback } from "react";
 import gsap from "gsap";
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
-import { InteractiveTarget } from "@/lib/types/scene.types";
-import type { InteractiveObject } from "@/lib/types/scene.types";
-
-// Types
-interface UseGSAPAnimationsProps {
-  interactiveObjects: Map<string, InteractiveObject> | null;
-  scene: THREE.Scene | null;
-  camera: THREE.PerspectiveCamera | null;
-  controls: OrbitControls | null;
-}
-
-// CONSTANTS
-const BOUNCE_CONFIG = {
-  height: 0.08,
-  duration: 0.8,
-};
-
-const HOVER_CONFIG = {
-  scale: 1.05,
-  rotation: 0.05, // ~3 degrees in radians
-  duration: 0.3,
-};
-const EXCLUDED_TARGETS: InteractiveTarget[] = [
-  InteractiveTarget.TVScreen,
-  InteractiveTarget.ComputerScreen,
-];
-
-const CAMERA_ZOOM_DISTANCE = 3.5;
+import {
+  UseGSAPAnimationsProps,
+  CameraAnimationResult,
+  InteractiveObject,
+} from "@/lib/types";
+import {
+  BOUNCE_CONFIG,
+  HOVER_CONFIG,
+  HOVER_EXCLUDED_TARGETS,
+  CAMERA_ZOOM_DISTANCE,
+  CAMERA_ANIMATION_CONFIG,
+} from "@/lib/constants";
+import { InteractiveTarget } from "@/lib/types";
 
 export function useGSAPAnimations({
   interactiveObjects,
   scene,
   camera,
   controls,
-}: UseGSAPAnimationsProps) {
+}: UseGSAPAnimationsProps): CameraAnimationResult {
   // GSAP Context
   const scope = useRef<gsap.Context | null>(null);
   const contactBounceRef = useRef<gsap.core.Tween | null>(null);
@@ -155,8 +139,8 @@ export function useGSAPAnimations({
             x: cameraPosition.x,
             y: cameraPosition.y,
             z: cameraPosition.z,
-            duration: 1.2,
-            ease: "power3.inOut",
+            duration: CAMERA_ANIMATION_CONFIG.zoom.duration,
+            ease: CAMERA_ANIMATION_CONFIG.zoom.ease,
           },
           0
         ).to(
@@ -165,8 +149,8 @@ export function useGSAPAnimations({
             x: targetPosition.x,
             y: targetPosition.y,
             z: targetPosition.z,
-            duration: 1.2,
-            ease: "power3.inOut",
+            duration: CAMERA_ANIMATION_CONFIG.zoom.duration,
+            ease: CAMERA_ANIMATION_CONFIG.zoom.ease,
           },
           0
         );
@@ -205,8 +189,8 @@ export function useGSAPAnimations({
           x: targetCamPos.x,
           y: targetCamPos.y,
           z: targetCamPos.z,
-          duration: 1.0,
-          ease: "power3.inOut",
+          duration: CAMERA_ANIMATION_CONFIG.reset.duration,
+          ease: CAMERA_ANIMATION_CONFIG.reset.ease,
         },
         0
       ).to(
@@ -215,8 +199,8 @@ export function useGSAPAnimations({
           x: targetControlsPos.x,
           y: targetControlsPos.y,
           z: targetControlsPos.z,
-          duration: 1.0,
-          ease: "power3.inOut",
+          duration: CAMERA_ANIMATION_CONFIG.reset.duration,
+          ease: CAMERA_ANIMATION_CONFIG.reset.ease,
         },
         0
       );
@@ -229,8 +213,8 @@ export function useGSAPAnimations({
       if (!object || !object.mesh) return;
 
       // Check if this object should have hover effect
-      if (EXCLUDED_TARGETS.includes(object.type)) {
-        return; // No hover for screens
+      if (HOVER_EXCLUDED_TARGETS.includes(object.type)) {
+        return;
       }
 
       const mesh = object.mesh;
@@ -259,8 +243,8 @@ export function useGSAPAnimations({
       if (!object || !object.mesh) return;
 
       // Check if this object should have hover effect
-      if (EXCLUDED_TARGETS.includes(object.type)) {
-        return; // No hover for screens
+      if (HOVER_EXCLUDED_TARGETS.includes(object.type)) {
+        return; // NO hover for screens
       }
 
       const mesh = object.mesh;

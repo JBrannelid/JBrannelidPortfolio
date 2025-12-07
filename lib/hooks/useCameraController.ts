@@ -3,24 +3,19 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { InteractiveTarget, InteractiveObject } from "@/lib/types/scene.types";
+import {
+  InteractiveTarget,
+  UseCameraControllerProps,
+  UseCameraControllerResult,
+} from "@/lib/types";
 import { useGSAPAnimations } from "./useGSAPAnimations";
-
-interface UseCameraControllerProps {
-  model: { interactiveObjects: Map<string, InteractiveObject> } | null;
-  camera: THREE.PerspectiveCamera | null;
-  scene: THREE.Scene | null;
-  controls: OrbitControls | null;
-}
 
 export function useCameraController({
   model,
   camera,
   scene,
   controls,
-}: UseCameraControllerProps) {
+}: UseCameraControllerProps): UseCameraControllerResult {
   const [isViewingScreen, setIsViewingScreen] = useState(false);
   const currentViewedTarget = useRef<InteractiveTarget | null>(null);
 

@@ -3,27 +3,14 @@
 import { useEffect, useRef, useCallback } from "react";
 import gsap from "gsap";
 import { User, FileText, Mail, Github, Linkedin } from "lucide-react";
+import { NavigationProps, NavButton } from "@/lib/types";
+import {
+  NAVIGATION_ANIMATION_CONFIG,
+  NAVIGATION_BUTTON_COLORS,
+} from "@/lib/constants";
 
 /* Desktop: Right sidebar with floating buttons
  * Mobile: Top header with compact menu */
-
-export interface NavigationProps {
-  onAboutClick: () => void;
-  onCVClick: () => void;
-  onContactClick: () => void;
-  onGitHubClick: () => void;
-  onLinkedInClick: () => void;
-}
-
-interface NavButton {
-  id: string;
-  label: string;
-  icon: React.ComponentType<{ className?: string }>;
-  onClick: () => void;
-  type: "internal" | "external";
-  color: string; // Accent color for hover effects (boxShadow)
-}
-
 export default function Navigation({
   onAboutClick,
   onCVClick,
@@ -42,7 +29,7 @@ export default function Navigation({
       icon: User,
       onClick: onAboutClick,
       type: "internal",
-      color: "#71835560", // Moss/Sage
+      color: NAVIGATION_BUTTON_COLORS.moss,
     },
     {
       id: "cv",
@@ -50,7 +37,7 @@ export default function Navigation({
       icon: FileText,
       onClick: onCVClick,
       type: "internal",
-      color: "#71835560", // Moss/Sage
+      color: NAVIGATION_BUTTON_COLORS.moss,
     },
     {
       id: "contact",
@@ -58,7 +45,7 @@ export default function Navigation({
       icon: Mail,
       onClick: onContactClick,
       type: "internal",
-      color: "#71835560", // Moss/Sage
+      color: NAVIGATION_BUTTON_COLORS.moss,
     },
     {
       id: "github",
@@ -66,7 +53,7 @@ export default function Navigation({
       icon: Github,
       onClick: onGitHubClick,
       type: "external",
-      color: "#71835560", // Moss/Sage
+      color: NAVIGATION_BUTTON_COLORS.moss,
     },
     {
       id: "linkedin",
@@ -74,7 +61,7 @@ export default function Navigation({
       icon: Linkedin,
       onClick: onLinkedInClick,
       type: "external",
-      color: "#71835560", // Moss/Sage
+      color: NAVIGATION_BUTTON_COLORS.moss,
     },
   ];
 
@@ -85,12 +72,12 @@ export default function Navigation({
     const ctx = gsap.context(() => {
       // Stagger animation for buttons
       gsap.from(buttonsRef.current, {
-        x: 100,
-        opacity: 0,
-        duration: 0.6,
-        stagger: 0.1,
-        ease: "back.out(1.7)",
-        delay: 1, // Wait for loader to finish
+        x: NAVIGATION_ANIMATION_CONFIG.entrance.from.x,
+        opacity: NAVIGATION_ANIMATION_CONFIG.entrance.from.opacity,
+        duration: NAVIGATION_ANIMATION_CONFIG.entrance.to.duration,
+        stagger: NAVIGATION_ANIMATION_CONFIG.entrance.to.stagger,
+        ease: NAVIGATION_ANIMATION_CONFIG.entrance.to.ease,
+        delay: NAVIGATION_ANIMATION_CONFIG.entrance.to.delay, // Wait for loader to finish
       });
     }, sidebarRef.current);
 
@@ -104,10 +91,10 @@ export default function Navigation({
 
     // Animate scale and position on hover
     gsap.to(button, {
-      scale: 1.1,
-      x: -8,
-      duration: 0.3,
-      ease: "back.out(2)",
+      scale: NAVIGATION_ANIMATION_CONFIG.hover.scale,
+      x: NAVIGATION_ANIMATION_CONFIG.hover.x,
+      duration: NAVIGATION_ANIMATION_CONFIG.hover.duration,
+      ease: NAVIGATION_ANIMATION_CONFIG.hover.ease,
     });
   }, []);
 
@@ -117,24 +104,24 @@ export default function Navigation({
     if (!button) return;
 
     gsap.to(button, {
-      scale: 1,
-      x: 0,
-      duration: 0.3,
-      ease: "power2.out",
+      scale: NAVIGATION_ANIMATION_CONFIG.hoverOut.scale,
+      x: NAVIGATION_ANIMATION_CONFIG.hoverOut.x,
+      duration: NAVIGATION_ANIMATION_CONFIG.hoverOut.duration,
+      ease: NAVIGATION_ANIMATION_CONFIG.hoverOut.ease,
     });
   }, []);
 
-  // Click animation - memoized
+  // Click animation
   const handleClick = useCallback((index: number, onClick: () => void) => {
     const button = buttonsRef.current[index];
     if (!button) return;
 
     gsap.to(button, {
-      scale: 0.95,
-      duration: 0.1,
-      yoyo: true,
-      repeat: 1,
-      ease: "power2.inOut",
+      scale: NAVIGATION_ANIMATION_CONFIG.click.scale,
+      duration: NAVIGATION_ANIMATION_CONFIG.click.duration,
+      yoyo: NAVIGATION_ANIMATION_CONFIG.click.yoyo,
+      repeat: NAVIGATION_ANIMATION_CONFIG.click.repeat,
+      ease: NAVIGATION_ANIMATION_CONFIG.click.ease,
       onComplete: onClick,
     });
   }, []);

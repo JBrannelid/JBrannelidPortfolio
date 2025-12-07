@@ -1,16 +1,11 @@
 /* Manages raycasting, hover effects, and click handlers for interactive meshes */
 import { useEffect, useRef, useCallback } from "react";
 import * as THREE from "three";
-import { InteractiveObject, InteractiveTarget } from "../types/scene.types";
-
-// Types for hook props
-interface UseInteractiveObjectsProps {
-  camera: THREE.Camera | null;
-  renderer: THREE.WebGLRenderer | null;
-  interactiveObjects: Map<string, InteractiveObject> | null;
-  onObjectClick?: (target: InteractiveTarget) => void;
-  onObjectHover?: (target: InteractiveTarget | null) => void;
-}
+import {
+  InteractiveObject,
+  UseInteractiveObjectsProps,
+  UseInteractiveObjectsResult,
+} from "@/lib/types";
 
 export function useInteractiveObjects({
   camera,
@@ -18,7 +13,7 @@ export function useInteractiveObjects({
   interactiveObjects,
   onObjectClick,
   onObjectHover,
-}: UseInteractiveObjectsProps) {
+}: UseInteractiveObjectsProps): UseInteractiveObjectsResult {
   const raycaster = useRef(new THREE.Raycaster());
   const pointer = useRef(new THREE.Vector2());
   const currentHoveredObject = useRef<InteractiveObject | null>(null);
