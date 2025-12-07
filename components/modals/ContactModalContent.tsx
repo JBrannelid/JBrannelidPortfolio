@@ -51,6 +51,15 @@ export default function ContactModalContent() {
     }));
   };
 
+  /* Helper function to encode data for Netlify */
+  const encode = (data: any) => {
+    return Object.keys(data)
+      .map(
+        (key) => encodeURIComponent(key) + "=" + encodeURIComponent(data[key])
+      )
+      .join("&");
+  };
+
   /* Handle form submission to Netlify Forms */
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -59,43 +68,33 @@ export default function ContactModalContent() {
     const result = contactSchema.safeParse(formData);
 
     if (!result.success) {
-      // Map Zod errors
       const fieldErrors = result.error.flatten().fieldErrors;
       setSubmitState({ errors: fieldErrors });
       return;
     }
 
-    /* Submit to Netlify Forms */
     setIsSubmitting(true);
 
     try {
-      // Matches form data to the static form in /public/netlify-form.html
-      const netlifyFormData = new FormData();
-      netlifyFormData.append("form-name", "contact");
-      netlifyFormData.append("name", result.data.name);
-      netlifyFormData.append("email", result.data.email);
-      netlifyFormData.append("subject", result.data.subject);
-      netlifyFormData.append("message", result.data.message);
-
-      // Submit to Netlify Forms endpoint
+      /* VIKTIG ÄNDRING HÄR */
       const response = await fetch("/", {
         method: "POST",
-        body: netlifyFormData,
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: encode({
+          "form-name": "contact",
+          ...formData,
+        }),
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Netlify Forms error:", errorText);
         throw new Error(`Form submission failed: ${response.status}`);
       }
 
-      /* Success: Show toast and reset form */
+      /* Success */
       setSubmitState({ success: true });
       setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (error) {
       console.error("Form submission error:", error);
-
-      /* Error: Show toast notification */
       setSubmitState({
         errors: {
           form: [
