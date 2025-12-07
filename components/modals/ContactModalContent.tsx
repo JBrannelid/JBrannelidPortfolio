@@ -1,10 +1,6 @@
 /**
  * - Zod schema validation (client-side)
  * - Netlify Forms integration (SSR-compatible)
- *
- * Netlify Forms Setup:
- * - Hidden HTML form for build-time detection
- * - JavaScript fetch() for actual submission
  */
 
 "use client";
@@ -35,11 +31,11 @@ export default function ContactModalContent() {
 
   /* Toast notifications for success/general errors */
   useToasts(submitState, {
-    successMessage: "Thank you for your message!",
+    successMessage: "Thank you for your message! I'll get back to you soon.",
     duration: 5000,
   });
 
-  /* Handle input change with error clearing */
+  /* Handle input change */
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -62,39 +58,42 @@ export default function ContactModalContent() {
     }));
   };
 
-  /* Handle form submission */
+  /* Handle form submission to Netlify Forms */
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitState(undefined);
 
-    /* Step 1: Client-side validation with Zod */
     const result = contactSchema.safeParse(formData);
 
     if (!result.success) {
-      // Map Zod errors to our state structure
+      // Map Zod errors
       const fieldErrors = result.error.flatten().fieldErrors;
       setSubmitState({ errors: fieldErrors });
-      return; // Stop here, don't submit to Netlify
+      return;
     }
 
-    /* Step 2: Submit to Netlify Forms */
+    /* Submit to Netlify Forms */
     setIsSubmitting(true);
 
     try {
-      // Format data for Netlify (application/x-www-form-urlencoded)
-      const formBody = new URLSearchParams({
-        "form-name": "contact", // Must match hidden form name
-        ...result.data, // Use validated data (trimmed, lowercase email, etc.)
-      }).toString();
+      // Matches form data to the static form in /public/netlify-form.html
+      const netlifyFormData = new FormData();
+      netlifyFormData.append("form-name", "contact");
+      netlifyFormData.append("name", result.data.name);
+      netlifyFormData.append("email", result.data.email);
+      netlifyFormData.append("subject", result.data.subject);
+      netlifyFormData.append("message", result.data.message);
 
+      // Submit to Netlify Forms endpoint
       const response = await fetch("/", {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: formBody,
+        body: netlifyFormData,
       });
 
       if (!response.ok) {
-        throw new Error("Form submission failed");
+        const errorText = await response.text();
+        console.error("Netlify Forms error:", errorText);
+        throw new Error(`Form submission failed: ${response.status}`);
       }
 
       /* Success: Show toast and reset form */
@@ -118,14 +117,6 @@ export default function ContactModalContent() {
 
   return (
     <div className="p-8 md:p-12">
-      {/* NETLIFY - Hidden HTML form for build-time detection */}
-      <form name="contact" data-netlify="true" hidden>
-        <input type="text" name="name" />
-        <input type="email" name="email" />
-        <input type="text" name="subject" />
-        <textarea name="message"></textarea>
-      </form>
-
       {/* Header */}
       <div className="mb-8">
         <h2 id="modal-title" className="text-soft-black mb-2 font-light">
@@ -137,7 +128,7 @@ export default function ContactModalContent() {
         </p>
       </div>
 
-      {/* Contact Form - Netlify enabled */}
+      {/* Contact Form */}
       <form onSubmit={handleSubmit} className="mb-8 space-y-6">
         {/* Name Input */}
         <div>
