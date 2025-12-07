@@ -1,11 +1,29 @@
+/**
+ * - Zod schema validation (client-side)
+ * - Netlify Forms integration (SSR-compatible)
+ *
+ * Netlify Forms Setup:
+ * - Hidden HTML form for build-time detection
+ * - JavaScript fetch() for actual submission
+ */
+
 "use client";
 
 import { useState, FormEvent } from "react";
 import { Mail, LoaderCircle, MapPin, Linkedin, Github } from "lucide-react";
 import { useToasts } from "@/lib/hooks/useToasts";
+import { contactSchema, ContactFormValues } from "@/lib/schema/contactSchema";
+
+interface FormSubmissionState {
+  errors?: Partial<Record<keyof ContactFormValues, string[]>> & {
+    form?: string[];
+  };
+  success?: boolean;
+}
 
 export default function ContactModalContent() {
-  const [formData, setFormData] = useState({
+  /* Form data state with strict typing */
+  const [formData, setFormData] = useState<ContactFormValues>({
     name: "",
     email: "",
     subject: "",
@@ -13,38 +31,60 @@ export default function ContactModalContent() {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitState, setSubmitState] = useState<{
-    errors?: { form?: string[] };
-    success?: boolean;
-  }>();
+  const [submitState, setSubmitState] = useState<FormSubmissionState>();
 
-  /* Use existing toast hook for notifications */
+  /* Toast notifications for success/general errors */
   useToasts(submitState, {
-    successMessage: "Thank you for your message! I'll get back to you soon.",
+    successMessage: "Thank you for your message!",
     duration: 5000,
   });
 
-  /* Handle form input changes */
+  /* Handle input change with error clearing */
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
+
+    // Clear field error when user starts editing
+    if (submitState?.errors?.[name as keyof ContactFormValues]) {
+      setSubmitState((prev) => ({
+        ...prev,
+        errors: {
+          ...prev?.errors,
+          [name]: undefined,
+        },
+      }));
+    }
+
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  /* Handle Netlify form submission */
+  /* Handle form submission */
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsSubmitting(true);
     setSubmitState(undefined);
 
+    /* Step 1: Client-side validation with Zod */
+    const result = contactSchema.safeParse(formData);
+
+    if (!result.success) {
+      // Map Zod errors to our state structure
+      const fieldErrors = result.error.flatten().fieldErrors;
+      setSubmitState({ errors: fieldErrors });
+      return; // Stop here, don't submit to Netlify
+    }
+
+    /* Step 2: Submit to Netlify Forms */
+    setIsSubmitting(true);
+
     try {
+      // Format data for Netlify (application/x-www-form-urlencoded)
       const formBody = new URLSearchParams({
-        "form-name": "contact",
-        ...formData,
+        "form-name": "contact", // Must match hidden form name
+        ...result.data, // Use validated data (trimmed, lowercase email, etc.)
       }).toString();
 
       const response = await fetch("/", {
@@ -57,10 +97,13 @@ export default function ContactModalContent() {
         throw new Error("Form submission failed");
       }
 
+      /* Success: Show toast and reset form */
       setSubmitState({ success: true });
       setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (error) {
       console.error("Form submission error:", error);
+
+      /* Error: Show toast notification */
       setSubmitState({
         errors: {
           form: [
@@ -75,7 +118,7 @@ export default function ContactModalContent() {
 
   return (
     <div className="p-8 md:p-12">
-      {/* Hidden form for Netlify detection (SSR/build-time) */}
+      {/* NETLIFY - Hidden HTML form for build-time detection */}
       <form name="contact" data-netlify="true" hidden>
         <input type="text" name="name" />
         <input type="email" name="email" />
@@ -96,16 +139,13 @@ export default function ContactModalContent() {
 
       {/* Contact Form - Netlify enabled */}
       <form onSubmit={handleSubmit} className="mb-8 space-y-6">
-        {/* Hidden input to identify form for Netlify */}
-        <input type="hidden" name="form-name" value="contact" />
-
         {/* Name Input */}
         <div>
           <label
             htmlFor="name"
             className="text-charcoal mb-2 block font-medium"
           >
-            Namn<span className="text-error ml-0.5">*</span>
+            Name<span className="text-error ml-0.5">*</span>
           </label>
           <input
             type="text"
@@ -116,6 +156,10 @@ export default function ContactModalContent() {
             required
             className="input"
             disabled={isSubmitting}
+            aria-invalid={!!submitState?.errors?.name}
+            aria-describedby={
+              submitState?.errors?.name ? "name-error" : undefined
+            }
           />
         </div>
 
@@ -136,6 +180,10 @@ export default function ContactModalContent() {
             required
             className="input"
             disabled={isSubmitting}
+            aria-invalid={!!submitState?.errors?.email}
+            aria-describedby={
+              submitState?.errors?.email ? "email-error" : undefined
+            }
           />
         </div>
 
@@ -156,6 +204,10 @@ export default function ContactModalContent() {
             required
             className="input"
             disabled={isSubmitting}
+            aria-invalid={!!submitState?.errors?.subject}
+            aria-describedby={
+              submitState?.errors?.subject ? "subject-error" : undefined
+            }
           />
         </div>
 
@@ -165,7 +217,7 @@ export default function ContactModalContent() {
             htmlFor="message"
             className="text-charcoal mb-2 block font-medium"
           >
-            Text<span className="text-error ml-0.5">*</span>
+            Message<span className="text-error ml-0.5">*</span>
           </label>
           <textarea
             id="message"
@@ -176,6 +228,10 @@ export default function ContactModalContent() {
             rows={6}
             className="textarea"
             disabled={isSubmitting}
+            aria-invalid={!!submitState?.errors?.message}
+            aria-describedby={
+              submitState?.errors?.message ? "message-error" : undefined
+            }
           />
         </div>
 
@@ -185,6 +241,7 @@ export default function ContactModalContent() {
             type="submit"
             disabled={isSubmitting}
             className="btn-primary w-full disabled:cursor-not-allowed disabled:opacity-50 md:w-auto"
+            aria-busy={isSubmitting}
           >
             {isSubmitting ? (
               <>
@@ -232,7 +289,7 @@ export default function ContactModalContent() {
               <MapPin className="text-charcoal size-5" />
             </div>
             <div>
-              <p className="text-slate">Plats</p>
+              <p className="text-slate">Location</p>
               <p className="text-charcoal font-semibold">Stockholm, Sweden</p>
             </div>
           </div>
