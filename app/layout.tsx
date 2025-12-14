@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 import "./globals.css";
 import Experience from "@/components/Experience";
 import { siteConfig } from "@/lib/config/site";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,10 +16,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-/**
- * Root Layout Metadata
- * Comprehensive SEO and social sharing configuration
- */
+/* Root Layout Metadata */
 export const metadata: Metadata = {
   // Basic metadata
   title: {
@@ -128,6 +126,7 @@ export default function RootLayout({
 
         <Experience />
         {children}
+        <GoogleAnalytics gaId="G-5Z8NYGYBQP" />
       </body>
     </html>
   );
