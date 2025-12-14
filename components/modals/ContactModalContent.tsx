@@ -82,11 +82,14 @@ export default function ContactModalContent() {
         body: formBody,
       });
 
+      if (!response.ok) {
+        throw new Error(`Form submission failed: ${response.status}`);
+      }
+
       /* Success */
       setSubmitState({ success: true });
       setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (error) {
-      console.error("Form submission error:", error);
       setSubmitState({
         errors: {
           form: [
