@@ -68,28 +68,27 @@ export default function ContactModalContent() {
     setIsSubmitting(true);
 
     try {
-      const formBody = new URLSearchParams({
-        "form-name": "contact",
-        name: formData.name,
-        email: formData.email,
-        subject: formData.subject,
-        message: formData.message,
-      }).toString();
-
-      const response = await fetch("/", {
+      // Send to Netlify Function as JSON
+      const response = await fetch("/.netlify/functions/submit-form", {
         method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: formBody,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       });
 
+      console.log("Response status:", response.status);
+      console.log("Response headers:", Object.fromEntries(response.headers));
+      const result = await response.json();
+      console.log("Response body:", result);
+
       if (!response.ok) {
-        throw new Error(`Form submission failed: ${response.status}`);
+        throw new Error(result.error || "Form submission failed");
       }
 
       /* Success */
       setSubmitState({ success: true });
       setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (error) {
+      console.error("Form submission error:", error);
       setSubmitState({
         errors: {
           form: [
