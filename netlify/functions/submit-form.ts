@@ -20,7 +20,7 @@ export const handler: Handler = async (event) => {
       };
     }
 
-    // Encode for Netlify Forms
+    // Encode for Netlify Forms - use the static form page
     const formData = new URLSearchParams({
       "form-name": "contact",
       name: data.name,
@@ -29,8 +29,13 @@ export const handler: Handler = async (event) => {
       message: data.message,
     });
 
-    // Submit to Netlify Forms
-    const response = await fetch("https://jbrannelid.com/", {
+    // POST to the actual static HTML form page that Netlify knows about
+    const submissionUrl = `${event.headers.origin || "https://jbrannelid.com"}/forms.html`;
+
+    console.log("Submitting to:", submissionUrl);
+    console.log("Form data:", Object.fromEntries(formData));
+
+    const response = await fetch(submissionUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
@@ -38,7 +43,15 @@ export const handler: Handler = async (event) => {
       body: formData.toString(),
     });
 
+    console.log("Netlify response status:", response.status);
+    console.log(
+      "Netlify response headers:",
+      Object.fromEntries(response.headers)
+    );
+
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Netlify error:", errorText);
       throw new Error("Form submission failed");
     }
 
@@ -53,7 +66,10 @@ export const handler: Handler = async (event) => {
     console.error("Function error:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Internal server error" }),
+      body: JSON.stringify({
+        error: "Internal server error",
+        details: error instanceof Error ? error.message : "Unknown error",
+      }),
     };
   }
 };
