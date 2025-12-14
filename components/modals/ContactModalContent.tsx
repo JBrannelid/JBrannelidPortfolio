@@ -51,20 +51,12 @@ export default function ContactModalContent() {
     }));
   };
 
-  /* Helper function to encode data for Netlify */
-  const encode = (data: any) => {
-    return Object.keys(data)
-      .map(
-        (key) => encodeURIComponent(key) + "=" + encodeURIComponent(data[key])
-      )
-      .join("&");
-  };
-
   /* Handle form submission to Netlify Forms */
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSubmitState(undefined);
 
+    // Validate with Zod
     const result = contactSchema.safeParse(formData);
 
     if (!result.success) {
@@ -76,19 +68,19 @@ export default function ContactModalContent() {
     setIsSubmitting(true);
 
     try {
-      /* VIKTIG ÄNDRING HÄR */
+      const formBody = new URLSearchParams({
+        "form-name": "contact",
+        name: formData.name,
+        email: formData.email,
+        subject: formData.subject,
+        message: formData.message,
+      }).toString();
+
       const response = await fetch("/", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: encode({
-          "form-name": "contact",
-          ...formData,
-        }),
+        body: formBody,
       });
-
-      if (!response.ok) {
-        throw new Error(`Form submission failed: ${response.status}`);
-      }
 
       /* Success */
       setSubmitState({ success: true });
@@ -121,7 +113,25 @@ export default function ContactModalContent() {
       </div>
 
       {/* Contact Form */}
-      <form onSubmit={handleSubmit} className="mb-8 space-y-6">
+      <form
+        onSubmit={handleSubmit}
+        className="mb-8 space-y-6"
+        method="post"
+        name="contact"
+        data-netlify="true"
+        data-netlify-honeypot="bot-field"
+      >
+        {/* Hidden input required by Netlify */}
+        <input type="hidden" name="form-name" value="contact" />
+
+        {/* Honeypot for spam protection  */}
+        <p className="hidden">
+          <label>
+            Don't fill this out if you're human:
+            <input name="bot-field" />
+          </label>
+        </p>
+
         {/* Name Input */}
         <div>
           <label
