@@ -1,8 +1,9 @@
 "use client";
 
+import { X } from "lucide-react";
 import { useEffect } from "react";
 import { toast } from "react-hot-toast";
-import { X } from "lucide-react";
+
 import { GenericFormState, ToastOptions } from "@/lib/types";
 
 /** useToasts Hook

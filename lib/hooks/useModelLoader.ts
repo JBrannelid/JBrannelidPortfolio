@@ -1,8 +1,9 @@
 // React hook for loading and managing the 3D model lifecycle
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+
 import { ModelLoader } from "../three/loaders/ModelLoader";
-import { ModelConfig, LoadedModel, TextureType } from "../types/scene.types";
+import { LoadedModel, ModelConfig, TextureType } from "../types/scene.types";
 
 interface UseModelLoaderResult {
   model: LoadedModel | null;
@@ -78,14 +79,18 @@ export function useModelLoader(
 
     let isMounted = true;
     let modelLoader: ModelLoader | null = null;
+    // LoadingManager's itemsTotal can still grow mid-load; this floor keeps
+    // the displayed percentage from ever visibly dropping.
+    let maxProgress = 0;
 
     // Create loading manager to track progress
     const loadingManager = new THREE.LoadingManager();
 
     loadingManager.onProgress = (_url, itemsLoaded, itemsTotal) => {
       const progressPercent = (itemsLoaded / itemsTotal) * 100;
+      maxProgress = Math.max(maxProgress, progressPercent);
       if (isMounted) {
-        setProgress(progressPercent);
+        setProgress(maxProgress);
       }
     };
 

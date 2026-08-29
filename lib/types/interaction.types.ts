@@ -4,12 +4,13 @@
  */
 
 import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+
 import {
   InteractiveObject,
   InteractiveTarget,
   LoadedModel,
 } from "./scene.types";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 export interface UseInteractiveObjectsProps {
   camera: THREE.Camera | null;

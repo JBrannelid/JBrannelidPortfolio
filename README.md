@@ -13,7 +13,7 @@ The project emphasizes **Scandinavian design principles**: minimalist aesthetics
 - **🎮 Interactive 3D Room** - Fully explorable isometric space with clickable objects
 - **📱 Responsive Design** - Seamless experience across desktop, tablet, and mobile
 - **🎨 Aesthetics** - Clean, minimalist design with natural color tones
-- **✉️ Integrated Contact Form** - Netlify Forms with client-side Zod validation
+- **✉️ Integrated Contact Form** - Netlify Forms with Zod validation on both client and server
 - **🎬 Smooth Animations** - GSAP-powered transitions and hover effects
 - **⚡ Optimized Performance** - Compressed DRACO models and WebP textures
 - **♿ Accessibility First** - Semantic HTML structure
@@ -56,6 +56,10 @@ Fullstack .NET Developer
 
 - **[Lucide React](https://lucide.dev/guide/packages/lucide-react)** - Icon library used throughout the UI
 - **[SVG Repo](https://www.svgrepo.com/)** - High-quality SVG resources
+
+## Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md) for release history.
 
 ## License
 

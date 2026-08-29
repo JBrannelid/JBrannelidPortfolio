@@ -1,9 +1,9 @@
+// The 3D experience itself is mounted globally in RootLayout (app/layout.tsx)
+// since this is a single-route site. This element only reserves a layer for
+// future page-level UI on top of the canvas; pointerEvents stays "none" so
+// clicks pass through to the 3D scene beneath it.
 export default function Home() {
   return (
-    <main style={{ position: "relative", zIndex: 1, pointerEvents: "none" }}>
-      {/* Här kan du lägga till UI-element ovanpå 3D-scenen */}
-      {/* Till exempel: */}
-      {/* <h1>Välkommen</h1> */}
-    </main>
+    <main style={{ position: "relative", zIndex: 1, pointerEvents: "none" }} />
   );
 }

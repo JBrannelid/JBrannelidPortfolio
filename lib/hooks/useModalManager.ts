@@ -1,5 +1,6 @@
 /* Manages modal state across the application */
 import { useCallback, useState } from "react";
+
 import { ModalType } from "../types/scene.types";
 
 export function useModalManager() {

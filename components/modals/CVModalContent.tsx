@@ -1,6 +1,7 @@
 "use client";
 
 import { Github, Linkedin } from "lucide-react";
+
 import { SOCIAL_LINKS } from "@/lib/constants";
 
 export default function CVModalContent() {
@@ -19,10 +20,14 @@ export default function CVModalContent() {
       <article className="mb-8">
         <h3 className="text-charcoal mb-3">Biography</h3>
         <p className="text-slate leading-relaxed">
-          I come from a background in healthcare, leadership and sales. As my
-          interest in coding grew, I decided to join a full-time .NET developer
-          program. Today, I focus on building practical and well-structured
-          solutions using Microsoft .NET Core and React.
+          I come from a background in healthcare, leadership and sales. Today, I
+          work as a Software Developer at Alma Health AB, where I develop and
+          maintain solutions across the .NET ecosystem. My work includes backend
+          development, SQL Server, external API integrations and improving
+          existing systems. <br />
+          <br />
+          Outside of work, I spend time exploring modern frontend development
+          and building personal projects with technologies such as Next.js.
         </p>
       </article>
 
@@ -30,11 +35,31 @@ export default function CVModalContent() {
       <section className="mb-8">
         <h3 className="text-charcoal mb-4">Work Experience</h3>
         <div className="space-y-6">
+          {/* Experience Item 0 - Current Role */}
+          <div className="border-moss border-l-2 pl-4">
+            <div className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
+              <h5 className="text-charcoal">Software Developer</h5>
+              <span className="text-slate text-sm">May 2026 - Ongoing</span>
+            </div>
+            <p className="text-slate mb-2 text-sm font-medium">
+              Alma Health AB
+            </p>
+            <ul className="text-slate list-inside list-disc space-y-1 text-sm">
+              <li>Full-time (100%)</li>
+              <li>
+                Development and maintenance of applications using VB.NET,
+                WinForms, .NET Framework and .NET 7
+              </li>
+              <li>SQL Server and T-SQL development</li>
+              <li>Data mapping and integrations with external APIs</li>
+            </ul>
+          </div>
+
           {/* Experience Item 1 */}
           <div className="border-moss border-l-2 pl-4">
             <div className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
               <h5 className="text-charcoal">Radiographer</h5>
-              <span className="text-slate text-sm">Ongoing</span>
+              <span className="text-slate text-sm">Aug 2026</span>
             </div>
             <p className="text-slate mb-2 text-sm font-medium">
               Stockholm - University Hospital
@@ -150,8 +175,9 @@ export default function CVModalContent() {
           <div>
             <h5 className="text-charcoal mb-2 tracking-wide">Backend</h5>
             <ul className="text-slate space-y-1">
-              <li>.NET Core </li>
+              <li>.NET Core / .NET Framework</li>
               <li>REST APIs</li>
+              <li>SQL Server / T-SQL</li>
             </ul>
           </div>
           <div>

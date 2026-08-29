@@ -1,21 +1,21 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
 import gsap from "gsap";
+import { useCallback, useEffect, useRef } from "react";
 import * as THREE from "three";
 
 import {
-  UseGSAPAnimationsProps,
-  CameraAnimationResult,
-  InteractiveObject,
-} from "@/lib/types";
-import {
   BOUNCE_CONFIG,
+  CAMERA_ANIMATION_CONFIG,
+  CAMERA_ZOOM_DISTANCE,
   HOVER_CONFIG,
   HOVER_EXCLUDED_TARGETS,
-  CAMERA_ZOOM_DISTANCE,
-  CAMERA_ANIMATION_CONFIG,
 } from "@/lib/constants";
+import {
+  CameraAnimationResult,
+  InteractiveObject,
+  UseGSAPAnimationsProps,
+} from "@/lib/types";
 import { InteractiveTarget } from "@/lib/types";
 
 export function useGSAPAnimations({

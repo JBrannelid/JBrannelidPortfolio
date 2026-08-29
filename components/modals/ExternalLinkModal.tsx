@@ -4,11 +4,12 @@
 
 "use client";
 
-import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { LogOut } from "lucide-react";
-import { ExternalLinkModalProps } from "@/lib/types";
+import { useEffect, useRef } from "react";
+
 import { EXTERNAL_LINK_MODAL_ANIMATION } from "@/lib/constants";
+import { ExternalLinkModalProps } from "@/lib/types";
 
 export default function ExternalLinkModal({
   isOpen,

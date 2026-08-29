@@ -53,63 +53,65 @@
 }
 
 /* BASE STYLES */
-* {
-  border-color: var(--color-stone);
-}
+@layer base {
+  * {
+    border-color: var(--color-stone);
+  }
 
-html {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-body {
-  background-color: var(--color-warm-white);
-  color: var(--color-soft-black);
-  font-family: var(--font-sans);
-  line-height: 1.6;
-}
+  body {
+    background-color: var(--color-warm-white);
+    color: var(--color-soft-black);
+    font-family: var(--font-sans);
+    line-height: 1.6;
+  }
 
-/* Typography */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-sans);
-  font-weight: 600;
-  color: var(--color-charcoal);
-  line-height: 1.2;
-}
+  /* Typography */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    color: var(--color-charcoal);
+    line-height: 1.2;
+  }
 
-h1,
-h2,
-h3,
-h4 {
-  font-size: clamp(1.1rem, 2.1vw, 1.5rem);
-}
-h5,
-h6 {
-  font-size: clamp(0.8rem, 1.8vw, 1.3rem);
-}
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-size: clamp(1.1rem, 2.1vw, 1.5rem);
+  }
+  h5,
+  h6 {
+    font-size: clamp(0.8rem, 1.8vw, 1.3rem);
+  }
 
-p,
-span,
-li {
-  font-size: clamp(0.875rem, 1.25vw, 1rem);
-  color: var(--color-slate);
-  line-height: 1.75;
-}
+  p,
+  span,
+  li {
+    font-size: clamp(0.875rem, 1.25vw, 1rem);
+    color: var(--color-slate);
+    line-height: 1.75;
+  }
 
-a {
-  font-size: clamp(0.8rem, 1.1vw, 0.9rem);
-  color: var(--color-moss);
-  text-decoration: none;
-  transition: color 200ms ease-in-out;
-}
+  a {
+    font-size: clamp(0.8rem, 1.1vw, 0.9rem);
+    color: var(--color-moss);
+    text-decoration: none;
+    transition: color 200ms ease-in-out;
+  }
 
-a:hover {
-  color: var(--color-charcoal);
+  a:hover {
+    color: var(--color-charcoal);
+  }
 }
 
 /* Focus States - Accessible */
@@ -467,5 +469,15 @@ textarea:focus-visible {
       linear-gradient(var(--color-warm-white) 1px, transparent 1px),
       linear-gradient(90deg, var(--color-warm-white) 1px, transparent 1px);
     background-size: 50px 50px;
+  }
+
+  /* Subtle paper-grain texture for a warmer, less flat Scandinavian feel */
+  .bg-grain {
+    position: absolute;
+    inset: 0;
+    opacity: 0.04;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
   }
 }

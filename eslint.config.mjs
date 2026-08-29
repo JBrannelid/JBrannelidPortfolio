@@ -1,4 +1,5 @@
 import { FlatCompat } from "@eslint/eslintrc";
+import simpleImportSort from "eslint-plugin-simple-import-sort";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -20,9 +21,14 @@ const eslintConfig = [
 
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
+    plugins: {
+      "simple-import-sort": simpleImportSort,
+    },
     rules: {
       "@next/next/no-html-link-for-pages": "off",
       "react/jsx-key": "off",
+      "simple-import-sort/imports": "error",
+      "simple-import-sort/exports": "error",
     },
   },
 ];

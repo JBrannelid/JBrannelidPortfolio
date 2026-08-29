@@ -1,13 +1,14 @@
 //  No materials in GLB - we apply everything via texture uv maps
 import * as THREE from "three";
-import { GLTFLoader, GLTF } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
+import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+
 import {
-  ModelConfig,
-  TextureType,
+  InteractiveObject,
   InteractiveTarget,
   LoadedModel,
-  InteractiveObject,
+  ModelConfig,
+  TextureType,
 } from "../../types/scene.types";
 import { TextureLoaderUtility } from "./TextureLoader";
 
@@ -21,11 +22,14 @@ export class ModelLoader {
   constructor(loadingManager?: THREE.LoadingManager) {
     this.loadingManager = loadingManager;
 
-    // Initialize DRACO Loader for compressed glb room models
+    // Initialize DRACO Loader for compressed glb room models.
+    // Decoder files are self-hosted (copied from the installed three.js
+    // package's examples/jsm/libs/draco/gltf/ folder, so the version always
+    // matches DRACOLoader) instead of fetched from Google's gstatic.com CDN
+    // at runtime - avoids sending every visitor's IP to Google and removes
+    // a third-party runtime dependency.
     this.dracoLoader = new DRACOLoader(loadingManager);
-    this.dracoLoader.setDecoderPath(
-      "https://www.gstatic.com/draco/versioned/decoders/1.5.6/"
-    );
+    this.dracoLoader.setDecoderPath("/draco/");
     this.dracoLoader.preload();
 
     this.gltfLoader = new GLTFLoader(loadingManager);
@@ -37,9 +41,14 @@ export class ModelLoader {
   // Load model with textures and return scene with interactive objects
   async loadModel(config: ModelConfig): Promise<LoadedModel> {
     try {
-      // Load textures first then GLTF room model
-      const textureMap = await this.textureLoader.loadTextures(config.textures);
-      const gltf = await this.loadGLTF(config.path);
+      // Load textures and the GLTF room model concurrently. Both loaders
+      // register with the same LoadingManager, so starting them together
+      // lets it settle on the final item count immediately instead of
+      // growing mid-load (which made the progress bar jump backwards).
+      const [textureMap, gltf] = await Promise.all([
+        this.textureLoader.loadTextures(config.textures),
+        this.loadGLTF(config.path),
+      ]);
 
       // Apply materials and track statistics
       const stats = this.applyMaterialsToScene(gltf.scene, textureMap);

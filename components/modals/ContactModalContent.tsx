@@ -3,12 +3,14 @@
 
 "use client";
 
-import { useState, FormEvent } from "react";
-import { Mail, LoaderCircle, MapPin, Linkedin, Github } from "lucide-react";
+import { Github, Linkedin, LoaderCircle, Mail, MapPin } from "lucide-react";
+import { FormEvent, useState } from "react";
+import { z } from "zod";
+
+import { CONTACT_INFO, SOCIAL_LINKS } from "@/lib/constants";
 import { useToasts } from "@/lib/hooks/useToasts";
 import { contactSchema } from "@/lib/schema/contactSchema";
 import { ContactFormValues, FormSubmissionState } from "@/lib/types";
-import { CONTACT_INFO, SOCIAL_LINKS } from "@/lib/constants";
 
 export default function ContactModalContent() {
   /* Form data state with strict typing */
@@ -21,6 +23,10 @@ export default function ContactModalContent() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitState, setSubmitState] = useState<FormSubmissionState>();
+  // Honeypot: hidden field real users never fill in. Kept separate from the
+  // Zod-validated form fields and forwarded as-is so the function can drop
+  // bot submissions silently.
+  const [botField, setBotField] = useState("");
 
   /* Toast notifications for success/general errors */
   useToasts(submitState, {
@@ -60,7 +66,7 @@ export default function ContactModalContent() {
     const result = contactSchema.safeParse(formData);
 
     if (!result.success) {
-      const fieldErrors = result.error.flatten().fieldErrors;
+      const fieldErrors = z.flattenError(result.error).fieldErrors;
       setSubmitState({ errors: fieldErrors });
       return;
     }
@@ -72,13 +78,10 @@ export default function ContactModalContent() {
       const response = await fetch("/.netlify/functions/submit-form", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, botField }),
       });
 
-      console.log("Response status:", response.status);
-      console.log("Response headers:", Object.fromEntries(response.headers));
       const result = await response.json();
-      console.log("Response body:", result);
 
       if (!response.ok) {
         throw new Error(result.error || "Form submission failed");
@@ -126,11 +129,18 @@ export default function ContactModalContent() {
         {/* Hidden input required by Netlify */}
         <input type="hidden" name="form-name" value="contact" />
 
-        {/* Honeypot for spam protection  */}
+        {/* Honeypot for spam protection - value is forwarded to the
+            function via botField and dropped silently if non-empty */}
         <p className="hidden">
           <label>
-            Don't fill this out if you're human:
-            <input name="bot-field" />
+            Don&apos;t fill this out if you&apos;re human:
+            <input
+              name="bot-field"
+              value={botField}
+              onChange={(e) => setBotField(e.target.value)}
+              tabIndex={-1}
+              autoComplete="off"
+            />
           </label>
         </p>
 

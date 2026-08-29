@@ -37,11 +37,13 @@ export default function AboutModalContent() {
           <p className="text-slate mb-4 leading-relaxed">
             Hi, I am{" "}
             <span className="text-moss-dark! text-lg!">Johannes Brannelid</span>
-            . A fullstack developer in the final phase of my education, actively
-            developing my skills in both frontend and backend technologies. I
-            create intuitive and engaging digital experiences while expanding my
-            expertise in scalable backend systems and seamless frontend
-            interfaces.
+            . I started my career as a radiographer in healthcare before moving
+            into software development. Today, I work as a fullstack developer,
+            combining my experience from healthcare with a passion for building
+            software. <br />
+            <br />I enjoy working across the full stack, from creating clean and
+            intuitive interfaces to developing the backend systems and
+            integrations that make everything work together.
           </p>
         </article>
       </section>
@@ -53,9 +55,9 @@ export default function AboutModalContent() {
           My Design Philosophy
         </h3>
         <p className="text-slate leading-relaxed italic">
-          &quot;Guided by a Scandinavian design philosophy, my work is
-          minimalist, scalable and functional. Designed to deliver elegant
-          solutions regardless of project size&quot;
+          &quot;I like keeping things simple. My approach is influenced by
+          Scandinavian design: clean, functional and user-friendly, with tones
+          inspired by nature.&quot;
         </p>
       </section>
 

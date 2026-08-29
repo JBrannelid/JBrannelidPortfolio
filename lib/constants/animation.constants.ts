@@ -95,7 +95,7 @@ export const NAVIGATION_ANIMATION_CONFIG = {
 
 export const LOADER_ANIMATION_CONFIG = {
   progressBar: {
-    scale: 1.02,
+    scaleY: 1.6,
     duration: 0.8,
     ease: "sine.inOut",
   },

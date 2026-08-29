@@ -11,21 +11,20 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { useModelLoader } from "@/lib/hooks/useModelLoader";
-import { useModalManager } from "@/lib/hooks/useModalManager";
-import { useCameraController } from "@/lib/hooks/useCameraController";
-import { InteractiveTarget, ModalType, ThreeSceneRefs } from "@/lib/types";
-import { MODAL_MAP, EXTERNAL_LINKS } from "@/lib/constants";
-
-import Scene from "@/components/three/Scene";
-import InteractionManager from "@/components/three/InteractionManager";
-import ExperienceLoader from "@/components/three/ExperienceLoader";
-import Modal from "@/components/ui/Modal";
-import Navigation from "@/components/ui/Navigation";
-import ExternalLinkModal from "@/components/modals/ExternalLinkModal";
 import AboutModalContent from "@/components/modals/AboutModalContent";
 import ContactModalContent from "@/components/modals/ContactModalContent";
 import CVModalContent from "@/components/modals/CVModalContent";
+import ExternalLinkModal from "@/components/modals/ExternalLinkModal";
+import ExperienceLoader from "@/components/three/ExperienceLoader";
+import InteractionManager from "@/components/three/InteractionManager";
+import Scene from "@/components/three/Scene";
+import Modal from "@/components/ui/Modal";
+import Navigation from "@/components/ui/Navigation";
+import { EXTERNAL_LINKS, MODAL_MAP } from "@/lib/constants";
+import { useCameraController } from "@/lib/hooks/useCameraController";
+import { useModalManager } from "@/lib/hooks/useModalManager";
+import { useModelLoader } from "@/lib/hooks/useModelLoader";
+import { InteractiveTarget, ModalType, ThreeSceneRefs } from "@/lib/types";
 
 // This is the main component. Ties all together, manage states and handlers
 // This component renders from layout level
@@ -136,7 +135,10 @@ export default function Experience() {
 
   const handleExternalLinkConfirm = useCallback(() => {
     if (!externalLink) return;
-    window.open(externalLink.url, "_blank");
+    // Explicit noopener/noreferrer: window.open (unlike an <a target="_blank">
+    // click) does not get Chromium's automatic noopener default, so without
+    // this the opened tab could reach back via window.opener.
+    window.open(externalLink.url, "_blank", "noopener,noreferrer");
     setExternalLink(null);
     // Camera reset is handled by useEffect
   }, [externalLink]);

@@ -1,6 +1,7 @@
 /* Manages raycasting, hover effects, and click handlers for interactive meshes */
-import { useEffect, useRef, useCallback } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import * as THREE from "three";
+
 import {
   InteractiveObject,
   UseInteractiveObjectsProps,

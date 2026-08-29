@@ -3,11 +3,13 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+
 import {
   InteractiveTarget,
   UseCameraControllerProps,
   UseCameraControllerResult,
 } from "@/lib/types";
+
 import { useGSAPAnimations } from "./useGSAPAnimations";
 
 export function useCameraController({

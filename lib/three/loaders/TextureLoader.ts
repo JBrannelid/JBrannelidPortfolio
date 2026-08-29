@@ -1,5 +1,6 @@
 // TextureLoader utility for loading and configuring textures in Three.js
 import * as THREE from "three";
+
 import { TextureConfig, TextureType } from "../../types/scene.types";
 
 export class TextureLoaderUtility {

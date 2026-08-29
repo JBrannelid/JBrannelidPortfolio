@@ -2,12 +2,13 @@
 "use client";
 
 import { useCallback, useRef } from "react";
-import { useInteractiveObjects } from "@/lib/hooks/useInteractiveObjects";
+
 import { useGSAPAnimations } from "@/lib/hooks/useGSAPAnimations";
+import { useInteractiveObjects } from "@/lib/hooks/useInteractiveObjects";
 import {
+  InteractionManagerProps,
   InteractiveObject,
   InteractiveTarget,
-  InteractionManagerProps,
 } from "@/lib/types";
 
 export default function InteractionManager({

@@ -1,4 +1,7 @@
 export const LOADER_MESSAGES = {
+  kicker: "Welcome to my portfolio",
+  tagline:
+    "A minimalist isometric room, rendered in real time - designed and built by Johannes Brannelid.",
   loading: "Preparing your experience",
   ready: "Ready to Explore",
 } as const;

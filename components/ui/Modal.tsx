@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
 import gsap from "gsap";
 import { X } from "lucide-react";
-import { ModalProps } from "@/lib/types";
+import { useCallback, useEffect, useRef } from "react";
+
 import { MODAL_ANIMATION_CONFIG } from "@/lib/constants";
+import { ModalProps } from "@/lib/types";
 
 /* Reusable Modal Component
  * Child components: AboutModalContent, ContactModalContent, CVModalContent */

@@ -1,13 +1,14 @@
 "use client";
 
-import { useEffect, useRef, useCallback } from "react";
 import gsap from "gsap";
-import { User, FileText, Mail, Github, Linkedin } from "lucide-react";
-import { NavigationProps, NavButton } from "@/lib/types";
+import { FileText, Github, Linkedin, Mail, User } from "lucide-react";
+import { useCallback, useEffect, useRef } from "react";
+
 import {
   NAVIGATION_ANIMATION_CONFIG,
   NAVIGATION_BUTTON_COLORS,
 } from "@/lib/constants";
+import { NavButton, NavigationProps } from "@/lib/types";
 
 /* Desktop: Right sidebar with floating buttons
  * Mobile: Top header with compact menu */
