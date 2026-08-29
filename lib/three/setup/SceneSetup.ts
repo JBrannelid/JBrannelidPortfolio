@@ -154,11 +154,11 @@ export class SceneSetup {
   // Shadows are imported from textures, so only need ambient and directional light
   setupLighting(scene: THREE.Scene): void {
     // Ambient light for overall illumination
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.9);
     scene.add(ambientLight);
 
     // Directional light for definition
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.1);
     directionalLight.position.set(5, 10, 7.5);
 
     scene.add(directionalLight);

@@ -8,6 +8,7 @@ import {
   NAVIGATION_ANIMATION_CONFIG,
   NAVIGATION_BUTTON_COLORS,
 } from "@/lib/constants";
+import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 import { NavButton, NavigationProps } from "@/lib/types";
 
 /* Desktop: Right sidebar with floating buttons
@@ -21,6 +22,7 @@ export default function Navigation({
 }: NavigationProps) {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const buttonsRef = useRef<(HTMLButtonElement | null)[]>([]);
+  const reducedMotion = useReducedMotion();
 
   // Navigation buttons configuration
   const navButtons: NavButton[] = [
@@ -68,7 +70,7 @@ export default function Navigation({
 
   // GSAP entrance animation on mount
   useEffect(() => {
-    if (!sidebarRef.current) return;
+    if (!sidebarRef.current || reducedMotion) return;
 
     const ctx = gsap.context(() => {
       // Stagger animation for buttons
@@ -83,49 +85,60 @@ export default function Navigation({
     }, sidebarRef.current);
 
     return () => ctx.revert();
-  }, []);
+  }, [reducedMotion]);
 
   // Button hover animation - memoized to prevent re-creation
-  const handleMouseEnter = useCallback((index: number) => {
-    const button = buttonsRef.current[index];
-    if (!button) return;
+  const handleMouseEnter = useCallback(
+    (index: number) => {
+      const button = buttonsRef.current[index];
+      if (!button || reducedMotion) return;
 
-    // Animate scale and position on hover
-    gsap.to(button, {
-      scale: NAVIGATION_ANIMATION_CONFIG.hover.scale,
-      x: NAVIGATION_ANIMATION_CONFIG.hover.x,
-      duration: NAVIGATION_ANIMATION_CONFIG.hover.duration,
-      ease: NAVIGATION_ANIMATION_CONFIG.hover.ease,
-    });
-  }, []);
+      gsap.to(button, {
+        scale: NAVIGATION_ANIMATION_CONFIG.hover.scale,
+        x: NAVIGATION_ANIMATION_CONFIG.hover.x,
+        duration: NAVIGATION_ANIMATION_CONFIG.hover.duration,
+        ease: NAVIGATION_ANIMATION_CONFIG.hover.ease,
+      });
+    },
+    [reducedMotion]
+  );
 
   // Button mouse leave animation - memoized
-  const handleMouseLeave = useCallback((index: number) => {
-    const button = buttonsRef.current[index];
-    if (!button) return;
+  const handleMouseLeave = useCallback(
+    (index: number) => {
+      const button = buttonsRef.current[index];
+      if (!button || reducedMotion) return;
 
-    gsap.to(button, {
-      scale: NAVIGATION_ANIMATION_CONFIG.hoverOut.scale,
-      x: NAVIGATION_ANIMATION_CONFIG.hoverOut.x,
-      duration: NAVIGATION_ANIMATION_CONFIG.hoverOut.duration,
-      ease: NAVIGATION_ANIMATION_CONFIG.hoverOut.ease,
-    });
-  }, []);
+      gsap.to(button, {
+        scale: NAVIGATION_ANIMATION_CONFIG.hoverOut.scale,
+        x: NAVIGATION_ANIMATION_CONFIG.hoverOut.x,
+        duration: NAVIGATION_ANIMATION_CONFIG.hoverOut.duration,
+        ease: NAVIGATION_ANIMATION_CONFIG.hoverOut.ease,
+      });
+    },
+    [reducedMotion]
+  );
 
   // Click animation
-  const handleClick = useCallback((index: number, onClick: () => void) => {
-    const button = buttonsRef.current[index];
-    if (!button) return;
+  const handleClick = useCallback(
+    (index: number, onClick: () => void) => {
+      const button = buttonsRef.current[index];
+      if (!button || reducedMotion) {
+        onClick();
+        return;
+      }
 
-    gsap.to(button, {
-      scale: NAVIGATION_ANIMATION_CONFIG.click.scale,
-      duration: NAVIGATION_ANIMATION_CONFIG.click.duration,
-      yoyo: NAVIGATION_ANIMATION_CONFIG.click.yoyo,
-      repeat: NAVIGATION_ANIMATION_CONFIG.click.repeat,
-      ease: NAVIGATION_ANIMATION_CONFIG.click.ease,
-      onComplete: onClick,
-    });
-  }, []);
+      gsap.to(button, {
+        scale: NAVIGATION_ANIMATION_CONFIG.click.scale,
+        duration: NAVIGATION_ANIMATION_CONFIG.click.duration,
+        yoyo: NAVIGATION_ANIMATION_CONFIG.click.yoyo,
+        repeat: NAVIGATION_ANIMATION_CONFIG.click.repeat,
+        ease: NAVIGATION_ANIMATION_CONFIG.click.ease,
+        onComplete: onClick,
+      });
+    },
+    [reducedMotion]
+  );
 
   return (
     <>

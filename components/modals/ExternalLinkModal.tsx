@@ -9,6 +9,7 @@ import { LogOut } from "lucide-react";
 import { useEffect, useRef } from "react";
 
 import { EXTERNAL_LINK_MODAL_ANIMATION } from "@/lib/constants";
+import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 import { ExternalLinkModalProps } from "@/lib/types";
 
 export default function ExternalLinkModal({
@@ -20,10 +21,13 @@ export default function ExternalLinkModal({
 }: ExternalLinkModalProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
 
   /* GSAP - Animate modal open/close */
   useEffect(() => {
     if (!modalRef.current || !overlayRef.current) return;
+
+    const d = (duration: number) => (reducedMotion ? 0.01 : duration);
 
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -36,7 +40,7 @@ export default function ExternalLinkModal({
           { opacity: 0 },
           {
             opacity: 1,
-            duration: EXTERNAL_LINK_MODAL_ANIMATION.overlay.duration,
+            duration: d(EXTERNAL_LINK_MODAL_ANIMATION.overlay.duration),
             ease: EXTERNAL_LINK_MODAL_ANIMATION.overlay.ease,
           }
         )
@@ -51,7 +55,7 @@ export default function ExternalLinkModal({
             opacity: 1,
             scale: EXTERNAL_LINK_MODAL_ANIMATION.modal.scale.to,
             y: EXTERNAL_LINK_MODAL_ANIMATION.modal.y.to,
-            duration: EXTERNAL_LINK_MODAL_ANIMATION.modal.duration,
+            duration: d(EXTERNAL_LINK_MODAL_ANIMATION.modal.duration),
             ease: EXTERNAL_LINK_MODAL_ANIMATION.modal.ease,
           },
           "-=0.1"
@@ -65,21 +69,21 @@ export default function ExternalLinkModal({
           opacity: 0,
           scale: EXTERNAL_LINK_MODAL_ANIMATION.modal.scale.from,
           y: 10,
-          duration: EXTERNAL_LINK_MODAL_ANIMATION.close.duration,
+          duration: d(EXTERNAL_LINK_MODAL_ANIMATION.close.duration),
           ease: EXTERNAL_LINK_MODAL_ANIMATION.close.ease,
         })
         .to(
           overlayRef.current,
           {
             opacity: 0,
-            duration: 0.15,
+            duration: d(0.15),
             ease: EXTERNAL_LINK_MODAL_ANIMATION.close.ease,
           },
           "-=0.1"
         )
         .set([overlayRef.current, modalRef.current], { display: "none" });
     }
-  }, [isOpen]);
+  }, [isOpen, reducedMotion]);
 
   /* Handle escape with event listener to close an open Modal */
   useEffect(() => {

@@ -15,23 +15,23 @@ export const CAMERA_ZOOM_DISTANCE = 3.5;
 
 export const MODAL_ANIMATION_CONFIG = {
   overlay: {
-    duration: 0.3,
+    duration: 0.2,
     ease: "power2.out",
   },
   content: {
-    duration: 0.5,
-    ease: "back.out(1.7)",
+    duration: 0.3,
+    ease: "power3.out",
     scale: {
-      from: 0.8,
+      from: 0.96,
       to: 1,
     },
     y: {
-      from: 30,
+      from: 16,
       to: 0,
     },
   },
   close: {
-    duration: 0.3,
+    duration: 0.2,
     ease: "power2.in",
   },
 } as const;
@@ -42,14 +42,14 @@ export const EXTERNAL_LINK_MODAL_ANIMATION = {
     ease: "power2.out",
   },
   modal: {
-    duration: 0.3,
-    ease: "back.out(1.4)",
+    duration: 0.25,
+    ease: "power3.out",
     scale: {
-      from: 0.9,
+      from: 0.96,
       to: 1,
     },
     y: {
-      from: 20,
+      from: 12,
       to: 0,
     },
   },
@@ -66,17 +66,17 @@ export const NAVIGATION_ANIMATION_CONFIG = {
       opacity: 0,
     },
     to: {
-      duration: 0.6,
-      stagger: 0.1,
-      ease: "back.out(1.7)",
+      duration: 0.5,
+      stagger: 0.08,
+      ease: "power3.out",
       delay: 1, // Wait for loader to finish
     },
   },
   hover: {
     scale: 1.1,
     x: -8,
-    duration: 0.3,
-    ease: "back.out(2)",
+    duration: 0.25,
+    ease: "power2.out",
   },
   hoverOut: {
     scale: 1,
@@ -111,15 +111,15 @@ export const LOADER_ANIMATION_CONFIG = {
     fadeIn: {
       from: {
         opacity: 0,
-        y: 30,
-        scale: 0.95,
+        y: 16,
+        scale: 0.98,
       },
       to: {
         opacity: 1,
         y: 0,
         scale: 1,
-        duration: 0.8,
-        ease: "back.out(1.4)",
+        duration: 0.5,
+        ease: "power3.out",
       },
     },
   },

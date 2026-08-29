@@ -31,7 +31,7 @@ export const useToasts = (
                 <span className="text-error">{errorMessage}</span>
               </div>
               <div
-                className="border-error text-error shrink-0 transform cursor-pointer rounded-full border bg-red-50 p-1 transition hover:scale-105 hover:bg-red-100"
+                className="border-error text-error bg-error/10 hover:bg-error/20 shrink-0 transform cursor-pointer rounded-full border p-1 transition hover:scale-105"
                 onClick={() => toast.dismiss(id)}
               >
                 <X size={13} />
@@ -39,7 +39,7 @@ export const useToasts = (
             </div>,
             {
               duration: Infinity,
-              className: "bg-white text-black shadow-md",
+              className: "bg-warm-white text-charcoal shadow-md",
               icon: null,
             }
           );
@@ -52,12 +52,12 @@ export const useToasts = (
       toast(
         <div className="flex items-center justify-between gap-2 p-2">
           <div className="flex items-center gap-2">
-            <span className="text-green-500">{successMessage}</span>
+            <span className="text-success">{successMessage}</span>
           </div>
         </div>,
         {
           duration,
-          className: "bg-white text-black shadow-md",
+          className: "bg-warm-white text-charcoal shadow-md",
           icon: null,
         }
       );

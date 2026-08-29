@@ -87,8 +87,11 @@ export function useCameraController({
     };
 
     const handleClickAnywhere = (e: MouseEvent) => {
-      // Exit on ANY click
+      // Exit on ANY click - stopped here so it can't also reach the
+      // canvas's own raycasting click handler and fire a second, competing
+      // zoom-in animation from the same click.
       e.preventDefault();
+      e.stopPropagation();
       handleEscapeScreenView();
     };
 

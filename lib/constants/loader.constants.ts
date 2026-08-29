@@ -6,22 +6,16 @@ export const LOADER_MESSAGES = {
   ready: "Ready to Explore",
 } as const;
 
-export const NAVIGATION_HINTS = [
-  {
-    id: "click-drag",
-    label: "Click & Drag",
-    icon: "MousePointer2",
-  },
-  {
-    id: "scroll-zoom",
-    label: "Scroll to Zoom",
-    icon: "Mouse",
-  },
-  {
-    id: "touch",
-    label: "Touch to navigate",
-    icon: "FingerprintPattern",
-  },
+export const DESKTOP_NAVIGATION_HINTS = [
+  { id: "drag", label: "Drag to Look Around" },
+  { id: "click", label: "Click to Explore" },
+  { id: "scroll-zoom", label: "Scroll to Zoom" },
+] as const;
+
+export const TOUCH_NAVIGATION_HINTS = [
+  { id: "drag", label: "Drag to Look Around" },
+  { id: "tap", label: "Tap to Explore" },
+  { id: "pinch-zoom", label: "Pinch to Zoom" },
 ] as const;
 
 export const LOADER_PROGRESS_CONFIG = {

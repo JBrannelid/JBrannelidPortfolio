@@ -68,8 +68,14 @@ export default function Scene({ canvasRef, onSceneReady }: SceneProps) {
       const refs = threeRefs.current;
       if (!refs) return;
 
-      // Update controls for damping effect
-      refs.controls.update();
+      // Update controls for damping effect. Skipped while disabled (during
+      // scripted GSAP camera flights) - update() re-derives its internal
+      // spherical state from camera.position every call and re-clamps it to
+      // min/maxAzimuthAngle regardless of `enabled`, which fights a GSAP
+      // tween that flies the camera outside that clamped window.
+      if (refs.controls.enabled) {
+        refs.controls.update();
+      }
 
       // Render frame
       refs.renderer.render(refs.scene, refs.camera);

@@ -1,10 +1,26 @@
 # Changelog
 
 All notable changes to this project are documented in this file.
-The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and version numbers follow [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
+
+## [1.2.0] - 2026-08-29
+
+### Added
+
+- Name/title badge on main view
+- SEO performance
+
+### Fixed
+
+- A camera-rotation drag ending over an object no longer opens it by
+  mistake, on both mouse and touch.
+- Onboarding hints now match the actual controls, and differ for desktop
+  vs. touch devices.
+
+### Changed
+
+- Clearer heading type scale, calmer animation easing, faster modals.
 
 ## [1.1.0] - 2026-08-29
 

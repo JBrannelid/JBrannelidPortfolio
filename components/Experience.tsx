@@ -18,6 +18,7 @@ import ExternalLinkModal from "@/components/modals/ExternalLinkModal";
 import ExperienceLoader from "@/components/three/ExperienceLoader";
 import InteractionManager from "@/components/three/InteractionManager";
 import Scene from "@/components/three/Scene";
+import IdentityBadge from "@/components/ui/IdentityBadge";
 import Modal from "@/components/ui/Modal";
 import Navigation from "@/components/ui/Navigation";
 import { EXTERNAL_LINKS, MODAL_MAP } from "@/lib/constants";
@@ -233,6 +234,9 @@ export default function Experience() {
           onCancel={handleExternalLinkCancel}
         />
       )}
+
+      {/* Identity Badge - Name + title, persistent in-scene label */}
+      <IdentityBadge />
 
       {/* Navigation - Sidebar on desktop, Header on mobile */}
       <Navigation

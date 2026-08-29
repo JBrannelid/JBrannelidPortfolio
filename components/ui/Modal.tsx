@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import { useCallback, useEffect, useRef } from "react";
 
 import { MODAL_ANIMATION_CONFIG } from "@/lib/constants";
+import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 import { ModalProps } from "@/lib/types";
 
 /* Reusable Modal Component
@@ -13,10 +14,13 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const reducedMotion = useReducedMotion();
 
   /* Animate modal open/close with GSAP */
   useEffect(() => {
     if (!modalRef.current || !overlayRef.current || !contentRef.current) return;
+
+    const d = (duration: number) => (reducedMotion ? 0.01 : duration);
 
     if (isOpen) {
       // Prevent body scroll when modal is open
@@ -32,7 +36,7 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
           { opacity: 0 },
           {
             opacity: 1,
-            duration: MODAL_ANIMATION_CONFIG.overlay.duration,
+            duration: d(MODAL_ANIMATION_CONFIG.overlay.duration),
             ease: MODAL_ANIMATION_CONFIG.overlay.ease,
           }
         )
@@ -47,10 +51,10 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
             opacity: 1,
             scale: MODAL_ANIMATION_CONFIG.content.scale.to,
             y: MODAL_ANIMATION_CONFIG.content.y.to,
-            duration: MODAL_ANIMATION_CONFIG.content.duration,
+            duration: d(MODAL_ANIMATION_CONFIG.content.duration),
             ease: MODAL_ANIMATION_CONFIG.content.ease,
           },
-          "-=0.2"
+          "-=0.15"
         );
     } else {
       // Re-enable body scroll
@@ -64,21 +68,21 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
           opacity: 0,
           scale: MODAL_ANIMATION_CONFIG.content.scale.from,
           y: 20,
-          duration: MODAL_ANIMATION_CONFIG.close.duration,
+          duration: d(MODAL_ANIMATION_CONFIG.close.duration),
           ease: MODAL_ANIMATION_CONFIG.close.ease,
         })
         .to(
           overlayRef.current,
           {
             opacity: 0,
-            duration: 0.2,
+            duration: d(MODAL_ANIMATION_CONFIG.overlay.duration),
             ease: MODAL_ANIMATION_CONFIG.close.ease,
           },
           "-=0.1"
         )
         .set([overlayRef.current, modalRef.current], { display: "none" });
     }
-  }, [isOpen]);
+  }, [isOpen, reducedMotion]);
 
   /* Handle escape key press - close modal */
   const handleEscape = useCallback(

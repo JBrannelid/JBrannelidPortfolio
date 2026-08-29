@@ -6,10 +6,13 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 import {
+  DESKTOP_NAVIGATION_HINTS,
   LOADER_ANIMATION_CONFIG,
   LOADER_MESSAGES,
-  NAVIGATION_HINTS,
+  TOUCH_NAVIGATION_HINTS,
 } from "@/lib/constants";
+import { useIsMobileViewport } from "@/lib/hooks/useIsMobileViewport";
+import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 import { useToasts } from "@/lib/hooks/useToasts";
 import { ExperienceLoaderProps } from "@/lib/types";
 
@@ -31,6 +34,12 @@ export default function ExperienceLoader({
   const enterSectionRef = useRef<HTMLDivElement>(null);
   const ruleFillRef = useRef<HTMLSpanElement>(null);
   const lastAnnouncedRef = useRef(-1);
+  const reducedMotion = useReducedMotion();
+  const isMobileViewport = useIsMobileViewport();
+  const navigationHints = isMobileViewport
+    ? TOUCH_NAVIGATION_HINTS
+    : DESKTOP_NAVIGATION_HINTS;
+  const clampedProgress = Math.min(Math.max(progress, 0), 100);
 
   /* Convert error to toast notification state */
   const errorState = error
@@ -51,7 +60,7 @@ export default function ExperienceLoader({
     if (error && overlayRef.current) {
       gsap.to(overlayRef.current, {
         opacity: 0,
-        duration: 0.5,
+        duration: reducedMotion ? 0.01 : 0.5,
         ease: "power2.inOut",
         onComplete: () => {
           if (overlayRef.current) {
@@ -60,10 +69,22 @@ export default function ExperienceLoader({
         },
       });
     }
-  }, [error]);
+  }, [error, reducedMotion]);
+
+  /* Fill the progress rule via a composited transform (scaleX) instead of
+   * animating width, which forces layout on every frame */
+  useEffect(() => {
+    if (!ruleFillRef.current) return;
+    gsap.to(ruleFillRef.current, {
+      scaleX: clampedProgress / 100,
+      duration: reducedMotion ? 0.01 : 0.5,
+      ease: "power2.out",
+    });
+  }, [clampedProgress, reducedMotion]);
 
   /* Add a subtle "breathing" pulse to the progress rule as it fills */
   useEffect(() => {
+    if (reducedMotion) return;
     if (ruleFillRef.current && progress > 0 && progress < 100) {
       gsap.to(ruleFillRef.current, {
         scaleY: LOADER_ANIMATION_CONFIG.progressBar.scaleY,
@@ -73,7 +94,7 @@ export default function ExperienceLoader({
         repeat: -1,
       });
     }
-  }, [progress]);
+  }, [progress, reducedMotion]);
 
   /* Detect when loading completes and fade out loading text */
   useEffect(() => {
@@ -82,7 +103,9 @@ export default function ExperienceLoader({
         gsap.to(loadingTextRef.current, {
           opacity: LOADER_ANIMATION_CONFIG.loadingText.fadeOut.opacity,
           y: LOADER_ANIMATION_CONFIG.loadingText.fadeOut.y,
-          duration: LOADER_ANIMATION_CONFIG.loadingText.fadeOut.duration,
+          duration: reducedMotion
+            ? 0.01
+            : LOADER_ANIMATION_CONFIG.loadingText.fadeOut.duration,
           ease: LOADER_ANIMATION_CONFIG.loadingText.fadeOut.ease,
           onComplete: () => {
             setShowEnterButton(true);
@@ -90,7 +113,7 @@ export default function ExperienceLoader({
         });
       }
     }
-  }, [progress, isLoading, showEnterButton]);
+  }, [progress, isLoading, showEnterButton, reducedMotion]);
 
   /* Animate enter section AFTER it has been rendered */
   useEffect(() => {
@@ -106,12 +129,14 @@ export default function ExperienceLoader({
           opacity: LOADER_ANIMATION_CONFIG.enterSection.fadeIn.to.opacity,
           y: LOADER_ANIMATION_CONFIG.enterSection.fadeIn.to.y,
           scale: LOADER_ANIMATION_CONFIG.enterSection.fadeIn.to.scale,
-          duration: LOADER_ANIMATION_CONFIG.enterSection.fadeIn.to.duration,
+          duration: reducedMotion
+            ? 0.01
+            : LOADER_ANIMATION_CONFIG.enterSection.fadeIn.to.duration,
           ease: LOADER_ANIMATION_CONFIG.enterSection.fadeIn.to.ease,
         }
       );
     }
-  }, [showEnterButton]);
+  }, [showEnterButton, reducedMotion]);
 
   /* Throttled screen-reader progress announcements (avoid announcing every
    * single percent as items finish loading) */
@@ -137,6 +162,7 @@ export default function ExperienceLoader({
   const handleEnter = () => {
     if (!overlayRef.current) return;
 
+    const d = (duration: number) => (reducedMotion ? 0.01 : duration);
     const timeline = gsap.timeline();
 
     timeline
@@ -144,14 +170,14 @@ export default function ExperienceLoader({
         opacity: LOADER_ANIMATION_CONFIG.overlayExit.content.opacity,
         scale: LOADER_ANIMATION_CONFIG.overlayExit.content.scale,
         y: LOADER_ANIMATION_CONFIG.overlayExit.content.y,
-        duration: LOADER_ANIMATION_CONFIG.overlayExit.content.duration,
+        duration: d(LOADER_ANIMATION_CONFIG.overlayExit.content.duration),
         ease: LOADER_ANIMATION_CONFIG.overlayExit.content.ease,
       })
       .to(
         overlayRef.current,
         {
           opacity: LOADER_ANIMATION_CONFIG.overlayExit.overlay.opacity,
-          duration: LOADER_ANIMATION_CONFIG.overlayExit.overlay.duration,
+          duration: d(LOADER_ANIMATION_CONFIG.overlayExit.overlay.duration),
           ease: LOADER_ANIMATION_CONFIG.overlayExit.overlay.ease,
         },
         "-=0.3"
@@ -168,8 +194,6 @@ export default function ExperienceLoader({
     return null;
   }
 
-  const clampedProgress = Math.min(Math.max(progress, 0), 100);
-
   return (
     <div
       ref={overlayRef}
@@ -184,7 +208,7 @@ export default function ExperienceLoader({
       >
         {/* Left: text + progress + CTA */}
         <div className="flex flex-col justify-center px-[7vw] py-[6vh] lg:px-[6vw]">
-          <div className="flex max-w-lg flex-col gap-9">
+          <div className="flex max-w-lg flex-col gap-9 md:max-w-2xl lg:max-w-lg">
             <span className="text-moss-dark font-mono text-[0.9rem] font-semibold tracking-[0.22em] uppercase">
               {LOADER_MESSAGES.kicker}
             </span>
@@ -217,8 +241,7 @@ export default function ExperienceLoader({
                 <span className="bg-stone h-0.5 flex-1 overflow-hidden rounded-full">
                   <span
                     ref={ruleFillRef}
-                    className="bg-moss block h-full origin-center transition-all duration-500 ease-out"
-                    style={{ width: `${clampedProgress}%` }}
+                    className="bg-moss block h-full w-full origin-left scale-x-0"
                   />
                 </span>
               </div>
@@ -253,7 +276,7 @@ export default function ExperienceLoader({
                 </button>
 
                 <div className="text-slate flex flex-wrap gap-5 font-mono text-[0.68rem] tracking-wide uppercase">
-                  {NAVIGATION_HINTS.map((hint) => (
+                  {navigationHints.map((hint) => (
                     <span key={hint.id}>{hint.label}</span>
                   ))}
                 </div>
