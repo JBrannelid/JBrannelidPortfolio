@@ -59,15 +59,15 @@
     "switchToSwedish": "Switch to Swedish"
   },
   "Loader": {
-    "kicker": "Welcome to my portfolio",
-    "tagline": "A minimalist isometric room, rendered in real time - designed and built by Johannes Brannelid.",
+    "kicker": "Welcome",
+    "tagline": "A small 3D room you can explore right in your browser - designed and built by me, Johannes Brannelid.",
     "heading": "Portfolio",
     "roomPreviewAlt": "Isometric render of the 3D portfolio room",
-    "loadingLabel": "Loading...",
+    "loadingLabel": "Loading",
     "readyLabel": "Ready to Explore",
     "enterButton": "Enter the room",
     "progressAriaLabel": "Loading portfolio experience",
-    "progressAnnounce": "Loading...., {percent} percent.",
+    "progressAnnounce": "Loading, {percent} percent.",
     "readyAnnounce": "Ready to Explore. Press Enter the room to continue.",
     "loadErrorFallback": "Failed to load 3D experience",
     "navHints": {
@@ -84,7 +84,7 @@
     }
   },
   "Modal": {
-    "close": "Close modal"
+    "close": "Close"
   },
   "About": {
     "title": "About Me",
@@ -113,7 +113,7 @@
   "CV": {
     "title": "Career Overview",
     "biographyHeading": "Biography",
-    "biographyParagraph1": "I come from a background in healthcare, leadership and sales. Today, I work as a Software Developer at Alma Health AB, where I develop and maintain solutions across the .NET ecosystem. My work includes backend development, SQL Server, external API integrations and improving existing systems.",
+    "biographyParagraph1": "I come from a background in healthcare, leadership and sales. Today, I work as a Software Developer, where I develop and maintain solutions across the .NET ecosystem. My work includes fullstack development, SQL Server, external API integrations and improving existing systems.",
     "biographyParagraph2": "Outside of work, I spend time exploring modern frontend development and building personal projects with technologies such as Next.js.",
     "workExperienceHeading": "Work Experience",
     "experience": [
@@ -153,7 +153,7 @@
       {
         "title": "Deputy Store Manager / Staff",
         "period": "2012 - 2017",
-        "company": "Stockholm - University Hospital",
+        "company": "Stockholm",
         "bullets": [
           "Retail Management",
           "Customer Service",
@@ -162,7 +162,7 @@
         ]
       },
       {
-        "title": "Waiter / HealtCare",
+        "title": "Waiter / Healthcare",
         "period": "2008 - 2012",
         "company": "Stockholm",
         "bullets": ["Customer Service", "Food Service", "Team Work"]
@@ -208,7 +208,7 @@
   "Contact": {
     "title": "Contact Me",
     "intro": "Do you have an idea or a project? I look forward to hearing from you!",
-    "honeypotLabel": "Don't fill this out if you're human:",
+    "honeypotLabel": "Leave this field empty:",
     "nameLabel": "Name",
     "emailLabel": "Email",
     "subjectLabel": "Subject",
@@ -220,7 +220,7 @@
     "socialHeading": "Follow me on social media",
     "linkedinButton": "LinkedIn",
     "githubButton": "GitHub",
-    "footerNote": "I look forward to hearing from you!",
+    "footerNote": "Talk soon!",
     "successToast": "Thank you for your message!",
     "genericErrorToast": "Something went wrong. Please try again or contact me directly via email.",
     "errors": {
@@ -246,7 +246,7 @@
   "ExternalLink": {
     "title": "Leave Site?",
     "cancel": "Cancel",
-    "continue": "Continue"
+    "continue": "Continue to {siteName}"
   },
   "CrawlableSummary": {
     "heading": "Johannes Brannelid — Fullstack Developer",

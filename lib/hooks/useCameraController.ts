@@ -95,14 +95,34 @@ export function useCameraController({
       handleEscapeScreenView();
     };
 
+    // Touch equivalent of handleClickAnywhere - needed as its own listener
+    // rather than relying on the browser's trailing synthetic "click" after
+    // a tap: useInteractiveObjects' touchend handler calls preventDefault()
+    // on every recognized tap specifically to suppress that synthetic click
+    // (it was the source of a mobile zoom-in glitch), which as a side
+    // effect means no "click" event ever reaches this listener on touch
+    // devices. Listening for touchend directly here exits reliably on
+    // mobile regardless.
+    const handleTouchEndAnywhere = (e: TouchEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      handleEscapeScreenView();
+    };
+
     // Register event listeners with higher priority
     window.addEventListener("keydown", handleKeyPress, { capture: true });
     window.addEventListener("click", handleClickAnywhere, { capture: true });
+    window.addEventListener("touchend", handleTouchEndAnywhere, {
+      capture: true,
+    });
     document.body.style.cursor = "zoom-out";
 
     return () => {
       window.removeEventListener("keydown", handleKeyPress, { capture: true });
       window.removeEventListener("click", handleClickAnywhere, {
+        capture: true,
+      });
+      window.removeEventListener("touchend", handleTouchEndAnywhere, {
         capture: true,
       });
       document.body.style.cursor = "default";

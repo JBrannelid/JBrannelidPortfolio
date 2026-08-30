@@ -44,11 +44,15 @@ export default function ExperienceLoader({
     : DESKTOP_NAVIGATION_HINT_IDS;
   const clampedProgress = Math.min(Math.max(progress, 0), 100);
 
-  /* Convert error to toast notification state */
+  /* Convert error to toast notification state. Always show the friendly
+   * translated message to visitors - a real Error almost always has a
+   * non-empty `.message`, so `error.message || fallback` would show a raw
+   * technical string instead. The actual error is already logged at its
+   * source in useModelLoader. */
   const errorState = error
     ? {
         errors: {
-          form: [error.message || t("loadErrorFallback")],
+          form: [t("loadErrorFallback")],
         },
       }
     : undefined;
@@ -210,19 +214,17 @@ export default function ExperienceLoader({
         className="relative z-10 grid h-full w-full lg:grid-cols-[1.15fr_0.85fr]"
       >
         {/* Left: text + progress + CTA */}
-        <div className="flex flex-col justify-center px-[7vw] py-[6vh] lg:px-[6vw]">
+        <div className="relative flex flex-col justify-center px-[7vw] py-[6vh] lg:px-[6vw]">
+          <p className="text-charcoal absolute top-24 right-[7vw] z-50 font-mono text-4xl leading-[0.95] font-semibold tracking-[0.2em] text-balance uppercase lg:top-6 lg:right-[6vw]">
+            {t("heading")}
+          </p>
+
           <div className="flex max-w-lg flex-col gap-9 md:max-w-2xl lg:max-w-lg">
             <span className="text-moss-dark font-mono text-[0.9rem] font-semibold tracking-[0.22em] uppercase">
               {t("kicker")}
             </span>
 
             <div className="flex flex-col gap-6">
-              {/* Not a heading: CrawlableSummary already renders the page's
-                  one <h1> (name + role, better for a11y/SEO than "Portfolio"
-                  alone) - this is decorative landing-screen brand text. */}
-              <p className="text-charcoal text-[clamp(3rem,7vw,5rem)] leading-[0.95] font-semibold tracking-[-0.035em] text-balance">
-                {t("heading")}
-              </p>
               <p className="text-slate max-w-[32ch] text-[1.05rem] leading-relaxed">
                 {t("tagline")}
               </p>
@@ -282,9 +284,10 @@ export default function ExperienceLoader({
                 </button>
 
                 <div className="text-slate flex flex-wrap gap-5 font-mono text-[0.68rem] tracking-wide uppercase">
-                  {navigationHintIds.map((id) => (
-                    <span key={id}>
-                      {t(`navHints.${navHintVariant}.${id}`)}
+                  {navigationHintIds.map((id, index) => (
+                    <span key={id} className="flex items-center gap-2">
+                      {index > 0 && <span aria-hidden="true">•</span>}
+                      <span>{t(`navHints.${navHintVariant}.${id}`)}</span>
                     </span>
                   ))}
                 </div>

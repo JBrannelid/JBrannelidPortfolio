@@ -4,6 +4,20 @@ All notable changes to this project are documented in this file.
 
 ## [Unreleased]
 
+## [1.4.2] - 2026-08-30
+
+### Fixed
+
+- Language switcher flags now render as SVG instead of emoji
+- Tapping to exit the TV/computer screen zoom didn't work on mobile. It now also listens for `touchend` directly.
+- Model-load failures now show the friendly translated message instead of a raw technical error.
+- Contact form: closed an origin-validation gap and stopped leaking internal error details in responses.
+- Assorted CV/copy corrections in both languages (a misattributed employer, a typo, duplicate wording, a couple of Swedish grammar fixes).
+
+### Security
+
+- Added a Permissions-Policy header denying unused browser APIs.
+
 ## [1.4.1] - 2026-08-30
 
 ### Changed

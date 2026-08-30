@@ -8,12 +8,47 @@ import { contactSchema } from "../../lib/schema/contactSchema";
 // caller redirect our outbound POST to an arbitrary URL of their choosing).
 const SITE_URL = process.env.URL || "https://jbrannelid.com";
 
+// Origins allowed to call this function: the live site, plus whichever
+// deploy/branch preview URL Netlify assigns the current build (so preview
+// deploys can still exercise the form during testing).
+const ALLOWED_ORIGINS = [
+  SITE_URL,
+  process.env.DEPLOY_PRIME_URL,
+  process.env.DEPLOY_URL,
+].filter((origin): origin is string => Boolean(origin));
+
+// Restricts calls to the site's own pages. This stops a third-party page
+// from embedding a hidden auto-submitting form/fetch that spams this
+// endpoint through a visitor's browser (the browser sets Origin/Referer
+// honestly and page JS can't override them) - it doesn't stop a determined
+// attacker scripting requests directly with spoofed headers, since those
+// are just as fakeable as any other header outside a real browser. Real
+// rate-limiting/CAPTCHA would be needed to close that gap too.
+function isAllowedOrigin(event: Parameters<Handler>[0]): boolean {
+  const origin = event.headers.origin;
+  if (origin) return ALLOWED_ORIGINS.includes(origin);
+
+  const referer = event.headers.referer;
+  if (referer) return ALLOWED_ORIGINS.some((allowed) => referer.startsWith(allowed));
+
+  // A real browser fetch() POST always sends at least one of these -
+  // absence of both is itself suspicious.
+  return false;
+}
+
 export const handler: Handler = async (event) => {
   // Only allow POST
   if (event.httpMethod !== "POST") {
     return {
       statusCode: 405,
       body: JSON.stringify({ error: "Method not allowed" }),
+    };
+  }
+
+  if (!isAllowedOrigin(event)) {
+    return {
+      statusCode: 403,
+      body: JSON.stringify({ error: "Forbidden" }),
     };
   }
 
@@ -83,13 +118,12 @@ export const handler: Handler = async (event) => {
       }),
     };
   } catch (error) {
+    // Logged for our own debugging - never echoed back to the caller, who
+    // has no legitimate need to see internals like parser error text.
     console.error("Function error:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({
-        error: "Internal server error",
-        details: error instanceof Error ? error.message : "Unknown error",
-      }),
+      body: JSON.stringify({ error: "Internal server error" }),
     };
   }
 };

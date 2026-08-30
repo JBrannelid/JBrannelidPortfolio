@@ -145,7 +145,7 @@ export default function ExternalLinkModal({
               {t("cancel")}
             </button>
             <button onClick={onConfirm} className="btn-primary">
-              {t("continue")}
+              {t("continue", { siteName })}
             </button>
           </div>
         </div>

@@ -17,18 +17,44 @@ interface LanguageSwitcherProps {
   className?: string;
 }
 
+// Drawn as SVG rather than using flag emoji (🇬🇧/🇸🇪): Windows doesn't have
+// flag glyphs in its emoji font and falls back to literal "GB"/"SE" text,
+// while phones render the actual flags - so desktop and mobile were
+// showing visibly different things. SVG renders identically everywhere.
+function GBFlagIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 60 40" className={className} aria-hidden="true">
+      <rect width="60" height="40" rx="4" fill="#00247d" />
+      <path d="M0,0 L60,40 M60,0 L0,40" stroke="#fff" strokeWidth="8" />
+      <path d="M0,0 L60,40 M60,0 L0,40" stroke="#cf142b" strokeWidth="3" />
+      <path d="M30,0 V40 M0,20 H60" stroke="#fff" strokeWidth="13" />
+      <path d="M30,0 V40 M0,20 H60" stroke="#cf142b" strokeWidth="8" />
+    </svg>
+  );
+}
+
+function SEFlagIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 60 40" className={className} aria-hidden="true">
+      <rect width="60" height="40" rx="4" fill="#006aa7" />
+      <rect x="20" width="8" height="40" fill="#fecc00" />
+      <rect y="16" width="60" height="8" fill="#fecc00" />
+    </svg>
+  );
+}
+
+const FLAGS = { en: GBFlagIcon, sv: SEFlagIcon };
+
 // Rendered as a Link's child, `useLinkStatus` reports whether *that*
 // specific navigation is in flight - swaps the flag for the same spinner
 // already used for the contact form's pending state, so switching language
 // doesn't read as unresponsive while the new locale's page loads.
 function FlagOrSpinner({
-  flag,
+  locale,
   iconSize,
-  textSize,
 }: {
-  flag: string;
+  locale: "en" | "sv";
   iconSize: string;
-  textSize: string;
 }) {
   const { pending } = useLinkStatus();
   if (pending) {
@@ -36,11 +62,8 @@ function FlagOrSpinner({
       <LoaderCircle className={`${iconSize} animate-spin`} aria-hidden="true" />
     );
   }
-  return (
-    <span aria-hidden="true" className={textSize}>
-      {flag}
-    </span>
-  );
+  const Flag = FLAGS[locale];
+  return <Flag className={`${iconSize} rounded-sm`} />;
 }
 
 export default function LanguageSwitcher({
@@ -62,13 +85,9 @@ export default function LanguageSwitcher({
         prefetch={false}
         aria-label={label}
         title={label}
-        className={`bg-sand border-stone hover:bg-stone flex size-13 items-center justify-center rounded-lg border text-xl transition-all duration-200 hover:scale-105 active:scale-95 ${className}`}
+        className={`bg-sand border-stone hover:bg-stone flex size-13 items-center justify-center rounded-lg border transition-all duration-200 hover:scale-105 active:scale-95 ${className}`}
       >
-        <FlagOrSpinner
-          flag={nextLocale === "en" ? "🇬🇧" : "🇸🇪"}
-          iconSize="size-5"
-          textSize="text-xl"
-        />
+        <FlagOrSpinner locale={nextLocale} iconSize="size-6" />
       </Link>
     );
   }
@@ -86,15 +105,11 @@ export default function LanguageSwitcher({
         prefetch={false}
         aria-label={t("switchToEnglish")}
         aria-current={locale === "en" ? "true" : undefined}
-        className={`flex flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 transition-colors duration-200 ${
+        className={`flex flex-col items-center gap-1 rounded-lg px-3 py-1.5 transition-colors duration-200 ${
           locale === "en" ? "bg-moss-dark/10" : "hover:bg-sand/60"
         }`}
       >
-        <FlagOrSpinner
-          flag="🇬🇧"
-          iconSize="size-4"
-          textSize="text-lg leading-none"
-        />
+        <FlagOrSpinner locale="en" iconSize="size-5" />
         <span className="text-charcoal text-[0.65rem] leading-tight font-medium">
           {t("english")}
         </span>
@@ -105,15 +120,11 @@ export default function LanguageSwitcher({
         prefetch={false}
         aria-label={t("switchToSwedish")}
         aria-current={locale === "sv" ? "true" : undefined}
-        className={`flex flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 transition-colors duration-200 ${
+        className={`flex flex-col items-center gap-1 rounded-lg px-3 py-1.5 transition-colors duration-200 ${
           locale === "sv" ? "bg-moss-dark/10" : "hover:bg-sand/60"
         }`}
       >
-        <FlagOrSpinner
-          flag="🇸🇪"
-          iconSize="size-4"
-          textSize="text-lg leading-none"
-        />
+        <FlagOrSpinner locale="sv" iconSize="size-5" />
         <span className="text-charcoal text-[0.65rem] leading-tight font-medium">
           {t("swedish")}
         </span>
