@@ -1,0 +1,273 @@
+{
+  "Metadata": {
+    "title": "Johannes Brannelid | Fullstackutvecklare",
+    "description": "Interaktiv 3D-portfolio som visar upp expertis inom frontendutveckling med Next.js, React och moderna webbteknologier. Utforska projekt, kompetenser och kontaktuppgifter genom en 3D-upplevelse.",
+    "keywords": [
+      "fullstackutvecklare",
+      "frontendutvecklare",
+      "backendutvecklare",
+      ".NET-utvecklare",
+      "React-utvecklare",
+      "Next.js",
+      "TypeScript",
+      "Three.js",
+      "Azure",
+      "React",
+      ".NET Core",
+      "Tailwind CSS",
+      "GSAP-animationer",
+      "3D-webbupplevelser",
+      "interaktiv portfolio",
+      "webbutveckling",
+      "fullstackutveckling",
+      "UX-design",
+      "skandinavisk design",
+      "Stockholm utvecklare",
+      "Sverige fullstackutvecklare",
+      "nordisk webbutvecklare",
+      "moderna webbapplikationer",
+      "skalbar arkitektur",
+      "responsiv design",
+      "tillgängliga gränssnitt",
+      "prestandaoptimering",
+      "röntgensjuksköterska blev utvecklare",
+      "vårdteknik",
+      "karriärbyte",
+      "Johannes Brannelid portfolio",
+      "interaktiv 3D-portfolio",
+      "immersiv webbupplevelse"
+    ]
+  },
+  "JsonLd": {
+    "jobTitle": "Fullstackutvecklare"
+  },
+  "Navigation": {
+    "ariaLabel": "Huvudnavigering",
+    "about": "Om mig",
+    "cv": "CV",
+    "contact": "Kontakt",
+    "github": "GitHub",
+    "linkedin": "LinkedIn"
+  },
+  "IdentityBadge": {
+    "role": "Fullstackutvecklare"
+  },
+  "LanguageSwitcher": {
+    "english": "English",
+    "swedish": "Svenska",
+    "switchToEnglish": "Byt till engelska",
+    "switchToSwedish": "Byt till svenska"
+  },
+  "Loader": {
+    "kicker": "Välkommen till min portfolio",
+    "tagline": "Ett minimalistiskt isometriskt rum, renderat i realtid. Designat och byggt av mig, Johannes Brannelid",
+    "heading": "Portfolio",
+    "roomPreviewAlt": "Isometrisk rendering av 3D-portfoliorummet",
+    "loadingLabel": "Förbereder....",
+    "readyLabel": "Redo att utforska",
+    "enterButton": "Kliv in",
+    "progressAriaLabel": "Laddar portfolioupplevelse",
+    "progressAnnounce": "Förbereder.... {percent} procent.",
+    "readyAnnounce": "Redo att utforska. Tryck på Kliv in i rummet för att fortsätta.",
+    "loadErrorFallback": "Obs! Det gick inte att ladda 3D-upplevelsen",
+    "navHints": {
+      "desktop": {
+        "drag": "Dra för att se dig omkring",
+        "click": "Klicka för att utforska",
+        "scroll-zoom": "Scrolla för att zooma"
+      },
+      "touch": {
+        "drag": "Dra för att se dig omkring",
+        "tap": "Tryck för att utforska",
+        "pinch-zoom": "Nyp för att zooma"
+      }
+    }
+  },
+  "Modal": {
+    "close": "Stäng modal"
+  },
+  "About": {
+    "title": "Om mig",
+    "profileAlt": "Profilbild på Johannes Brannelid",
+    "roleHeading": "Fullstackutvecklare & Röntgensjuksköterska",
+    "bioIntro": "Hej, jag heter",
+    "bioParagraph1": "Jag började min karriär som röntgensjuksköterska inom akutsjukvården innan jag gick vidare till mjukvaruutveckling. Idag arbetar jag som fullstackutvecklare och kombinerar min tidigare arbetslivserfarenhet med ett genuint intresse för systemutveckling.",
+    "bioParagraph2": "Jag trivs med att jobba i hela stacken, från att skapa rena och intuitiva gränssnitt till att utveckla de backend-system och integrationer som får allt att fungera klaffa.",
+    "philosophyHeading": "Min designfilosofi",
+    "philosophyQuote": "Jag gillar att hålla det enkelt. Mitt sätt att jobba är inspirerat av skandinavisk design: rent, funktionellt och användarvänligt, med färgpalett hämtade från naturen.",
+    "expertiseHeading": "Kompetensområden",
+    "frontend": "Frontend",
+    "frontendSkills": "React, Next.js, TypeScript, Three.js, Tailwind CSS, Asp Net MVC, BootStrap",
+    "backendCloud": "Backend & moln",
+    "backendCloudSkills": ".NET Core, Azure, REST-API:er, Docker",
+    "tools": "Verktyg",
+    "toolsSkills": "Git, GitHub, Jira, Figma",
+    "animation3d": "3D & Animation",
+    "animation3dSkills": "Three.js, Blender, GSAP",
+    "interestsHeading": "Utanför kodandet",
+    "interestMusic": "Musik",
+    "interestCoffee": "Kaffe",
+    "interestRunning": "Löpning",
+    "interestFamily": "Familjeaktiviteter"
+  },
+  "CV": {
+    "title": "Karriäröversikt",
+    "biographyHeading": "Biografi",
+    "biographyParagraph1": "Jag har en bakgrund inom vård, ledarskap och försäljning. Idag arbetar jag som mjukvaruutvecklare på Alma Health AB, där jag utvecklar och underhåller lösningar inom .NET-ekosystemet. Mitt arbete omfattar backend-utveckling, SQL Server, integrationer mot externa API:er och förbättring av befintliga system.",
+    "biographyParagraph2": "Utanför jobbet ägnar jag tid åt att utforska modern frontend-utveckling och bygga egna projekt med teknologier som Next.js.",
+    "workExperienceHeading": "Arbetslivserfarenhet",
+    "experience": [
+      {
+        "title": "Systemutvecklare",
+        "period": "Maj 2026 – Pågående",
+        "company": "Alma Health AB",
+        "bullets": [
+          "Heltid (100%)",
+          "Utveckling och underhåll av applikationer med VB.NET, WinForms, .NET Framework och .NET Core",
+          "Utveckling i SQL Server och T-SQL",
+          "Datamappning och integrationer mot externa API:er"
+        ]
+      },
+      {
+        "title": "Röntgensjuksköterska",
+        "period": "2023 - 2026",
+        "company": "Stockholm – Universitetssjukhuset",
+        "bullets": ["Timanställning", "Akutsjukvård och traumaröntgen"]
+      },
+      {
+        "title": "Förstalinjechef",
+        "period": "2021 – 2023",
+        "company": "Stockholm – Universitetssjukhuset",
+        "bullets": [
+          "Teamledarskap",
+          "Personalutveckling",
+          "Sjukvårdsadministration"
+        ]
+      },
+      {
+        "title": "Röntgensjuksköterska",
+        "period": "2017 – 2021",
+        "company": "Stockholm – Universitetssjukhuset",
+        "bullets": ["Röntgendiagnostik", "Enhetsledning", "Mentorskap"]
+      },
+      {
+        "title": "Biträdande butikschef / Personal",
+        "period": "2012 – 2017",
+        "company": "Stockholm – Universitetssjukhuset",
+        "bullets": [
+          "Butiksledning",
+          "Kundservice",
+          "Teamledarskap",
+          "Försäljning"
+        ]
+      },
+      {
+        "title": "Servitör / Vård",
+        "period": "2008 – 2012",
+        "company": "Stockholm",
+        "bullets": ["Kundservice", "Servering", "Lagarbete"]
+      }
+    ],
+    "educationHeading": "Utbildning",
+    "education": [
+      {
+        "title": "Fullstack .NET",
+        "period": "2024 – 2026",
+        "school": "Chas Academy | Stockholm"
+      },
+      {
+        "title": "Röntgensjuksköterskeprogrammet",
+        "period": "2014 – 2017",
+        "school": "Uppsala universitet"
+      }
+    ],
+    "technicalExpertiseHeading": "Teknisk kompetens",
+    "frontendLabel": "Frontend",
+    "frontendItems": [
+      "React / Next.js",
+      "Asp Net MVC",
+      "TypeScript / JavaScript",
+      "Tailwind CSS / BootStrap",
+      "Three.js / GSAP"
+    ],
+    "backendLabel": "Backend",
+    "backendItems": [
+      ".NET Core / .NET Framework",
+      "REST-API:er",
+      "SQL Server / T-SQL"
+    ],
+    "toolsCloudLabel": "Verktyg & moln",
+    "toolsCloudItems": ["Azure", "Git / GitHub", "Docker"],
+    "certificationsHeading": "Certifieringar",
+    "certLeadership": "Ledarskapsutbildning",
+    "certDriversLicense": "Körkort B",
+    "footerPrompt": "Intresserad av att se fler projekt eller komma i kontakt med mig?",
+    "linkedinButton": "LinkedIn",
+    "githubButton": "GitHub"
+  },
+  "Contact": {
+    "title": "Kontakta mig",
+    "intro": "Har du en idé eller ett projekt? Jag ser fram emot att höra från dig!",
+    "honeypotLabel": "Fyll inte i detta om du är människa:",
+    "nameLabel": "Namn",
+    "emailLabel": "E-post",
+    "subjectLabel": "Ämne",
+    "messageLabel": "Meddelande",
+    "sending": "Skickar...",
+    "sendButton": "Skicka meddelande",
+    "directContactHeading": "Direktkontakt",
+    "locationLabel": "Plats",
+    "socialHeading": "Följ mig på sociala medier",
+    "linkedinButton": "LinkedIn",
+    "githubButton": "GitHub",
+    "footerNote": "Jag ser fram emot att höra från dig!",
+    "successToast": "Tack för ditt meddelande!",
+    "genericErrorToast": "Något gick fel. Försök igen eller kontakta mig direkt via e-post.",
+    "errors": {
+      "name": {
+        "min": "Namnet måste vara minst 2 tecken.",
+        "max": "Namnet får inte överstiga 100 tecken.",
+        "pattern": "Namnet får bara innehålla bokstäver, mellanslag, bindestreck och apostrofer."
+      },
+      "email": {
+        "invalid": "Ange en giltig e-postadress.",
+        "max": "E-postadressen får inte överstiga 255 tecken."
+      },
+      "subject": {
+        "min": "Ämnet måste vara minst 5 tecken.",
+        "max": "Ämnet får inte överstiga 200 tecken."
+      },
+      "message": {
+        "min": "Meddelandet måste vara minst 10 tecken.",
+        "max": "Meddelandet får inte överstiga 2000 tecken."
+      }
+    }
+  },
+  "ExternalLink": {
+    "title": "Lämna webbplatsen?",
+    "cancel": "Avbryt",
+    "continue": "Fortsätt"
+  },
+  "CrawlableSummary": {
+    "heading": "Johannes Brannelid — Fullstackutvecklare",
+    "bio": "Jag har en bakgrund inom vård, ledarskap och försäljning. Idag arbetar jag som mjukvaruutvecklare på Alma Health AB, där jag utvecklar och underhåller lösningar inom .NET-ekosystemet. Mitt arbete omfattar backend-utveckling, SQL Server, integrationer mot externa API:er och förbättring av befintliga system. Utanför jobbet ägnar jag tid åt att utforska modern frontend-utveckling och bygga egna projekt med teknologier som Next.js, React, TypeScript och Three.js.",
+    "workExperienceHeading": "Arbetslivserfarenhet",
+    "workExperience": [
+      "Mjukvaruutvecklare, Alma Health AB — Maj 2026 – pågående",
+      "Röntgensjuksköterska, Stockholm Universitetssjukhuset — fram till aug 2026",
+      "Förstalinjechef, Stockholm Universitetssjukhuset — 2021–2023",
+      "Röntgensjuksköterska, Stockholm Universitetssjukhuset — 2017–2021",
+      "Biträdande butikschef / personal — 2012–2017",
+      "Servitör / vård — 2008–2012"
+    ],
+    "educationHeading": "Utbildning",
+    "education": [
+      "Fullstack .NET, Chas Academy, Stockholm — 2024–pågående",
+      "Röntgensjuksköterskeprogrammet, Uppsala universitet — 2014–2017"
+    ],
+    "technicalSkillsHeading": "Teknisk kompetens",
+    "technicalSkills": "Frontend: React, Next.js, TypeScript, JavaScript, Three.js, GSAP, Tailwind CSS, ASP.NET MVC, Bootstrap. Backend: .NET Core, .NET Framework, REST-API:er, SQL Server, T-SQL. Verktyg & moln: Azure, Git, GitHub, Docker.",
+    "contactHeading": "Kontakt",
+    "contactText": "Baserad i Stockholm, Sverige. Nås via kontaktformuläret på den här webbplatsen."
+  }
+}

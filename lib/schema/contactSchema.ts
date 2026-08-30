@@ -1,29 +1,32 @@
 import { z } from "zod";
 
+// Message values are i18n keys (under the "Contact.errors" namespace in
+// messages/{locale}.json), not literal English text - the UI renders
+// t(issue.message) so validation feedback is localized. This schema stays
+// the single source of validation *rules*, reused as-is by the Netlify
+// Function for server-side re-validation, which never needs to display
+// these messages to an end user.
 export const contactSchema = z.object({
   name: z
     .string()
-    .min(2, { message: "Name must be at least 2 characters." })
-    .max(100, { message: "Name must not exceed 100 characters." })
-    .regex(/^[a-zA-ZÀ-ÿ\s'-]+$/, {
-      message:
-        "Name can only contain letters, spaces, hyphens, and apostrophes.",
-    }),
+    .min(2, { message: "errors.name.min" })
+    .max(100, { message: "errors.name.max" })
+    .regex(/^[a-zA-ZÀ-ÿ\s'-]+$/, { message: "errors.name.pattern" }),
   email: z
     .string()
-    .email({ message: "Please enter a valid email address." })
-    .max(255, { message: "Email must not exceed 255 characters." })
+    .email({ message: "errors.email.invalid" })
+    .max(255, { message: "errors.email.max" })
     .toLowerCase()
     .trim(),
   subject: z
     .string()
-    .min(5, { message: "Subject must be at least 5 characters." })
-    .max(200, { message: "Subject must not exceed 200 characters." })
+    .min(5, { message: "errors.subject.min" })
+    .max(200, { message: "errors.subject.max" })
     .trim(),
   message: z
     .string()
-    .min(10, { message: "Message must be at least 10 characters." })
-    .max(2000, { message: "Message must not exceed 2000 characters." })
+    .min(10, { message: "errors.message.min" })
+    .max(2000, { message: "errors.message.max" })
     .trim(),
 });
 

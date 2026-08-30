@@ -122,8 +122,7 @@ export function useGSAPAnimations({
 
       // Calculate approach direction - screens approach along their own
       // face normal (derived from geometry, so it's correct regardless of
-      // how each mesh was rotated during the Blender export) so the flat
-      // photo is framed perpendicular instead of at an angle. Every other
+      // how each mesh was rotated during the Blender export). Every other
       // object keeps the fixed diagonal approach.
       const isScreen = HOVER_EXCLUDED_TARGETS.includes(object.type);
       const direction = isScreen

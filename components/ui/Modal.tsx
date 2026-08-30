@@ -2,9 +2,11 @@
 
 import gsap from "gsap";
 import { X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef } from "react";
 
 import { MODAL_ANIMATION_CONFIG } from "@/lib/constants";
+import { useFocusTrap } from "@/lib/hooks/useFocusTrap";
 import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 import { ModalProps } from "@/lib/types";
 
@@ -15,6 +17,7 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
+  const t = useTranslations("Modal");
 
   /* Animate modal open/close with GSAP */
   useEffect(() => {
@@ -99,6 +102,9 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
     return () => window.removeEventListener("keydown", handleEscape);
   }, [handleEscape]);
 
+  /* Trap Tab focus inside the dialog while open, restore it on close */
+  useFocusTrap(modalRef, isOpen);
+
   /* Handle overlay click (close modal when clicking outside) */
   const handleOverlayClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -133,7 +139,7 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
             <button
               onClick={onClose}
               className="group absolute top-4 right-4 z-50 flex size-10 transform items-center justify-center rounded-full bg-[#d4cfc5] transition-all duration-200 hover:scale-105"
-              aria-label="Close modal"
+              aria-label={t("close")}
             >
               <X className="text-moss group-hover:text-moss-dark size-6 transition-colors duration-200" />
             </button>

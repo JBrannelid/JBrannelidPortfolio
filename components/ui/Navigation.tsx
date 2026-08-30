@@ -2,8 +2,10 @@
 
 import gsap from "gsap";
 import { FileText, Github, Linkedin, Mail, User } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef } from "react";
 
+import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 import {
   NAVIGATION_ANIMATION_CONFIG,
   NAVIGATION_BUTTON_COLORS,
@@ -23,12 +25,13 @@ export default function Navigation({
   const sidebarRef = useRef<HTMLDivElement>(null);
   const buttonsRef = useRef<(HTMLButtonElement | null)[]>([]);
   const reducedMotion = useReducedMotion();
+  const t = useTranslations("Navigation");
 
   // Navigation buttons configuration
   const navButtons: NavButton[] = [
     {
       id: "about",
-      label: "About",
+      label: t("about"),
       icon: User,
       onClick: onAboutClick,
       type: "internal",
@@ -36,7 +39,7 @@ export default function Navigation({
     },
     {
       id: "cv",
-      label: "CV",
+      label: t("cv"),
       icon: FileText,
       onClick: onCVClick,
       type: "internal",
@@ -44,7 +47,7 @@ export default function Navigation({
     },
     {
       id: "contact",
-      label: "Contact",
+      label: t("contact"),
       icon: Mail,
       onClick: onContactClick,
       type: "internal",
@@ -52,7 +55,7 @@ export default function Navigation({
     },
     {
       id: "github",
-      label: "GitHub",
+      label: t("github"),
       icon: Github,
       onClick: onGitHubClick,
       type: "external",
@@ -60,7 +63,7 @@ export default function Navigation({
     },
     {
       id: "linkedin",
-      label: "LinkedIn",
+      label: t("linkedin"),
       icon: Linkedin,
       onClick: onLinkedInClick,
       type: "external",
@@ -146,7 +149,7 @@ export default function Navigation({
       <nav
         ref={sidebarRef}
         className="pointer-events-none fixed top-0 right-0 z-40 hidden h-screen flex-col items-end justify-center gap-4 md:flex"
-        aria-label="Main navigation"
+        aria-label={t("ariaLabel")}
       >
         {navButtons.map((button, index) => {
           const Icon = button.icon;
@@ -180,6 +183,14 @@ export default function Navigation({
         })}
       </nav>
 
+      {/* Language toggle - desktop only, top-right, separate from the
+          vertically-centered sidebar above. Mobile gets a compact toggle
+          inside the button row below instead (no room for a separate
+          floating element on small screens). */}
+      <div className="hidden md:block">
+        <LanguageSwitcher />
+      </div>
+
       {/* Mobile Navigation */}
       <header className="pointer-events-auto fixed top-0 right-0 left-0 z-40 md:hidden">
         <div className="container mx-auto px-4 py-4">
@@ -187,7 +198,7 @@ export default function Navigation({
             {/* Mobile navigation buttons */}
             <nav
               className="flex items-center gap-4"
-              aria-label="Main navigation"
+              aria-label={t("ariaLabel")}
             >
               {navButtons.map((button) => {
                 const Icon = button.icon;
@@ -203,6 +214,11 @@ export default function Navigation({
                   </button>
                 );
               })}
+
+              {/* Language toggle - same row, same icon-button style as the
+                  buttons above, since there's no room for a separate
+                  floating switcher on small screens. */}
+              <LanguageSwitcher variant="compact" />
             </nav>
           </div>
         </div>

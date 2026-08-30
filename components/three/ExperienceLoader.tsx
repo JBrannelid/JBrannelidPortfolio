@@ -3,13 +3,14 @@
 import gsap from "gsap";
 import { ArrowBigRight } from "lucide-react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
+import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 import {
-  DESKTOP_NAVIGATION_HINTS,
+  DESKTOP_NAVIGATION_HINT_IDS,
   LOADER_ANIMATION_CONFIG,
-  LOADER_MESSAGES,
-  TOUCH_NAVIGATION_HINTS,
+  TOUCH_NAVIGATION_HINT_IDS,
 } from "@/lib/constants";
 import { useIsMobileViewport } from "@/lib/hooks/useIsMobileViewport";
 import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
@@ -26,6 +27,7 @@ export default function ExperienceLoader({
   error,
   progress,
 }: ExperienceLoaderProps) {
+  const t = useTranslations("Loader");
   const [showEnterButton, setShowEnterButton] = useState(false);
   const [liveMessage, setLiveMessage] = useState("");
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -36,16 +38,17 @@ export default function ExperienceLoader({
   const lastAnnouncedRef = useRef(-1);
   const reducedMotion = useReducedMotion();
   const isMobileViewport = useIsMobileViewport();
-  const navigationHints = isMobileViewport
-    ? TOUCH_NAVIGATION_HINTS
-    : DESKTOP_NAVIGATION_HINTS;
+  const navHintVariant = isMobileViewport ? "touch" : "desktop";
+  const navigationHintIds = isMobileViewport
+    ? TOUCH_NAVIGATION_HINT_IDS
+    : DESKTOP_NAVIGATION_HINT_IDS;
   const clampedProgress = Math.min(Math.max(progress, 0), 100);
 
   /* Convert error to toast notification state */
   const errorState = error
     ? {
         errors: {
-          form: [error.message || "Failed to load 3D experience"],
+          form: [error.message || t("loadErrorFallback")],
         },
       }
     : undefined;
@@ -144,9 +147,7 @@ export default function ExperienceLoader({
     if (showEnterButton) {
       if (lastAnnouncedRef.current !== 100) {
         lastAnnouncedRef.current = 100;
-        setLiveMessage(
-          `${LOADER_MESSAGES.ready}. Press Enter the room to continue.`
-        );
+        setLiveMessage(t("readyAnnounce"));
       }
       return;
     }
@@ -154,9 +155,9 @@ export default function ExperienceLoader({
     const checkpoint = Math.floor(Math.min(progress, 99) / 25) * 25;
     if (checkpoint !== lastAnnouncedRef.current) {
       lastAnnouncedRef.current = checkpoint;
-      setLiveMessage(`${LOADER_MESSAGES.loading}, ${checkpoint} percent.`);
+      setLiveMessage(t("progressAnnounce", { percent: checkpoint }));
     }
-  }, [progress, showEnterButton]);
+  }, [progress, showEnterButton, t]);
 
   /* Handle enter button click - fade out entire loader */
   const handleEnter = () => {
@@ -202,6 +203,8 @@ export default function ExperienceLoader({
       {/* Texture */}
       <div className="bg-grain" />
 
+      <LanguageSwitcher />
+
       <div
         ref={contentRef}
         className="relative z-10 grid h-full w-full lg:grid-cols-[1.15fr_0.85fr]"
@@ -210,15 +213,18 @@ export default function ExperienceLoader({
         <div className="flex flex-col justify-center px-[7vw] py-[6vh] lg:px-[6vw]">
           <div className="flex max-w-lg flex-col gap-9 md:max-w-2xl lg:max-w-lg">
             <span className="text-moss-dark font-mono text-[0.9rem] font-semibold tracking-[0.22em] uppercase">
-              {LOADER_MESSAGES.kicker}
+              {t("kicker")}
             </span>
 
             <div className="flex flex-col gap-6">
-              <h1 className="text-charcoal text-[clamp(3rem,7vw,5rem)] leading-[0.95] font-semibold tracking-[-0.035em] text-balance">
-                Portfolio
-              </h1>
+              {/* Not a heading: CrawlableSummary already renders the page's
+                  one <h1> (name + role, better for a11y/SEO than "Portfolio"
+                  alone) - this is decorative landing-screen brand text. */}
+              <p className="text-charcoal text-[clamp(3rem,7vw,5rem)] leading-[0.95] font-semibold tracking-[-0.035em] text-balance">
+                {t("heading")}
+              </p>
               <p className="text-slate max-w-[32ch] text-[1.05rem] leading-relaxed">
-                {LOADER_MESSAGES.tagline}
+                {t("tagline")}
               </p>
             </div>
 
@@ -226,7 +232,7 @@ export default function ExperienceLoader({
               <div
                 className="flex items-baseline gap-5"
                 role="progressbar"
-                aria-label="Loading portfolio experience"
+                aria-label={t("progressAriaLabel")}
                 aria-valuemin={0}
                 aria-valuemax={100}
                 aria-valuenow={Math.round(clampedProgress)}
@@ -251,7 +257,7 @@ export default function ExperienceLoader({
                   ref={loadingTextRef}
                   className="text-slate text-[0.8rem] tracking-wide"
                 >
-                  {LOADER_MESSAGES.loading}
+                  {t("loadingLabel")}
                   <span className="animate-pulse">...</span>
                 </p>
               )}
@@ -271,13 +277,15 @@ export default function ExperienceLoader({
                   onClick={handleEnter}
                   className="btn-primary gap-2 px-8"
                 >
-                  Enter the room
+                  {t("enterButton")}
                   <ArrowBigRight className="size-4" />
                 </button>
 
                 <div className="text-slate flex flex-wrap gap-5 font-mono text-[0.68rem] tracking-wide uppercase">
-                  {navigationHints.map((hint) => (
-                    <span key={hint.id}>{hint.label}</span>
+                  {navigationHintIds.map((id) => (
+                    <span key={id}>
+                      {t(`navHints.${navHintVariant}.${id}`)}
+                    </span>
                   ))}
                 </div>
               </div>
@@ -292,7 +300,7 @@ export default function ExperienceLoader({
           <div className="relative aspect-square w-[min(64%,24rem)]">
             <Image
               src="/images/isometric_room.png"
-              alt="Isometric render of the 3D portfolio room"
+              alt={t("roomPreviewAlt")}
               fill
               sizes="420px"
               loading="eager"

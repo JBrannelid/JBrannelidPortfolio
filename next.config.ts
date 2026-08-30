@@ -1,4 +1,7 @@
 import type { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
+
+const withNextIntl = createNextIntlPlugin();
 
 const nextConfig: NextConfig = {
   // Standalone output for optimal deployment (Vercel/Netlify/Docker)
@@ -126,4 +129,4 @@ const nextConfig: NextConfig = {
   },
 } as const satisfies NextConfig;
 
-export default nextConfig;
+export default withNextIntl(nextConfig);

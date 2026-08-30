@@ -1,0 +1,273 @@
+{
+  "Metadata": {
+    "title": "Johannes Brannelid | Fullstack Developer",
+    "description": "Interactive 3D portfolio showcasing frontend development expertise in Next JS, React and modern web technologies. Explore projects, skills, and contact information through an immersive 3D experience.",
+    "keywords": [
+      "fullstack developer",
+      "frontend developer",
+      "backend developer",
+      ".NET developer",
+      "React developer",
+      "Next.js",
+      "TypeScript",
+      "Three.js",
+      "Azure",
+      "React",
+      ".NET Core",
+      "Tailwind CSS",
+      "GSAP animations",
+      "3D web experiences",
+      "interactive portfolio",
+      "web development",
+      "fullstack development",
+      "UX design",
+      "Scandinavian design",
+      "Stockholm developer",
+      "Sweden fullstack developer",
+      "Nordic web developer",
+      "modern web applications",
+      "scalable architecture",
+      "responsive design",
+      "accessible interfaces",
+      "performance optimization",
+      "radiographer turned developer",
+      "healthcare technology",
+      "career transition",
+      "Johannes Brannelid portfolio",
+      "interactive 3D portfolio",
+      "immersive web experience"
+    ]
+  },
+  "JsonLd": {
+    "jobTitle": "Fullstack Developer"
+  },
+  "Navigation": {
+    "ariaLabel": "Main navigation",
+    "about": "About",
+    "cv": "CV",
+    "contact": "Contact",
+    "github": "GitHub",
+    "linkedin": "LinkedIn"
+  },
+  "IdentityBadge": {
+    "role": "Fullstack Developer"
+  },
+  "LanguageSwitcher": {
+    "english": "English",
+    "swedish": "Svenska",
+    "switchToEnglish": "Switch to English",
+    "switchToSwedish": "Switch to Swedish"
+  },
+  "Loader": {
+    "kicker": "Welcome to my portfolio",
+    "tagline": "A minimalist isometric room, rendered in real time - designed and built by Johannes Brannelid.",
+    "heading": "Portfolio",
+    "roomPreviewAlt": "Isometric render of the 3D portfolio room",
+    "loadingLabel": "Loading...",
+    "readyLabel": "Ready to Explore",
+    "enterButton": "Enter the room",
+    "progressAriaLabel": "Loading portfolio experience",
+    "progressAnnounce": "Loading...., {percent} percent.",
+    "readyAnnounce": "Ready to Explore. Press Enter the room to continue.",
+    "loadErrorFallback": "Failed to load 3D experience",
+    "navHints": {
+      "desktop": {
+        "drag": "Drag to Look Around",
+        "click": "Click to Explore",
+        "scroll-zoom": "Scroll to Zoom"
+      },
+      "touch": {
+        "drag": "Drag to Look Around",
+        "tap": "Tap to Explore",
+        "pinch-zoom": "Pinch to Zoom"
+      }
+    }
+  },
+  "Modal": {
+    "close": "Close modal"
+  },
+  "About": {
+    "title": "About Me",
+    "profileAlt": "Profile picture of Johannes Brannelid",
+    "roleHeading": "Fullstack Developer & Radiographer",
+    "bioIntro": "Hi, I am",
+    "bioParagraph1": "I started my career as a radiographer in healthcare before moving into software development. Today, I work as a fullstack developer, combining my experience from healthcare with a passion for building software.",
+    "bioParagraph2": "I enjoy working across the full stack, from creating clean and intuitive interfaces to developing the backend systems and integrations that make everything work together.",
+    "philosophyHeading": "My Design Philosophy",
+    "philosophyQuote": "I like keeping things simple. My approach is influenced by Scandinavian design: clean, functional and user-friendly, with tones inspired by nature.",
+    "expertiseHeading": "Areas of expertise",
+    "frontend": "Frontend",
+    "frontendSkills": "React, Next.js, TypeScript, Three.js, Tailwind CSS, Asp Net MVC, BootStrap",
+    "backendCloud": "Backend & Cloud",
+    "backendCloudSkills": ".NET Core, Azure, REST APIs, Docker",
+    "tools": "Tools",
+    "toolsSkills": "Git, GitHub, Jira, Figma",
+    "animation3d": "3D & Animation",
+    "animation3dSkills": "Three.js, Blender, GSAP",
+    "interestsHeading": "Beyond Coding",
+    "interestMusic": "Music",
+    "interestCoffee": "Coffee",
+    "interestRunning": "Running",
+    "interestFamily": "Family Activities"
+  },
+  "CV": {
+    "title": "Career Overview",
+    "biographyHeading": "Biography",
+    "biographyParagraph1": "I come from a background in healthcare, leadership and sales. Today, I work as a Software Developer at Alma Health AB, where I develop and maintain solutions across the .NET ecosystem. My work includes backend development, SQL Server, external API integrations and improving existing systems.",
+    "biographyParagraph2": "Outside of work, I spend time exploring modern frontend development and building personal projects with technologies such as Next.js.",
+    "workExperienceHeading": "Work Experience",
+    "experience": [
+      {
+        "title": "Software Developer",
+        "period": "May 2026 - Ongoing",
+        "company": "Alma Health AB",
+        "bullets": [
+          "Full-time (100%)",
+          "Development and maintenance of applications using VB.NET, WinForms, .NET Framework and .NET 7",
+          "SQL Server and T-SQL development",
+          "Data mapping and integrations with external APIs"
+        ]
+      },
+      {
+        "title": "Radiographer",
+        "period": "2023 - 2026",
+        "company": "Stockholm - University Hospital",
+        "bullets": ["Hourly employment", "Emergency care and trauma imaging"]
+      },
+      {
+        "title": "First Line Manager",
+        "period": "2021 - 2023",
+        "company": "Stockholm - University Hospital",
+        "bullets": [
+          "Team Leadership",
+          "Staff Development",
+          "Healthcare Administration"
+        ]
+      },
+      {
+        "title": "Radiographer",
+        "period": "2017 - 2021",
+        "company": "Stockholm - University Hospital",
+        "bullets": ["Radiography", "Unit Management", "Mentoring"]
+      },
+      {
+        "title": "Deputy Store Manager / Staff",
+        "period": "2012 - 2017",
+        "company": "Stockholm - University Hospital",
+        "bullets": [
+          "Retail Management",
+          "Customer Service",
+          "Team Leadership",
+          "Sales"
+        ]
+      },
+      {
+        "title": "Waiter / HealtCare",
+        "period": "2008 - 2012",
+        "company": "Stockholm",
+        "bullets": ["Customer Service", "Food Service", "Team Work"]
+      }
+    ],
+    "educationHeading": "Education",
+    "education": [
+      {
+        "title": "Fullstack .NET",
+        "period": "2024 - 2026",
+        "school": "Chas Academy | Stockholm"
+      },
+      {
+        "title": "Radiography",
+        "period": "2014 - 2017",
+        "school": "Uppsala University"
+      }
+    ],
+    "technicalExpertiseHeading": "Technical Expertise",
+    "frontendLabel": "Frontend",
+    "frontendItems": [
+      "React / Next.js",
+      "Asp Net MVC",
+      "TypeScript / JavaScript",
+      "Tailwind CSS / BootStrap",
+      "Three.js / GSAP"
+    ],
+    "backendLabel": "Backend",
+    "backendItems": [
+      ".NET Core / .NET Framework",
+      "REST APIs",
+      "SQL Server / T-SQL"
+    ],
+    "toolsCloudLabel": "Tools & Cloud",
+    "toolsCloudItems": ["Azure", "Git / GitHub", "Docker"],
+    "certificationsHeading": "Certifications",
+    "certLeadership": "Leadership Training",
+    "certDriversLicense": "Driver's License Type B",
+    "footerPrompt": "Interested in seeing more projects or contacting me?",
+    "linkedinButton": "LinkedIn",
+    "githubButton": "GitHub"
+  },
+  "Contact": {
+    "title": "Contact Me",
+    "intro": "Do you have an idea or a project? I look forward to hearing from you!",
+    "honeypotLabel": "Don't fill this out if you're human:",
+    "nameLabel": "Name",
+    "emailLabel": "Email",
+    "subjectLabel": "Subject",
+    "messageLabel": "Message",
+    "sending": "Sending...",
+    "sendButton": "Send Message",
+    "directContactHeading": "Direct contact",
+    "locationLabel": "Location",
+    "socialHeading": "Follow me on social media",
+    "linkedinButton": "LinkedIn",
+    "githubButton": "GitHub",
+    "footerNote": "I look forward to hearing from you!",
+    "successToast": "Thank you for your message!",
+    "genericErrorToast": "Something went wrong. Please try again or contact me directly via email.",
+    "errors": {
+      "name": {
+        "min": "Name must be at least 2 characters.",
+        "max": "Name must not exceed 100 characters.",
+        "pattern": "Name can only contain letters, spaces, hyphens, and apostrophes."
+      },
+      "email": {
+        "invalid": "Please enter a valid email address.",
+        "max": "Email must not exceed 255 characters."
+      },
+      "subject": {
+        "min": "Subject must be at least 5 characters.",
+        "max": "Subject must not exceed 200 characters."
+      },
+      "message": {
+        "min": "Message must be at least 10 characters.",
+        "max": "Message must not exceed 2000 characters."
+      }
+    }
+  },
+  "ExternalLink": {
+    "title": "Leave Site?",
+    "cancel": "Cancel",
+    "continue": "Continue"
+  },
+  "CrawlableSummary": {
+    "heading": "Johannes Brannelid — Fullstack Developer",
+    "bio": "I come from a background in healthcare, leadership and sales. Today, I work as a Software Developer at Alma Health AB, where I develop and maintain solutions across the .NET ecosystem. My work includes backend development, SQL Server, external API integrations and improving existing systems. Outside of work, I spend time exploring modern frontend development and building personal projects with technologies such as Next.js, React, TypeScript and Three.js.",
+    "workExperienceHeading": "Work Experience",
+    "workExperience": [
+      "Software Developer, Alma Health AB — May 2026 - Ongoing",
+      "Radiographer, Stockholm University Hospital — until Aug 2026",
+      "First Line Manager, Stockholm University Hospital — 2021-2023",
+      "Radiographer, Stockholm University Hospital — 2017-2021",
+      "Deputy Store Manager / Staff — 2012-2017",
+      "Waiter / Healthcare — 2008-2012"
+    ],
+    "educationHeading": "Education",
+    "education": [
+      "Fullstack .NET, Chas Academy, Stockholm — 2024-ongoing",
+      "Radiography, Uppsala University — 2014-2017"
+    ],
+    "technicalSkillsHeading": "Technical Skills",
+    "technicalSkills": "Frontend: React, Next.js, TypeScript, JavaScript, Three.js, GSAP, Tailwind CSS, ASP.NET MVC, Bootstrap. Backend: .NET Core, .NET Framework, REST APIs, SQL Server, T-SQL. Tools & Cloud: Azure, Git, GitHub, Docker.",
+    "contactHeading": "Contact",
+    "contactText": "Based in Stockholm, Sweden. Available via the contact form on this site."
+  }
+}

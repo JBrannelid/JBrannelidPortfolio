@@ -4,6 +4,7 @@
 "use client";
 
 import { Github, Linkedin, LoaderCircle, Mail, MapPin } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { FormEvent, useState } from "react";
 import { z } from "zod";
 
@@ -13,6 +14,8 @@ import { contactSchema } from "@/lib/schema/contactSchema";
 import { ContactFormValues, FormSubmissionState } from "@/lib/types";
 
 export default function ContactModalContent() {
+  const t = useTranslations("Contact");
+
   /* Form data state with strict typing */
   const [formData, setFormData] = useState<ContactFormValues>({
     name: "",
@@ -28,11 +31,27 @@ export default function ContactModalContent() {
   // bot submissions silently.
   const [botField, setBotField] = useState("");
 
-  /* Toast notifications for success/general errors */
-  useToasts(submitState, {
-    successMessage: "Thank you for your message!",
-    duration: 5000,
-  });
+  /* Toast notifications for success/general errors. `submitState.errors`
+   * holds i18n keys (see lib/schema/contactSchema.ts), so they're resolved
+   * to display text here before reaching useToasts, which just renders
+   * whatever strings it's given. */
+  useToasts(
+    submitState && {
+      ...submitState,
+      errors: submitState.errors
+        ? Object.fromEntries(
+            Object.entries(submitState.errors).map(([field, keys]) => [
+              field,
+              keys?.map((key) => t(key)),
+            ])
+          )
+        : undefined,
+    },
+    {
+      successMessage: t("successToast"),
+      duration: 5000,
+    }
+  );
 
   /* Handle input change */
   const handleChange = (
@@ -62,7 +81,8 @@ export default function ContactModalContent() {
     e.preventDefault();
     setSubmitState(undefined);
 
-    // Validate with Zod
+    // Validate with Zod - the resulting fieldErrors are i18n keys (see
+    // lib/schema/contactSchema.ts), translated at render time below.
     const result = contactSchema.safeParse(formData);
 
     if (!result.success) {
@@ -92,13 +112,7 @@ export default function ContactModalContent() {
       setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (error) {
       console.error("Form submission error:", error);
-      setSubmitState({
-        errors: {
-          form: [
-            "Something went wrong. Please try again or contact me directly via email.",
-          ],
-        },
-      });
+      setSubmitState({ errors: { form: ["genericErrorToast"] } });
     } finally {
       setIsSubmitting(false);
     }
@@ -109,12 +123,10 @@ export default function ContactModalContent() {
       {/* Header */}
       <div className="mb-8">
         <h2 id="modal-title" className="text-soft-black mb-2 font-light">
-          Contact Me
+          {t("title")}
         </h2>
         <div className="divider"></div>
-        <p className="text-slate mt-4">
-          Do you have an idea or a project? I look forward to hearing from you!
-        </p>
+        <p className="text-slate mt-4">{t("intro")}</p>
       </div>
 
       {/* Contact Form */}
@@ -133,7 +145,7 @@ export default function ContactModalContent() {
             function via botField and dropped silently if non-empty */}
         <p className="hidden">
           <label>
-            Don&apos;t fill this out if you&apos;re human:
+            {t("honeypotLabel")}
             <input
               name="bot-field"
               value={botField}
@@ -150,7 +162,8 @@ export default function ContactModalContent() {
             htmlFor="name"
             className="text-charcoal mb-2 block font-medium"
           >
-            Name<span className="text-error ml-0.5">*</span>
+            {t("nameLabel")}
+            <span className="text-error ml-0.5">*</span>
           </label>
           <input
             type="text"
@@ -166,6 +179,11 @@ export default function ContactModalContent() {
               submitState?.errors?.name ? "name-error" : undefined
             }
           />
+          {submitState?.errors?.name && (
+            <p id="name-error" role="alert" className="text-error mt-1 text-sm">
+              {t(submitState.errors.name[0])}
+            </p>
+          )}
         </div>
 
         {/* Email Input */}
@@ -174,7 +192,8 @@ export default function ContactModalContent() {
             htmlFor="email"
             className="text-charcoal mb-2 block font-medium"
           >
-            Email<span className="text-error ml-0.5">*</span>
+            {t("emailLabel")}
+            <span className="text-error ml-0.5">*</span>
           </label>
           <input
             type="email"
@@ -190,6 +209,11 @@ export default function ContactModalContent() {
               submitState?.errors?.email ? "email-error" : undefined
             }
           />
+          {submitState?.errors?.email && (
+            <p id="email-error" role="alert" className="text-error mt-1 text-sm">
+              {t(submitState.errors.email[0])}
+            </p>
+          )}
         </div>
 
         {/* Subject Input */}
@@ -198,7 +222,8 @@ export default function ContactModalContent() {
             htmlFor="subject"
             className="text-charcoal mb-2 block font-medium"
           >
-            Subject<span className="text-error ml-0.5">*</span>
+            {t("subjectLabel")}
+            <span className="text-error ml-0.5">*</span>
           </label>
           <input
             type="text"
@@ -214,6 +239,15 @@ export default function ContactModalContent() {
               submitState?.errors?.subject ? "subject-error" : undefined
             }
           />
+          {submitState?.errors?.subject && (
+            <p
+              id="subject-error"
+              role="alert"
+              className="text-error mt-1 text-sm"
+            >
+              {t(submitState.errors.subject[0])}
+            </p>
+          )}
         </div>
 
         {/* Message Textarea */}
@@ -222,7 +256,8 @@ export default function ContactModalContent() {
             htmlFor="message"
             className="text-charcoal mb-2 block font-medium"
           >
-            Message<span className="text-error ml-0.5">*</span>
+            {t("messageLabel")}
+            <span className="text-error ml-0.5">*</span>
           </label>
           <textarea
             id="message"
@@ -238,6 +273,15 @@ export default function ContactModalContent() {
               submitState?.errors?.message ? "message-error" : undefined
             }
           />
+          {submitState?.errors?.message && (
+            <p
+              id="message-error"
+              role="alert"
+              className="text-error mt-1 text-sm"
+            >
+              {t(submitState.errors.message[0])}
+            </p>
+          )}
         </div>
 
         {/* Submit Button */}
@@ -251,12 +295,12 @@ export default function ContactModalContent() {
             {isSubmitting ? (
               <>
                 <LoaderCircle className="mr-2 size-5 animate-spin" />
-                Sending...
+                {t("sending")}
               </>
             ) : (
               <>
                 <Mail className="mr-2 size-5" />
-                Send Message
+                {t("sendButton")}
               </>
             )}
           </button>
@@ -269,7 +313,7 @@ export default function ContactModalContent() {
       {/* Direct Contact Info */}
       <div className="mb-8">
         <h3 className="text-charcoal mb-4 text-xl font-medium">
-          Direct contact
+          {t("directContactHeading")}
         </h3>
         <div className="space-y-3">
           {/* Email */}
@@ -281,7 +325,7 @@ export default function ContactModalContent() {
               <Mail className="text-charcoal size-4" />
             </div>
             <div>
-              <p className="text-slate">Email</p>
+              <p className="text-slate">{t("emailLabel")}</p>
               <p className="text-charcoal font-semibold">
                 {CONTACT_INFO.email}
               </p>
@@ -294,7 +338,7 @@ export default function ContactModalContent() {
               <MapPin className="text-charcoal size-5" />
             </div>
             <div>
-              <p className="text-slate">Location</p>
+              <p className="text-slate">{t("locationLabel")}</p>
               <p className="text-charcoal font-semibold">
                 {CONTACT_INFO.location.city}, {CONTACT_INFO.location.country}
               </p>
@@ -305,7 +349,7 @@ export default function ContactModalContent() {
 
       {/* Social Links */}
       <div>
-        <h3 className="text-charcoal mb-4">Follow me on social media</h3>
+        <h3 className="text-charcoal mb-4">{t("socialHeading")}</h3>
         <div className="flex flex-wrap gap-3">
           {/* LinkedIn */}
           <a
@@ -315,7 +359,7 @@ export default function ContactModalContent() {
             className="bg-charcoal text-warm-white! ease flex transform items-center gap-2 rounded-lg px-4 py-2 transition duration-600 hover:scale-105 hover:opacity-90"
           >
             <Linkedin className="size-4" />
-            LinkedIn
+            {t("linkedinButton")}
           </a>
 
           {/* GitHub */}
@@ -326,7 +370,7 @@ export default function ContactModalContent() {
             className="bg-charcoal text-warm-white! ease flex transform items-center gap-2 rounded-lg px-4 py-2 transition duration-600 hover:scale-105 hover:opacity-90"
           >
             <Github className="size-4" />
-            GitHub
+            {t("githubButton")}
           </a>
         </div>
       </div>
@@ -336,9 +380,7 @@ export default function ContactModalContent() {
 
       {/* Footer Note */}
       <div className="mb-12">
-        <p className="text-slate text-center">
-          I look forward to hearing from you!
-        </p>
+        <p className="text-slate text-center">{t("footerNote")}</p>
       </div>
     </div>
   );

@@ -4,6 +4,26 @@ All notable changes to this project are documented in this file.
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-08-30
+
+### Added
+
+- Browser language auto-detection on first visit (Swedish → `/sv`, everyone
+  else → English), with the choice persisted for a year via cookie once a
+  visitor picks one explicitly.
+- Language switcher: flag + text-labelled choice on the landing screen,
+  plus a toggle in the main navigation
+- Every page string translated to Swedish: navigation, landing screen,
+  About/CV/Contact content, form validation messages, and the SEO summary
+  block.
+
+### Fixed
+
+- Heading hierarchy: removed a duplicate `<h1>`, and closed an `h3`→`h5`
+  skip in the CV modal.
+- Contact form validation errors are now actually shown next to their
+  field - the `aria-describedby` referenced elements that didn't exist.
+
 ## [1.3.0] - 2026-08-30
 
 ### Added

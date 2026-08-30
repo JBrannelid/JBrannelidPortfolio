@@ -1,6 +1,7 @@
 "use client";
 
 import gsap from "gsap";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 
 import { siteConfig } from "@/lib/config/site";
@@ -10,6 +11,7 @@ import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 export default function IdentityBadge() {
   const ref = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
+  const t = useTranslations("IdentityBadge");
 
   useEffect(() => {
     if (!ref.current) return;
@@ -39,7 +41,7 @@ export default function IdentityBadge() {
           {siteConfig.name}
         </p>
         <p className="text-charcoal/70 text-xs leading-tight font-medium">
-          Fullstack Developer
+          {t("role")}
         </p>
       </div>
     </div>

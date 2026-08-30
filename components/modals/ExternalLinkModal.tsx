@@ -6,9 +6,11 @@
 
 import gsap from "gsap";
 import { LogOut } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 
 import { EXTERNAL_LINK_MODAL_ANIMATION } from "@/lib/constants";
+import { useFocusTrap } from "@/lib/hooks/useFocusTrap";
 import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 import { ExternalLinkModalProps } from "@/lib/types";
 
@@ -22,6 +24,7 @@ export default function ExternalLinkModal({
   const overlayRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
+  const t = useTranslations("ExternalLink");
 
   /* GSAP - Animate modal open/close */
   useEffect(() => {
@@ -97,6 +100,9 @@ export default function ExternalLinkModal({
     return () => window.removeEventListener("keydown", handleEscape);
   }, [isOpen, onCancel]);
 
+  /* Trap Tab focus inside the dialog while open, restore it on close */
+  useFocusTrap(modalRef, isOpen);
+
   return (
     <div
       ref={overlayRef}
@@ -120,12 +126,12 @@ export default function ExternalLinkModal({
           </div>
 
           {/* Title */}
-          <h3
+          <h2
             id="external-link-title"
             className="text-charcoal mb-2 text-center font-bold"
           >
-            Leave Site?
-          </h3>
+            {t("title")}
+          </h2>
 
           {/* Site Name */}
           <div className="bg-sand/50 mb-4 rounded-lg p-3">
@@ -136,10 +142,10 @@ export default function ExternalLinkModal({
           {/* Buttons */}
           <div className="flex gap-3">
             <button onClick={onCancel} className="btn-secondary">
-              Cancel
+              {t("cancel")}
             </button>
             <button onClick={onConfirm} className="btn-primary">
-              Continue
+              {t("continue")}
             </button>
           </div>
         </div>

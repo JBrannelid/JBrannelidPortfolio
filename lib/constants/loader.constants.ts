@@ -1,21 +1,15 @@
-export const LOADER_MESSAGES = {
-  kicker: "Welcome to my portfolio",
-  tagline:
-    "A minimalist isometric room, rendered in real time - designed and built by Johannes Brannelid.",
-  loading: "Preparing your experience",
-  ready: "Ready to Explore",
-} as const;
-
-export const DESKTOP_NAVIGATION_HINTS = [
-  { id: "drag", label: "Drag to Look Around" },
-  { id: "click", label: "Click to Explore" },
-  { id: "scroll-zoom", label: "Scroll to Zoom" },
+// Hint/label text lives in messages/{locale}.json under "Loader" - these ids
+// just define which hints exist and in what order, locale-agnostically.
+export const DESKTOP_NAVIGATION_HINT_IDS = [
+  "drag",
+  "click",
+  "scroll-zoom",
 ] as const;
 
-export const TOUCH_NAVIGATION_HINTS = [
-  { id: "drag", label: "Drag to Look Around" },
-  { id: "tap", label: "Tap to Explore" },
-  { id: "pinch-zoom", label: "Pinch to Zoom" },
+export const TOUCH_NAVIGATION_HINT_IDS = [
+  "drag",
+  "tap",
+  "pinch-zoom",
 ] as const;
 
 export const LOADER_PROGRESS_CONFIG = {
