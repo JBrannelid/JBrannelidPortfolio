@@ -4,6 +4,13 @@ All notable changes to this project are documented in this file.
 
 ## [Unreleased]
 
+## [1.4.1] - 2026-08-30
+
+### Changed
+
+- Switching language now shows a spinner on the clicked flag while the new
+  locale's page loads, instead of appearing to do nothing.
+
 ## [1.4.0] - 2026-08-30
 
 ### Added

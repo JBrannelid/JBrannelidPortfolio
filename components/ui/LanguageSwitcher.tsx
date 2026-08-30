@@ -1,5 +1,7 @@
 "use client";
 
+import { LoaderCircle } from "lucide-react";
+import { useLinkStatus } from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 
 import { Link } from "@/i18n/navigation";
@@ -13,6 +15,32 @@ interface LanguageSwitcherProps {
   // too tight for the full card.
   variant?: "card" | "compact";
   className?: string;
+}
+
+// Rendered as a Link's child, `useLinkStatus` reports whether *that*
+// specific navigation is in flight - swaps the flag for the same spinner
+// already used for the contact form's pending state, so switching language
+// doesn't read as unresponsive while the new locale's page loads.
+function FlagOrSpinner({
+  flag,
+  iconSize,
+  textSize,
+}: {
+  flag: string;
+  iconSize: string;
+  textSize: string;
+}) {
+  const { pending } = useLinkStatus();
+  if (pending) {
+    return (
+      <LoaderCircle className={`${iconSize} animate-spin`} aria-hidden="true" />
+    );
+  }
+  return (
+    <span aria-hidden="true" className={textSize}>
+      {flag}
+    </span>
+  );
 }
 
 export default function LanguageSwitcher({
@@ -31,11 +59,16 @@ export default function LanguageSwitcher({
       <Link
         href="/"
         locale={nextLocale}
+        prefetch={false}
         aria-label={label}
         title={label}
         className={`bg-sand border-stone hover:bg-stone flex size-13 items-center justify-center rounded-lg border text-xl transition-all duration-200 hover:scale-105 active:scale-95 ${className}`}
       >
-        <span aria-hidden="true">{nextLocale === "en" ? "🇬🇧" : "🇸🇪"}</span>
+        <FlagOrSpinner
+          flag={nextLocale === "en" ? "🇬🇧" : "🇸🇪"}
+          iconSize="size-5"
+          textSize="text-xl"
+        />
       </Link>
     );
   }
@@ -50,15 +83,18 @@ export default function LanguageSwitcher({
       <Link
         href="/"
         locale="en"
+        prefetch={false}
         aria-label={t("switchToEnglish")}
         aria-current={locale === "en" ? "true" : undefined}
         className={`flex flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 transition-colors duration-200 ${
           locale === "en" ? "bg-moss-dark/10" : "hover:bg-sand/60"
         }`}
       >
-        <span aria-hidden="true" className="text-lg leading-none">
-          🇬🇧
-        </span>
+        <FlagOrSpinner
+          flag="🇬🇧"
+          iconSize="size-4"
+          textSize="text-lg leading-none"
+        />
         <span className="text-charcoal text-[0.65rem] leading-tight font-medium">
           {t("english")}
         </span>
@@ -66,15 +102,18 @@ export default function LanguageSwitcher({
       <Link
         href="/"
         locale="sv"
+        prefetch={false}
         aria-label={t("switchToSwedish")}
         aria-current={locale === "sv" ? "true" : undefined}
         className={`flex flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 transition-colors duration-200 ${
           locale === "sv" ? "bg-moss-dark/10" : "hover:bg-sand/60"
         }`}
       >
-        <span aria-hidden="true" className="text-lg leading-none">
-          🇸🇪
-        </span>
+        <FlagOrSpinner
+          flag="🇸🇪"
+          iconSize="size-4"
+          textSize="text-lg leading-none"
+        />
         <span className="text-charcoal text-[0.65rem] leading-tight font-medium">
           {t("swedish")}
         </span>
