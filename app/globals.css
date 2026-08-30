@@ -19,7 +19,7 @@
   /* Green Tones */
   --color-sage: oklch(0.783 0.044 151 / 1);
   --color-moss: oklch(0.657 0.079 138 / 1);
-  --color-moss-dark: oklch(0.58 0.079 138 / 1);
+  --color-moss-dark: oklch(0.45 0.079 138 / 1);
 
   /* Danger Colors */
   --color-error: oklch(0.627 0.171 29 / 1);
@@ -265,11 +265,14 @@ textarea:focus-visible {
   padding: 0.75rem 1.5rem;
   border-radius: var(--radius-lg);
   font-weight: 500;
-  background-color: var(--color-moss);
+  /* moss-dark instead of moss: --color-moss against warm-white text fell
+   * below WCAG AA contrast (flagged by Lighthouse on the "Enter the room"
+   * button) */
+  background-color: var(--color-moss-dark);
   color: var(--color-warm-white);
   transition: all 200ms ease-in-out;
   cursor: pointer;
-  border: 2px solid var(--color-moss);
+  border: 2px solid var(--color-moss-dark);
 }
 
 .btn-primary:hover {

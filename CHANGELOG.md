@@ -4,6 +4,33 @@ All notable changes to this project are documented in this file.
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-08-30
+
+### Added
+
+- Person structured data (JSON-LD) so search engines can associate
+  jbrannelid.com with Johannes Brannelid by name.
+- Canonical URL in page metadata.
+- Domain ownership verified in Google Search Console (DNS) and sitemap
+  submitted.
+
+### Changed
+
+- The 3D engine (Three.js/GSAP) is now lazy-loaded after initial paint
+  instead of shipping in the initial bundle, cutting main-thread work
+  before the room is even shown.
+- Updated dependencies to their latest compatible patch/minor versions
+  (gsap, prettier, tailwindcss, zod, eslint, various `@types/*`, and
+  others).
+
+### Fixed
+
+- Insufficient color contrast on the "Enter the room" button (WCAG AA).
+
+### Removed
+
+- Unused dependency: `@next/third-parties`.
+
 ## [1.2.1] - 2026-08-30
 
 ### Fixed

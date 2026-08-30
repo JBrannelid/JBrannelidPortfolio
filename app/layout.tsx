@@ -1,12 +1,31 @@
 import "./globals.css";
 
-import { GoogleAnalytics } from "@next/third-parties/google";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import { Toaster } from "react-hot-toast";
 
-import Experience from "@/components/Experience";
+import Experience from "@/components/ExperienceClient";
 import { siteConfig } from "@/lib/config/site";
+
+const GA_MEASUREMENT_ID = "G-5Z8NYGYBQP";
+
+// Person structured data (schema.org/JSON-LD) - tells search engines this
+// domain represents this specific person, tying the name to the site the
+// way a Knowledge-Panel-style entity lookup expects.
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: siteConfig.name,
+  url: siteConfig.url,
+  jobTitle: "Fullstack Developer",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: siteConfig.location.city,
+    addressCountry: "SE",
+  },
+  sameAs: [siteConfig.links.github, siteConfig.links.linkedin],
+};
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -94,11 +113,15 @@ export const metadata: Metadata = {
   // Manifest for PWA support
   manifest: "/site.webmanifest",
 
-  // Verification for search engines (add your verification codes)
-  verification: {
-    // google: "your-google-verification-code",
-    // bing: "your-bing-verification-code",
+  // Canonical URL - avoids any duplicate-content ambiguity (www vs.
+  // non-www, query params, etc.)
+  alternates: {
+    canonical: siteConfig.url,
   },
+
+  // Google Search Console ownership is verified via a DNS TXT record on
+  // jbrannelid.com instead of the HTML-tag method, so no `verification`
+  // meta tag is needed here.
 };
 
 export default function RootLayout({
@@ -128,7 +151,35 @@ export default function RootLayout({
 
         <Experience />
         {children}
-        <GoogleAnalytics gaId="G-5Z8NYGYBQP" />
+
+        {/* Person structured data for search engines */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
+
+        {/* Google Analytics, loaded manually (instead of
+            @next/third-parties' <GoogleAnalytics>, which hardcodes
+            "afterInteractive") with strategy="lazyOnload" so it doesn't
+            compete with the 3D experience's own script for main-thread
+            time during load. Trade-off: very short visits that bounce
+            before the browser goes idle won't be tracked. */}
+        <Script
+          id="_next-ga-init"
+          strategy="lazyOnload"
+          dangerouslySetInnerHTML={{
+            __html: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){window.dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '${GA_MEASUREMENT_ID}');`,
+          }}
+        />
+        <Script
+          id="_next-ga"
+          strategy="lazyOnload"
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+        />
       </body>
     </html>
   );
