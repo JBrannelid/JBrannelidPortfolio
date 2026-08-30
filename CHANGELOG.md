@@ -4,6 +4,15 @@ All notable changes to this project are documented in this file.
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-08-30
+
+### Fixed
+
+- TV/computer screen zoom now frames the photo centered and straight-on
+  instead of skewed from the side
+- Tapping the TV/computer screen on mobile no longer sends the camera
+  flying off
+
 ## [1.2.0] - 2026-08-29
 
 ### Added

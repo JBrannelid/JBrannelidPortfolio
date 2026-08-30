@@ -11,6 +11,7 @@ import {
   HOVER_CONFIG,
   HOVER_EXCLUDED_TARGETS,
 } from "@/lib/constants";
+import { getMeshWorldNormal } from "@/lib/three/utils/getMeshWorldNormal";
 import {
   CameraAnimationResult,
   InteractiveObject,
@@ -19,8 +20,6 @@ import {
 import { InteractiveTarget } from "@/lib/types";
 
 import { useReducedMotion } from "./useReducedMotion";
-
-const SCREEN_CAMERA_OFFSET = new THREE.Vector3(1, 0.3, 1);
 
 export function useGSAPAnimations({
   interactiveObjects,
@@ -121,58 +120,64 @@ export function useGSAPAnimations({
       const targetPosition = new THREE.Vector3();
       mesh.getWorldPosition(targetPosition);
 
-      // Calculate Camera Position - screens get their own tunable offset
-      // (see SCREEN_CAMERA_OFFSET above), every other object keeps this one.
+      // Calculate approach direction - screens approach along their own
+      // face normal (derived from geometry, so it's correct regardless of
+      // how each mesh was rotated during the Blender export) so the flat
+      // photo is framed perpendicular instead of at an angle. Every other
+      // object keeps the fixed diagonal approach.
       const isScreen = HOVER_EXCLUDED_TARGETS.includes(object.type);
-      const offsetSource = isScreen
-        ? SCREEN_CAMERA_OFFSET
-        : new THREE.Vector3(1, 0.5, 1);
-      const offset = offsetSource
+      const direction = isScreen
+        ? getMeshWorldNormal(mesh)
+        : new THREE.Vector3(1, 0.5, 1).normalize();
+
+      if (isScreen && process.env.NODE_ENV === "development") {
+        console.log(`🖥️ ${object.type} world normal:`, direction.toArray());
+      }
+
+      const cameraPosition = targetPosition
         .clone()
-        .normalize()
-        .multiplyScalar(CAMERA_ZOOM_DISTANCE);
-      const cameraPosition = targetPosition.clone().add(offset);
+        .add(direction.multiplyScalar(CAMERA_ZOOM_DISTANCE));
 
       return new Promise((resolve) => {
         cameraTimelineRef.current?.kill();
         setControlsEnabled(false);
 
+        // Drive position, look-target, and camera rotation off a single
+        // eased proxy instead of tweening camera.position/controls.target
+        // independently - OrbitControls.update() is the only thing that
+        // normally reorients the camera to face controls.target, and it's
+        // deliberately skipped while controls are disabled (see Scene.tsx),
+        // so without this the camera would translate but never turn to
+        // actually look at the object.
+        const startPosition = camera.position.clone();
+        const startTarget = controls.target.clone();
+        const proxy = { t: 0 };
+
+        const duration = reducedMotion
+          ? 0.01
+          : CAMERA_ANIMATION_CONFIG.zoom.duration;
+
         const tl = gsap.timeline({
           onComplete: () => {
-            if (controls) {
-              controls.target.copy(targetPosition);
-            }
+            camera.position.copy(cameraPosition);
+            controls.target.copy(targetPosition);
+            camera.lookAt(targetPosition);
             cameraTimelineRef.current = null;
             resolve();
           },
         });
         cameraTimelineRef.current = tl;
 
-        const duration = reducedMotion
-          ? 0.01
-          : CAMERA_ANIMATION_CONFIG.zoom.duration;
-
-        tl.to(
-          camera.position,
-          {
-            x: cameraPosition.x,
-            y: cameraPosition.y,
-            z: cameraPosition.z,
-            duration,
-            ease: CAMERA_ANIMATION_CONFIG.zoom.ease,
+        tl.to(proxy, {
+          t: 1,
+          duration,
+          ease: CAMERA_ANIMATION_CONFIG.zoom.ease,
+          onUpdate: () => {
+            camera.position.lerpVectors(startPosition, cameraPosition, proxy.t);
+            controls.target.lerpVectors(startTarget, targetPosition, proxy.t);
+            camera.lookAt(controls.target);
           },
-          0
-        ).to(
-          controls.target,
-          {
-            x: targetPosition.x,
-            y: targetPosition.y,
-            z: targetPosition.z,
-            duration,
-            ease: CAMERA_ANIMATION_CONFIG.zoom.ease,
-          },
-          0
-        );
+        });
       });
     },
     [camera, controls, setControlsEnabled, reducedMotion]
@@ -196,8 +201,19 @@ export function useGSAPAnimations({
       cameraTimelineRef.current?.kill();
       setControlsEnabled(false);
 
+      const startPosition = camera.position.clone();
+      const startTarget = controls.target.clone();
+      const proxy = { t: 0 };
+
+      const duration = reducedMotion
+        ? 0.01
+        : CAMERA_ANIMATION_CONFIG.reset.duration;
+
       const tl = gsap.timeline({
         onComplete: () => {
+          camera.position.copy(targetCamPos);
+          controls.target.copy(targetControlsPos);
+          camera.lookAt(targetControlsPos);
           setControlsEnabled(true);
           cameraTimelineRef.current = null;
           resolve();
@@ -205,31 +221,16 @@ export function useGSAPAnimations({
       });
       cameraTimelineRef.current = tl;
 
-      const duration = reducedMotion
-        ? 0.01
-        : CAMERA_ANIMATION_CONFIG.reset.duration;
-
-      tl.to(
-        camera.position,
-        {
-          x: targetCamPos.x,
-          y: targetCamPos.y,
-          z: targetCamPos.z,
-          duration,
-          ease: CAMERA_ANIMATION_CONFIG.reset.ease,
+      tl.to(proxy, {
+        t: 1,
+        duration,
+        ease: CAMERA_ANIMATION_CONFIG.reset.ease,
+        onUpdate: () => {
+          camera.position.lerpVectors(startPosition, targetCamPos, proxy.t);
+          controls.target.lerpVectors(startTarget, targetControlsPos, proxy.t);
+          camera.lookAt(controls.target);
         },
-        0
-      ).to(
-        controls.target,
-        {
-          x: targetControlsPos.x,
-          y: targetControlsPos.y,
-          z: targetControlsPos.z,
-          duration,
-          ease: CAMERA_ANIMATION_CONFIG.reset.ease,
-        },
-        0
-      );
+      });
     });
   }, [camera, controls, setControlsEnabled, reducedMotion]);
 

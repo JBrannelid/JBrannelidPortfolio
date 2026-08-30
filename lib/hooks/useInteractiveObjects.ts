@@ -168,6 +168,13 @@ export function useInteractiveObjects({
       );
       if (distance > TAP_MOVE_THRESHOLD_PX) return;
 
+      // Stop the browser from firing its trailing synthetic "click" for
+      // this tap - left unchecked, that ghost click arrives while the
+      // zoom-in animation is still in flight and gets caught by the
+      // window-level "click anywhere to exit" listener that useCameraController
+      // registers as soon as screen view starts, immediately cancelling the
+      // zoom it was meant to start.
+      event.preventDefault();
       handleClick(event);
     },
     [handleClick]
