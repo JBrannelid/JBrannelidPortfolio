@@ -17,11 +17,14 @@ import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 import { useToasts } from "@/lib/hooks/useToasts";
 import { ExperienceLoaderProps } from "@/lib/types";
 
-/* ExperienceLoader Component
- * "Editorial Threshold" landing screen: a light, asymmetric entry point
- * shown before the 3D room finishes loading. Progress is expressed as a
- * typographic counter + filling rule, and the room preview on the right
- * resolves from a soft, misty state into full clarity as loading completes. */
+function hideInitialLoadingSkeleton() {
+  const skeleton = document.getElementById("initial-loading-skeleton");
+  if (skeleton) {
+    skeleton.style.display = "none";
+  }
+}
+
+/* ExperienceLoader Component */
 export default function ExperienceLoader({
   isLoading,
   error,
@@ -73,6 +76,7 @@ export default function ExperienceLoader({
           if (overlayRef.current) {
             overlayRef.current.style.display = "none";
           }
+          hideInitialLoadingSkeleton();
         },
       });
     }
@@ -191,6 +195,7 @@ export default function ExperienceLoader({
         if (overlayRef.current) {
           overlayRef.current.style.display = "none";
         }
+        hideInitialLoadingSkeleton();
       });
   };
 

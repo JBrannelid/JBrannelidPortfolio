@@ -21,6 +21,18 @@ All notable changes to this project are documented in this file.
 ### Fixed
 
 - `sitemap.xml` now lists both locale URLs as their own `<url>` entries
+- Migrated off next-intl's deprecated `setRequestLocale`/`requestLocale` to
+  `next/root-params` (Next.js 16.3+), per next-intl's own migration guide.
+  As a side effect, `/en` and `/sv` now prerender as static HTML (SSG)
+  instead of rendering per-request.
+- Removed `prettier.config.js`: it was silently shadowed by `.prettierrc`
+
+### Security
+
+- Added a Content-Security-Policy header (`upgrade-insecure-requests` is
+  production-only - sending it in dev broke client-side navigation, since
+  the browser tried upgrading `next dev`'s plain-http RSC fetches to
+  https on a port with no TLS listener)
 
 ## [1.4.2] - 2026-08-30
 

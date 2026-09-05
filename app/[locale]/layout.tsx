@@ -2,10 +2,9 @@ import "../globals.css";
 
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { notFound } from "next/navigation";
 import Script from "next/script";
-import { hasLocale, NextIntlClientProvider } from "next-intl";
-import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { Toaster } from "react-hot-toast";
 
 import Experience from "@/components/ExperienceClient";
@@ -95,10 +94,18 @@ export async function generateMetadata({
       icon: [
         { url: "/favicon/favicon.ico" },
         { url: "/favicon/favicon.svg", type: "image/svg+xml" },
-        { url: "/favicon/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+        {
+          url: "/favicon/favicon-96x96.png",
+          sizes: "96x96",
+          type: "image/png",
+        },
       ],
       apple: [
-        { url: "/favicon/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+        {
+          url: "/favicon/apple-touch-icon.png",
+          sizes: "180x180",
+          type: "image/png",
+        },
       ],
     },
 
@@ -120,23 +127,15 @@ export async function generateMetadata({
 
 export default async function LocaleLayout({
   children,
-  params,
 }: Readonly<{
   children: React.ReactNode;
-  params: Promise<{ locale: string }>;
 }>) {
-  const { locale } = await params;
-  if (!hasLocale(routing.locales, locale)) {
-    notFound();
-  }
-
-  // Enables static rendering for this locale's Server Components.
-  setRequestLocale(locale);
-
+  // Locale validity (hasLocale + notFound) is handled centrally in i18n/request.ts
+  const locale = await getLocale();
   const messages = await getMessages();
-  const t = await getTranslations({ locale, namespace: "JsonLd" });
+  const t = await getTranslations("JsonLd");
 
-  // Person structured data (schema.org/JSON-LD) 
+  // Person structured data (schema.org/JSON-LD)
   const personJsonLd = {
     "@context": "https://schema.org",
     "@type": "Person",
