@@ -9,9 +9,10 @@ import dynamic from "next/dynamic";
 // straight from the server-rendered layout).
 const Experience = dynamic(() => import("@/components/Experience"), {
   ssr: false,
-  // Matches the landing screen's own background so there's no flash while
-  // the deferred chunk downloads.
-  loading: () => <div className="bg-warm-white fixed inset-0 z-50" />,
+  // No loading fallback here on purpose: InitialLoadingSkeleton (rendered
+  // server-side in layout.tsx, sitting just behind this at a lower
+  // z-index) is already visible for this entire window. A fallback here
+  // would just paint an empty div over it while this chunk downloads.
 });
 
 export default Experience;

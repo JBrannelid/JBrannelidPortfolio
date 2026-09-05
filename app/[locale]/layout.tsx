@@ -9,6 +9,7 @@ import { getMessages, getTranslations, setRequestLocale } from "next-intl/server
 import { Toaster } from "react-hot-toast";
 
 import Experience from "@/components/ExperienceClient";
+import InitialLoadingSkeleton from "@/components/three/InitialLoadingSkeleton";
 import { routing } from "@/i18n/routing";
 import { siteConfig } from "@/lib/config/site";
 
@@ -39,7 +40,9 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "Metadata" });
   const title = t("title");
   const description = t("description");
-  const pageUrl = locale === routing.defaultLocale ? siteConfig.url : `${siteConfig.url}/${locale}`;
+  const localeUrl = (l: string) =>
+    l === routing.defaultLocale ? siteConfig.url : `${siteConfig.url}/${l}`;
+  const pageUrl = localeUrl(locale);
 
   return {
     title: {
@@ -104,10 +107,9 @@ export async function generateMetadata({
     // hreflang: points search engines from either language version to both.
     alternates: {
       canonical: pageUrl,
-      languages: {
-        en: siteConfig.url,
-        sv: `${siteConfig.url}/sv`,
-      },
+      languages: Object.fromEntries(
+        routing.locales.map((l) => [l, localeUrl(l)])
+      ),
     },
 
     // Google Search Console ownership is verified via a DNS TXT record on
@@ -134,9 +136,7 @@ export default async function LocaleLayout({
   const messages = await getMessages();
   const t = await getTranslations({ locale, namespace: "JsonLd" });
 
-  // Person structured data (schema.org/JSON-LD) - tells search engines this
-  // domain represents this specific person, tying the name to the site the
-  // way a Knowledge-Panel-style entity lookup expects.
+  // Person structured data (schema.org/JSON-LD) 
   const personJsonLd = {
     "@context": "https://schema.org",
     "@type": "Person",
@@ -172,6 +172,9 @@ export default async function LocaleLayout({
             }}
           />
 
+          {/* SSR skeleton */}
+          <InitialLoadingSkeleton />
+
           <Experience />
           {children}
         </NextIntlClientProvider>
@@ -182,12 +185,7 @@ export default async function LocaleLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
         />
 
-        {/* Google Analytics, loaded manually (instead of
-            @next/third-parties' <GoogleAnalytics>, which hardcodes
-            "afterInteractive") with strategy="lazyOnload" so it doesn't
-            compete with the 3D experience's own script for main-thread
-            time during load. Trade-off: very short visits that bounce
-            before the browser goes idle won't be tracked. */}
+        {/* Google Analytics, loaded manually  */}
         <Script
           id="_next-ga-init"
           strategy="lazyOnload"

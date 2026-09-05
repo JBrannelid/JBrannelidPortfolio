@@ -17,13 +17,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     )
   );
 
-  return [
-    {
-      url: baseUrl,
-      lastModified: currentDate,
-      changeFrequency: "monthly",
-      priority: 1.0,
-      alternates: { languages },
-    },
-  ];
+  // One <url> entry per locale (not just the default)
+  return routing.locales.map((locale) => ({
+    url: languages[locale],
+    lastModified: currentDate,
+    changeFrequency: "monthly",
+    priority: locale === routing.defaultLocale ? 1.0 : 0.9,
+    alternates: { languages },
+    // Surfaces the room preview to Google Image Search too, not just web
+    // search - a distinctive isometric render is exactly the kind of image
+    // that can pull in traffic on its own.
+    images: [`${baseUrl}/images/isometric_room.png`],
+  }));
 }

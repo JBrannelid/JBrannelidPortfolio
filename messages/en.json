@@ -1,7 +1,7 @@
 {
   "Metadata": {
     "title": "Johannes Brannelid | Fullstack Developer",
-    "description": "Interactive 3D portfolio showcasing frontend development expertise in Next JS, React and modern web technologies. Explore projects, skills, and contact information through an immersive 3D experience.",
+    "description": "An interactive isometric 3D room, built as a portfolio - explore it right in your browser to see frontend development expertise in Next.js, React, Three.js and modern web technologies. Projects, skills, and contact information are all reachable inside the room.",
     "keywords": [
       "fullstack developer",
       "frontend developer",
@@ -250,7 +250,7 @@
   },
   "CrawlableSummary": {
     "heading": "Johannes Brannelid — Fullstack Developer",
-    "bio": "I come from a background in healthcare, leadership and sales. Today, I work as a Software Developer at Alma Health AB, where I develop and maintain solutions across the .NET ecosystem. My work includes backend development, SQL Server, external API integrations and improving existing systems. Outside of work, I spend time exploring modern frontend development and building personal projects with technologies such as Next.js, React, TypeScript and Three.js.",
+    "bio": "This portfolio is an interactive isometric 3D room you can explore right in the browser. I come from a background in healthcare, leadership and sales. Today, I work as a Software Developer at Alma Health AB, where I develop and maintain solutions across the .NET ecosystem. My work includes backend development, SQL Server, external API integrations and improving existing systems. Outside of work, I spend time exploring modern frontend development and building personal projects with technologies such as Next.js, React, TypeScript and Three.js.",
     "workExperienceHeading": "Work Experience",
     "workExperience": [
       "Software Developer, Alma Health AB — May 2026 - Ongoing",

@@ -2,7 +2,25 @@
 
 All notable changes to this project are documented in this file.
 
-## [Unreleased]
+## [1.5.0] - 2026-09-05
+
+### Added
+
+- SSR skeleton landingpage. Previously the page was blank until the 3D engine's rendered GLTFLoader
+
+### Changed
+
+- Swedish is now the default locale (bare root `/`); English moved to
+  `/en`.
+- Disabled Accept-Language-based automatic locale redirection. It silently
+  sent visitors (and crawlers) from `/` to `/sv` based on browser language,
+  which is explicitly against Google's international-SEO guidance.
+- Meta description and the sr-only crawlable summary now mention the
+  "isometric 3D room" concept
+
+### Fixed
+
+- `sitemap.xml` now lists both locale URLs as their own `<url>` entries
 
 ## [1.4.2] - 2026-08-30
 

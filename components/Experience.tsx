@@ -64,6 +64,14 @@ export default function Experience() {
     setSceneRefs(refs);
   }, []);
 
+  // This component only mounts once its own ExperienceLoader (below) is
+  // ready to render, which visually covers InitialLoadingSkeleton
+  // (server-rendered in layout.tsx). Remove it now so it can't reappear
+  // once ExperienceLoader itself later fades out after "Enter".
+  useEffect(() => {
+    document.getElementById("initial-loading-skeleton")?.remove();
+  }, []);
+
   // State management for tracking if any modal has been opened during session
   // Disable controls when modal or link is open
   useEffect(() => {
