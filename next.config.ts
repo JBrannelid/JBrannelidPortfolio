@@ -8,9 +8,9 @@ const cspHeader = `
   default-src 'self';
   script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://www.googletagmanager.com${isDev ? " 'unsafe-eval'" : ""};
   style-src 'self' 'unsafe-inline';
-  img-src 'self' blob: data: https://www.google-analytics.com;
+  img-src 'self' blob: data: https://www.google-analytics.com https://www.googletagmanager.com;
   font-src 'self';
-  connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com;
+  connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com;
   worker-src 'self' blob:;
   frame-src 'none';
   object-src 'none';

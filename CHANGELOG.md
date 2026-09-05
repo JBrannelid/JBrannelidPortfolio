@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.5.1] - 2026-09-05
+
+### Security
+
+- Added a Content-Security-Policy header. Caught in production: GA4's
+  tracking beacon loads as an `<img>` from `googletagmanager.com/td`, not
+  `google-analytics.com` - added to `img-src`/`connect-src`.
+
 ## [1.5.0] - 2026-09-05
 
 ### Added
