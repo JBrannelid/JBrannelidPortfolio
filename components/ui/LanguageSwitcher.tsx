@@ -1,26 +1,18 @@
 "use client";
 
 import { LoaderCircle } from "lucide-react";
-import { useLinkStatus } from "next/link";
+import Link, { useLinkStatus } from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 
-import { Link } from "@/i18n/navigation";
+const LOCALE_HREF: Record<"en" | "sv", string> = { en: "/en", sv: "/" };
 
 interface LanguageSwitcherProps {
-  // "card": flag + visible text label under each option (landing screen,
-  // desktop in-experience nav) - explicit and colorblind-safe, needs room.
-  // "compact": single icon-button toggle matching the mobile nav row's
-  // existing icon-only buttons (same aria-label/title pattern, no GSAP,
-  // just the row's own hover/active Tailwind transitions) - for contexts
-  // too tight for the full card.
   variant?: "card" | "compact";
   className?: string;
 }
 
 // Drawn as SVG rather than using flag emoji (🇬🇧/🇸🇪): Windows doesn't have
-// flag glyphs in its emoji font and falls back to literal "GB"/"SE" text,
-// while phones render the actual flags - so desktop and mobile were
-// showing visibly different things. SVG renders identically everywhere.
+// flag glyphs in its emoji font and falls back to literal "GB"/"SE" tex
 function GBFlagIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 60 40" className={className} aria-hidden="true">
@@ -45,10 +37,7 @@ function SEFlagIcon({ className }: { className?: string }) {
 
 const FLAGS = { en: GBFlagIcon, sv: SEFlagIcon };
 
-// Rendered as a Link's child, `useLinkStatus` reports whether *that*
-// specific navigation is in flight - swaps the flag for the same spinner
-// already used for the contact form's pending state, so switching language
-// doesn't read as unresponsive while the new locale's page loads.
+// Rendered as a Link's child
 function FlagOrSpinner({
   locale,
   iconSize,
@@ -80,8 +69,7 @@ export default function LanguageSwitcher({
 
     return (
       <Link
-        href="/"
-        locale={nextLocale}
+        href={LOCALE_HREF[nextLocale]}
         prefetch={false}
         aria-label={label}
         title={label}
@@ -100,8 +88,7 @@ export default function LanguageSwitcher({
       className={`bg-warm-white/90 border-stone/70 fixed top-4 right-4 z-40 flex gap-1 rounded-xl border p-1 shadow-lg backdrop-blur-md md:top-6 md:right-6 ${className}`}
     >
       <Link
-        href="/"
-        locale="en"
+        href={LOCALE_HREF.en}
         prefetch={false}
         aria-label={t("switchToEnglish")}
         aria-current={locale === "en" ? "true" : undefined}
@@ -115,8 +102,7 @@ export default function LanguageSwitcher({
         </span>
       </Link>
       <Link
-        href="/"
-        locale="sv"
+        href={LOCALE_HREF.sv}
         prefetch={false}
         aria-label={t("switchToSwedish")}
         aria-current={locale === "sv" ? "true" : undefined}

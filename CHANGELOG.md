@@ -4,6 +4,12 @@ All notable changes to this project are documented in this file.
 
 ## [1.5.1] - 2026-09-05
 
+### Fixed
+
+- Switching from English to Swedish could hang with
+  `ERR_TOO_MANY_REDIRECTS` on a slow connection. The switcher
+  now links straight to each locale's canonical path (`/`, `/en`).
+
 ### Security
 
 - Added a Content-Security-Policy header. Caught in production: GA4's
