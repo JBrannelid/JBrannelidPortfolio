@@ -46,7 +46,9 @@ export default function Experience() {
 
   // Load 3D model
   const { model, isLoading, error, progress } = useModelLoader(
-    sceneRefs?.scene || null
+    sceneRefs?.scene || null,
+    sceneRefs?.renderer || null,
+    sceneRefs?.camera || null
   );
 
   // Camera controller
@@ -63,7 +65,6 @@ export default function Experience() {
   const handleSceneReady = useCallback((refs: ThreeSceneRefs) => {
     setSceneRefs(refs);
   }, []);
-
 
   // State management for tracking if any modal has been opened during session
   // Disable controls when modal or link is open

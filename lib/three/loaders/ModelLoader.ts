@@ -18,9 +18,14 @@ export class ModelLoader {
   private dracoLoader: DRACOLoader;
   private textureLoader: TextureLoaderUtility;
   private loadingManager?: THREE.LoadingManager;
+  private renderer?: THREE.WebGLRenderer;
 
-  constructor(loadingManager?: THREE.LoadingManager) {
+  constructor(
+    loadingManager?: THREE.LoadingManager,
+    renderer?: THREE.WebGLRenderer
+  ) {
     this.loadingManager = loadingManager;
+    this.renderer = renderer;
 
     // Initialize DRACO Loader for compressed glb room models.
     // Decoder files are self-hosted (copied from the installed three.js
@@ -42,9 +47,7 @@ export class ModelLoader {
   async loadModel(config: ModelConfig): Promise<LoadedModel> {
     try {
       // Load textures and the GLTF room model concurrently. Both loaders
-      // register with the same LoadingManager, so starting them together
-      // lets it settle on the final item count immediately instead of
-      // growing mid-load (which made the progress bar jump backwards).
+      // register with the same LoadingManager
       const [textureMap, gltf] = await Promise.all([
         this.textureLoader.loadTextures(config.textures),
         this.loadGLTF(config.path),
@@ -52,6 +55,14 @@ export class ModelLoader {
 
       // Apply materials and track statistics
       const stats = this.applyMaterialsToScene(gltf.scene, textureMap);
+
+      // Upload every texture to the GPU right now instead of leaving it
+      // for the renderer to discover lazily
+      if (this.renderer) {
+        for (const texture of textureMap.values()) {
+          this.renderer.initTexture(texture);
+        }
+      }
 
       // Log material application statistics (development mode)
       if (process.env.NODE_ENV === "development") {

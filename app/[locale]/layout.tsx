@@ -1,7 +1,6 @@
 import "../globals.css";
 
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
@@ -15,16 +14,6 @@ import { siteConfig } from "@/lib/config/site";
 const GA_MEASUREMENT_ID = "G-5Z8NYGYBQP";
 
 const OG_LOCALE: Record<string, string> = { en: "en_US", sv: "sv_SE" };
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -153,7 +142,7 @@ export default async function LocaleLayout({
   return (
     <html lang={locale}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className="antialiased"
       >
         <NextIntlClientProvider locale={locale} messages={messages}>
           {/* Toast Notification Provider */}

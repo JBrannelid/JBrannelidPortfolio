@@ -61,10 +61,18 @@ const MODEL_CONFIG: ModelConfig = {
  * Handles model loading, progress tracking, and proper cleanup
  *
  * @param scene - Three.js scene to add the model to
+ * @param renderer - Used both by ModelLoader (uploads every texture to the
+ * GPU as soon as it's decoded, via `initTexture`) and here (precompiles
+ * shaders via `compileAsync` once the model is in the scene) - together
+ * they front-load the two costs that otherwise land inside the render
+ * loop's first draw of this model.
+ * @param camera - Passed straight through to `renderer.compileAsync`.
  * @returns Object containing model, loading state, error, and progress
  */
 export function useModelLoader(
-  scene: THREE.Scene | null
+  scene: THREE.Scene | null,
+  renderer: THREE.WebGLRenderer | null,
+  camera: THREE.Camera | null
 ): UseModelLoaderResult {
   const [model, setModel] = useState<LoadedModel | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -100,12 +108,20 @@ export function useModelLoader(
         setIsLoading(true);
         setError(null);
 
-        modelLoader = new ModelLoader(loadingManager);
+        modelLoader = new ModelLoader(loadingManager, renderer ?? undefined);
         const loadedModel = await modelLoader.loadModel(MODEL_CONFIG);
 
         if (isMounted && scene) {
           // Add the model to the scene
           scene.add(loadedModel.scene);
+
+          // Kick off shader/material precompilation in the same
+          // synchronous turn as scene.add(), so it's already in flight
+          // before the next animation frame renders this model for the
+          // first time. Fire-and-forget: the loading UI doesn't wait on it.
+          if (renderer && camera) {
+            renderer.compileAsync(scene, camera);
+          }
 
           // Update both state and ref
           setModel(loadedModel);
@@ -163,7 +179,7 @@ export function useModelLoader(
       // Clear ref
       modelRef.current = null;
     };
-  }, [scene]); // Only re-run if scene changes
+  }, [scene, renderer, camera]);
 
   return { model, isLoading, error, progress };
 }
